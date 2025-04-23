@@ -1,26 +1,42 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../../context/AuthContext';
+import Image from 'next/image';
+import EditProfileModal from '../../components/EditProfileModal';
 
 export default function ProfilePage() {
-    const { user, loading, isAuthenticated, isAdopter } = useAuth();
+    const { user, loading, isAuthenticated, isAdopter, refreshUser } = useAuth();
     const router = useRouter();
     const [fullName, setFullName] = useState('');
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    // Add this ref to track initial load
+    const initialLoadComplete = useRef(false);
 
     useEffect(() => {
+        console.log("Profile page auth status:", { loading, isAuthenticated, user });
+
         if (!loading) {
             // If not logged in, redirect to login
             if (!isAuthenticated) {
+                console.log("Not authenticated in profile page, redirecting to login");
                 router.push('/login');
                 return;
             }
 
             // If user is an organization, redirect to organization page
             if (user?.userType === 'organization') {
+                console.log("User is an organization, redirecting to organization page");
                 router.push('/organization');
                 return;
+            }
+
+            // Only refresh user data ONCE on initial load
+            if (user && isAuthenticated && !initialLoadComplete.current) {
+                console.log("Initial profile load - refreshing user data once");
+                refreshUser();
+                initialLoadComplete.current = true;
             }
         }
 
@@ -29,16 +45,27 @@ export default function ProfilePage() {
             setFullName(`${user.firstName} ${user.lastName}`);
         }
 
-        // Debug Log
-        if (user) {
-            console.log("User data in profile:", user);
-        }
+    }, [loading, isAuthenticated, user, router]); // Don't include refreshUser in dependencies
 
+    const handleOpenEditModal = () => {
+        setIsEditModalOpen(true);
+    };
 
-    }, [loading, isAuthenticated, user, router]);
+    const handleCloseEditModal = () => {
+        setIsEditModalOpen(false);
+    };
 
+    const handleProfileUpdate = async (updatedUser) => {
+        console.log("Profile updated, refreshing data...");
+        await refreshUser();
+        setIsEditModalOpen(false);
+    };
+
+    // Show loading state
     if (loading) {
-        return <div className="text-center p-12">Loading...</div>;
+        return <div className="text-center p-12">
+            <div className="animate-pulse">Loading your profile...</div>
+        </div>;
     }
 
     // Don't render anything if not authenticated or still checking or not an adopter
@@ -52,8 +79,19 @@ export default function ProfilePage() {
 
             <div className="bg-white shadow rounded-lg p-6">
                 <div className="flex items-center space-x-6 mb-6">
-                    <div className="bg-gray-200 rounded-full w-24 h-24 flex items-center justify-center text-3xl text-gray-600">
-                        {user.firstName ? user.firstName.charAt(0).toUpperCase() : '?'}
+                    <div className="relative bg-gray-200 rounded-full w-24 h-24 overflow-hidden">
+                        {user.profileImage ? (
+                            <Image
+                                src={user.profileImage}
+                                alt={fullName}
+                                fill
+                                style={{ objectFit: 'cover' }}
+                            />
+                        ) : (
+                            <div className="w-full h-full flex items-center justify-center text-3xl text-gray-600">
+                                {user.firstName ? user.firstName.charAt(0).toUpperCase() : '?'}
+                            </div>
+                        )}
                     </div>
                     <div>
                         <h2 className="text-2xl font-semibold">{fullName}</h2>
@@ -64,19 +102,21 @@ export default function ProfilePage() {
                 <div className="border-t pt-4">
                     <h3 className="font-semibold mb-2">Contact Information</h3>
                     <p><span className="text-gray-600">Email:</span> {user.email}</p>
-                    <p><span className="text-gray-600">Phone:</span> {user.contactNumber}</p>
-                    <p><span className="text-gray-600">Location:</span> {user.location}</p>
+                    <p><span className="text-gray-600">Phone:</span> {user.contactNumber || 'Not provided'}</p>
+                    <p><span className="text-gray-600">Location:</span> {user.location || 'Not provided'}</p>
 
                     {(!user.contactNumber || !user.location) && (
                         <p className="text-red-500 text-sm mt-2">
                             Some of your contact information is missing. Please update your profile.
                         </p>
                     )}
-
                 </div>
 
                 <div className="mt-6 flex">
-                    <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    <button
+                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                        onClick={handleOpenEditModal}
+                    >
                         Edit Profile
                     </button>
                 </div>
@@ -100,6 +140,14 @@ export default function ProfilePage() {
                     </div>
                 </div>
             </div>
+
+            {/* Edit Profile Modal */}
+            <EditProfileModal
+                user={user}
+                isOpen={isEditModalOpen}
+                onClose={handleCloseEditModal}
+                onUpdate={handleProfileUpdate}
+            />
         </div>
     );
 }

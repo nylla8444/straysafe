@@ -112,10 +112,17 @@ export const AuthProvider = ({ children }) => {
 
     const refreshUser = async () => {
         try {
+            console.log("Refreshing user data...");
             setLoading(true);
             const response = await axios.get('/api/auth/check');
             console.log("Refresh user response:", response.data);
-            setUserWithCache(response.data.user);
+            
+            // Update the user data in state and localStorage
+            if (response.data.user) {
+                setUser(response.data.user);
+                localStorage.setItem('user', JSON.stringify(response.data.user));
+            }
+            
             return response.data.user;
         } catch (error) {
             console.error('Failed to refresh user data:', error);

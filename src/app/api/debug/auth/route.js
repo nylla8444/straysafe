@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 
+// TODO: update later
 export async function GET(request) {
     try {
         // Get the token

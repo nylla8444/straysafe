@@ -14,7 +14,7 @@ export async function GET(request) {
 
         // Verify the token
         const decoded = jwt.verify(tokenCookie.value, process.env.JWT_SECRET);
-        
+
         if (!decoded.userId) {
             return NextResponse.json({ error: 'Invalid token format' }, { status: 401 });
         }
@@ -38,14 +38,17 @@ export async function GET(request) {
                 organizationName: user.organizationName,
                 contactNumber: user.contactNumber,
                 location: user.location,
-                isVerified: user.isVerified
+                profileImage: user.profileImage,
+                isVerified: user.isVerified,
+                verificationStatus: user.verificationStatus,
+                verificationNotes: user.verificationNotes
             }
         });
-        
+
     } catch (error) {
         console.error('Authentication check error:', error);
         return NextResponse.json(
-            { error: 'Authentication failed' }, 
+            { error: 'Authentication failed' },
             { status: 401 }
         );
     }

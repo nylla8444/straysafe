@@ -12,6 +12,12 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
+        validate: {
+            validator: function (v) {
+                return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(v);
+            },
+            message: props => `${props.value} is not a valid email!`
+        }
     },
     password: {
         type: String,
@@ -35,6 +41,12 @@ const userSchema = new mongoose.Schema({
     },
 
 
+    profileImage: {
+        type: String,
+        default: '' // Default empty for all user types
+    },
+
+
     // Adopter-specific fields
     firstName: {
         type: String,
@@ -55,9 +67,19 @@ const userSchema = new mongoose.Schema({
         type: String, // URL to uploaded document
         required: function () { return this.userType === 'organization'; }
     },
+    verificationStatus: {
+        type: String,
+        enum: ['pending', 'verified', 'followup', 'rejected'],
+        default: 'pending'
+    },
+    verificationNotes: {
+        type: String,
+        default: ''
+    },
+
     isVerified: {
         type: Boolean,
-        default: false // Organizations need verification
+        default: false // Will be set to true when verificationStatus is 'verified'
     },
 
 
@@ -86,6 +108,22 @@ userSchema.pre('save', async function (next) {
 userSchema.pre('save', async function (next) {
     if (this.isModified('password')) {
         this.password = await bcrypt.hash(this.password, 10);
+    }
+    next();
+});
+
+// Add a pre-save hook to ensure consistency
+userSchema.pre('save', function (next) {
+    if (this.isModified('verificationStatus')) {
+        this.isVerified = (this.verificationStatus === 'verified');
+    }
+    next();
+});
+
+// Add this pre-save hook
+userSchema.pre('save', function (next) {
+    if (this.isModified()) {
+        this.updatedAt = Date.now();
     }
     next();
 });

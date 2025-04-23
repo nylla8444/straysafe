@@ -1,0 +1,50 @@
+"use client";
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAdminAuth } from '../../../context/AdminAuthContext';
+
+export default function AdminLayout({ children }) {
+    const { admin, loading, isAuthenticated, authInitialized, refreshAdminToken } = useAdminAuth();
+    const router = useRouter();
+
+    // First try to refresh the token when component mounts
+    useEffect(() => {
+        // Skip refresh attempt if we're in the process of logging out
+        const isLoggingOut = sessionStorage.getItem('adminLoggingOut') === 'true';
+        
+        if (!loading && !isAuthenticated && !isLoggingOut) {
+            // Try to refresh the token before redirecting
+            const attemptRefresh = async () => {
+                const refreshed = await refreshAdminToken();
+                
+                // Only redirect if refresh fails and we're sure we're not authenticated
+                if (!refreshed && authInitialized && !isLoggingOut) {
+                    router.push('/login/admin');
+                }
+            };
+            
+            attemptRefresh();
+        }
+    }, [loading, isAuthenticated, authInitialized, refreshAdminToken, router]);
+
+    // Show loading state during authentication check
+    if (loading) {
+        return (
+            <div className="min-h-screen flex justify-center items-center bg-gray-50">
+                <div className="flex flex-col items-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700 mb-4"></div>
+                    <p className="text-gray-600">Verifying admin session...</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Don't show children until we're sure the user is authenticated
+    // This prevents content flashing before redirect
+    return isAuthenticated ? children : (
+        <div className="min-h-screen flex justify-center items-center bg-gray-50">
+            <p className="text-gray-500">Checking admin credentials...</p>
+        </div>
+    );
+}

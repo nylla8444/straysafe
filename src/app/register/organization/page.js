@@ -37,8 +37,35 @@ export default function OrganizationRegistrationPage() {
         e.preventDefault();
         setError('');
 
+        // Email validation
+        const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+        if (!emailRegex.test(formData.email)) {
+            setError('Please enter a valid email address');
+            return;
+        }
+
+        // Phone number validation - exactly 11 digits
+        const digits = formData.contactNumber.replace(/\D/g, '');
+        if (digits.length !== 11) {
+            setError('Contact number must contain exactly 11 digits');
+            return;
+        }
+
+        // Allow only valid characters in phone number
+        if (!/^[0-9+\-\s()]+$/.test(formData.contactNumber)) {
+            setError('Contact number contains invalid characters');
+            return;
+        }
+
+        // Password confirmation
         if (formData.password !== formData.confirmPassword) {
             setError('Passwords do not match');
+            return;
+        }
+
+        // Password strength validation
+        if (formData.password.length < 8) {
+            setError('Password must be at least 8 characters long');
             return;
         }
 
