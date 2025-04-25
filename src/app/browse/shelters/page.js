@@ -4,9 +4,12 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
+import SearchBar from '../../../components/SearchBar';
 
 export default function SheltersPage() {
     const [shelters, setShelters] = useState([]);
+    const [filteredShelters, setFilteredShelters] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
@@ -14,10 +17,10 @@ export default function SheltersPage() {
         const fetchShelters = async () => {
             try {
                 setLoading(true);
-                // Update this API endpoint based on your actual API
                 const response = await axios.get('/api/organizations');
                 if (response.data.success) {
                     setShelters(response.data.organizations);
+                    setFilteredShelters(response.data.organizations);
                 }
             } catch (err) {
                 console.error('Failed to fetch shelters:', err);
@@ -29,6 +32,30 @@ export default function SheltersPage() {
 
         fetchShelters();
     }, []);
+
+    // Handle search functionality
+    const handleSearch = (term) => {
+        setSearchTerm(term);
+    };
+
+    // Filter shelters based on search term
+    useEffect(() => {
+        if (!searchTerm.trim()) {
+            setFilteredShelters(shelters);
+            return;
+        }
+
+        const searchLower = searchTerm.toLowerCase();
+        const filtered = shelters.filter(shelter =>
+            shelter.organizationName.toLowerCase().includes(searchLower) ||
+            (shelter.location && shelter.location.toLowerCase().includes(searchLower)) ||
+            (shelter.city && shelter.city.toLowerCase().includes(searchLower)) ||
+            (shelter.province && shelter.province.toLowerCase().includes(searchLower)) ||
+            (shelter.description && shelter.description.toLowerCase().includes(searchLower))
+        );
+
+        setFilteredShelters(filtered);
+    }, [shelters, searchTerm]);
 
     if (loading) {
         return (
@@ -51,13 +78,32 @@ export default function SheltersPage() {
             <h1 className="text-3xl font-bold mb-6">Browse Shelters</h1>
             <p className="text-gray-600 mb-6">Find animal shelters and rescue organizations.</p>
 
-            {shelters.length === 0 ? (
+            {/* Add search bar here */}
+            <div className="mb-6">
+                <SearchBar
+                    placeholder="Search shelters by name or location..."
+                    onSearch={handleSearch}
+                    className="max-w-2xl"
+                />
+            </div>
+
+            {filteredShelters.length === 0 ? (
                 <div className="bg-white rounded-lg shadow p-6 text-center">
-                    <p className="text-gray-600">No shelters available at the moment.</p>
+                    <p className="text-gray-600">
+                        {searchTerm ? 'No shelters match your search criteria.' : 'No shelters available at the moment.'}
+                    </p>
+                    {searchTerm && (
+                        <button
+                            onClick={() => setSearchTerm('')}
+                            className="mt-4 px-4 py-2 text-sm font-medium text-blue-600 border border-blue-600 rounded hover:bg-blue-50"
+                        >
+                            Clear Search
+                        </button>
+                    )}
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {shelters.map(shelter => (
+                    {filteredShelters.map(shelter => (
                         <div key={shelter._id} className="bg-white rounded-lg shadow-md overflow-hidden transition-all hover:shadow-xl border border-gray-100">
                             <div>
                                 {/* Color banner with optional pattern */}

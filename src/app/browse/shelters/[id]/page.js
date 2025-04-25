@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { use } from 'react';
 import FilterPanel from '../../../../components/filters/FilterPanel';
+import SearchBar from '../../../../components/SearchBar';
 
 export default function ShelterDetailPage({ params }) {
     // Unwrap the Promise params with React.use()
@@ -17,16 +18,19 @@ export default function ShelterDetailPage({ params }) {
     const [filteredPets, setFilteredPets] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    // Update the initial filters state
     const [filters, setFilters] = useState({
         species: '',
         gender: '',
-        status: 'available', // Default to available pets
+        // Only include 'available' and 'rehabilitating' as options
+        status: '',
         tags: [],
         priceRange: {
             min: '',
             max: ''
         }
     });
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         const fetchShelterData = async () => {
@@ -43,9 +47,13 @@ export default function ShelterDetailPage({ params }) {
                     const petsResponse = await axios.get(`/api/organizations/${shelterId}/pets`);
 
                     if (petsResponse.data.success) {
-                        setPets(petsResponse.data.pets);
+                        // Filter out adopted pets
+                        const nonAdoptedPets = petsResponse.data.pets.filter(
+                            pet => pet.status !== 'adopted'
+                        );
+                        setPets(nonAdoptedPets);
                         // Initially filter for available pets only
-                        setFilteredPets(petsResponse.data.pets.filter(pet => pet.status === 'available'));
+                        setFilteredPets(nonAdoptedPets.filter(pet => pet.status === 'available'));
                     }
                 }
             } catch (err) {
@@ -62,10 +70,20 @@ export default function ShelterDetailPage({ params }) {
     // Apply filters whenever filter criteria change
     useEffect(() => {
         applyFilters();
-    }, [filters, pets]);
+    }, [filters, pets, searchTerm]);
 
     const applyFilters = () => {
         let result = [...pets];
+
+        // Search filter
+        if (searchTerm.trim()) {
+            const searchLower = searchTerm.toLowerCase();
+            result = result.filter(pet =>
+                pet.name.toLowerCase().includes(searchLower) ||
+                pet.breed.toLowerCase().includes(searchLower) ||
+                (pet.tags && pet.tags.some(tag => tag.toLowerCase().includes(searchLower)))
+            );
+        }
 
         // Filter by species
         if (filters.species) {
@@ -128,13 +146,15 @@ export default function ShelterDetailPage({ params }) {
         setFilters({
             species: '',
             gender: '',
-            status: 'available',
+            // Only include 'available' and 'rehabilitating' as options
+            status: '',
             tags: [],
             priceRange: {
                 min: '',
                 max: ''
             }
         });
+        setSearchTerm('');
     };
 
     if (loading) {
@@ -159,15 +179,17 @@ export default function ShelterDetailPage({ params }) {
     return (
         <div className="max-w-7xl mx-auto px-4 py-8">
             {/* Back to Shelters link */}
-            <div className="mb-6 flex items-center">
+            <div className="mb-8">
                 <Link
                     href="/browse/shelters"
-                    className="flex items-center text-blue-600 hover:text-blue-800"
+                    className="group inline-flex items-center text-gray-600 hover:text-blue-600 transition-all duration-300"
                 >
-                    <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                    </svg>
-                    Back to Shelters
+                    <div className="mr-2 w-8 h-8 flex items-center justify-center rounded-full bg-white border border-gray-200 shadow-sm group-hover:border-blue-200 group-hover:-translate-x-1 transition-all duration-300">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </div>
+                    <span className="font-medium">Back to shelters</span>
                 </Link>
             </div>
 
@@ -262,6 +284,15 @@ export default function ShelterDetailPage({ params }) {
                         <h2 className="text-2xl font-bold">Pets from {shelter.organizationName}</h2>
                         <p className="text-gray-600 mt-1">Find your perfect companion</p>
                     </div>
+                </div>
+
+                {/* Add search bar here */}
+                <div className="mb-4">
+                    <SearchBar
+                        placeholder="Search shelter pets..."
+                        onSearch={setSearchTerm}
+                        className="max-w-2xl"
+                    />
                 </div>
 
                 <FilterPanel
