@@ -10,7 +10,8 @@ export default function FilterPanel({
     filteredCount,
     speciesOptions = ['dog', 'cat', 'bird', 'rabbit', 'hamster', 'guinea pig', 'other'],
     genderOptions = ['male', 'female', 'unknown'],
-    statusOptions = ['available', 'rehabilitating', 'adopted'],
+    // Remove 'adopted' from status options
+    statusOptions = ['available', 'rehabilitating'],
     tagOptions = ['vaccinated', 'neutered', 'house-trained', 'special-needs', 'kid-friendly', 'senior', 'good-with-cats', 'good-with-dogs']
 }) {
     const [showFilters, setShowFilters] = useState(false);
