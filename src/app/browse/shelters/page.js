@@ -58,17 +58,71 @@ export default function SheltersPage() {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {shelters.map(shelter => (
-                        <div key={shelter._id} className="bg-white rounded-lg shadow overflow-hidden">
-                            <div className="p-4">
-                                <h3 className="font-bold text-lg mb-1">{shelter.organizationName}</h3>
-                                <p className="text-gray-600 text-sm mb-2">{shelter.location}</p>
-                                <div className="mt-3">
-                                    <Link
-                                        href={`/browse/shelters/${shelter._id}`}
-                                        className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                                    >
-                                        View Details
-                                    </Link>
+                        <div key={shelter._id} className="bg-white rounded-lg shadow-md overflow-hidden transition-all hover:shadow-xl border border-gray-100">
+                            <div>
+                                {/* Color banner with optional pattern */}
+                                <div className="h-12 bg-gradient-to-r from-blue-500 to-blue-600 relative overflow-hidden">
+                                    <div className="absolute inset-0 opacity-10">
+                                        <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                            <path d="M0,0 L100,0 L100,5 C60,20 40,20 0,5 Z" fill="white" />
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <div className="p-5">
+                                    <div className="flex items-center">
+                                        {/* Improved organization logo with elevation */}
+                                        <div className="relative -mt-12 w-20 h-20 rounded-lg shadow-md overflow-hidden bg-white p-1 border border-gray-100">
+                                            <div className="relative w-full h-full rounded-md overflow-hidden bg-gray-100">
+                                                {shelter.profileImage ? (
+                                                    <Image
+                                                        src={shelter.profileImage}
+                                                        alt={shelter.organizationName}
+                                                        fill
+                                                        style={{ objectFit: 'cover' }}
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center bg-blue-50 text-blue-600 text-2xl font-bold">
+                                                        {shelter.organizationName?.charAt(0).toUpperCase() || 'O'}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Organization name and verification badge */}
+                                        <div className="ml-4">
+                                            <div className="flex items-center">
+                                                <h3 className="font-bold text-lg text-gray-800">{shelter.organizationName}</h3>
+                                                {shelter.isVerified && (
+                                                    <span className="ml-2">
+                                                        <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                                        </svg>
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <p className="text-gray-600 text-sm">
+                                                {shelter.location || (shelter.city && shelter.province ? `${shelter.city}, ${shelter.province}` : 'Location not specified')}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Additional organization info */}
+                                    <div className="mt-4 pt-4 border-t border-gray-100">
+                                        <div className="flex items-center justify-between text-sm">
+                                            <div className="flex items-center text-gray-600">
+                                                <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                                </svg>
+                                                {shelter.establishedYear ? `Est. ${shelter.establishedYear}` : 'Animal Shelter'}
+                                            </div>
+                                            <span className="text-blue-600 font-medium hover:text-blue-800 hover:underline">
+                                                <Link href={`/browse/shelters/${shelter._id}`}>
+                                                    View Details
+                                                </Link>
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
