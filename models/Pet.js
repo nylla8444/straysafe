@@ -77,6 +77,13 @@ const petSchema = new mongoose.Schema({
     }
 });
 
+
+petSchema.index({ status: 1 }); // For filtering by status
+petSchema.index({ specie: 1 }); // For filtering by species
+petSchema.index({ organization: 1 }); // For queries by organization
+petSchema.index({ tags: 1 }); // For tag-based searches
+petSchema.index({ name: 'text', breed: 'text' }); // Text search capabilities
+
 // Auto-increment pet_id
 petSchema.pre('save', async function (next) {
     if (this.isNew) {

@@ -5,6 +5,7 @@ import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
 import SearchBar from '../../../components/SearchBar';
+import ShelterCardSkeleton from '../../../components/ShelterCardSkeleton';
 
 export default function SheltersPage() {
     const [shelters, setShelters] = useState([]);
@@ -57,14 +58,6 @@ export default function SheltersPage() {
         setFilteredShelters(filtered);
     }, [shelters, searchTerm]);
 
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center min-h-[60vh]">
-                <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
-            </div>
-        );
-    }
-
     if (error) {
         return (
             <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
@@ -78,7 +71,7 @@ export default function SheltersPage() {
             <h1 className="text-3xl font-bold mb-6">Browse Shelters</h1>
             <p className="text-gray-600 mb-6">Find animal shelters and rescue organizations.</p>
 
-            {/* Add search bar here */}
+            {/* Search bar */}
             <div className="mb-6">
                 <SearchBar
                     placeholder="Search shelters by name or location..."
@@ -87,7 +80,14 @@ export default function SheltersPage() {
                 />
             </div>
 
-            {filteredShelters.length === 0 ? (
+            {/* Apply skeleton loading here */}
+            {loading ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {Array(6).fill().map((_, index) => (
+                        <ShelterCardSkeleton key={index} />
+                    ))}
+                </div>
+            ) : filteredShelters.length === 0 ? (
                 <div className="bg-white rounded-lg shadow p-6 text-center">
                     <p className="text-gray-600">
                         {searchTerm ? 'No shelters match your search criteria.' : 'No shelters available at the moment.'}
@@ -102,7 +102,7 @@ export default function SheltersPage() {
                     )}
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {filteredShelters.map(shelter => (
                         <div key={shelter._id} className="bg-white rounded-lg shadow-md overflow-hidden transition-all hover:shadow-xl border border-gray-100">
                             <div>

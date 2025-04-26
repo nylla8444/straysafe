@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { use } from 'react';
 import FilterPanel from '../../../../components/filters/FilterPanel';
 import SearchBar from '../../../../components/SearchBar';
+import PetCardSkeleton from '../../../../components/PetCardSkeleton';
 
 export default function ShelterDetailPage({ params }) {
     // Unwrap the Promise params with React.use()
@@ -159,8 +160,30 @@ export default function ShelterDetailPage({ params }) {
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center min-h-[60vh]">
-                <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+            <div className="max-w-7xl mx-auto px-4 py-8">
+                {/* Shelter header skeleton */}
+                <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+                    <div className="h-40 bg-gray-200 animate-pulse"></div>
+                    <div className="p-6">
+                        <div className="flex flex-col md:flex-row">
+                            <div className="relative -mt-24 w-32 h-32 rounded-xl shadow-lg bg-gray-200 animate-pulse"></div>
+                            <div className="md:ml-8 mt-6 md:mt-0">
+                                <div className="h-8 bg-gray-200 w-64 rounded-md animate-pulse"></div>
+                                <div className="h-4 bg-gray-200 w-40 rounded mt-4 animate-pulse"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Pets section skeleton */}
+                <div className="mt-8">
+                    <div className="h-7 bg-gray-200 w-64 rounded-md animate-pulse mb-6"></div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {Array(6).fill().map((_, index) => (
+                            <PetCardSkeleton key={index} />
+                        ))}
+                    </div>
+                </div>
             </div>
         );
     }

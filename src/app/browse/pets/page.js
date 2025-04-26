@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import FilterPanel from '../../../components/filters/FilterPanel';
 import SearchBar from '../../../components/SearchBar';
+import PetCardSkeleton from '../../../components/PetCardSkeleton';
 
 export default function PetsPage() {
     const [pets, setPets] = useState([]);
@@ -148,14 +149,6 @@ export default function PetsPage() {
         setSearchTerm(term);
     };
 
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center min-h-[60vh]">
-                <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
-            </div>
-        );
-    }
-
     if (error) {
         return (
             <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
@@ -173,7 +166,7 @@ export default function PetsPage() {
                 </div>
             </div>
 
-            {/* Add search bar here */}
+            {/* Search bar and filter panel as before */}
             <div className="mb-4">
                 <SearchBar
                     placeholder="Search pets by name, breed, or tags..."
@@ -190,7 +183,14 @@ export default function PetsPage() {
                 filteredCount={filteredPets.length}
             />
 
-            {filteredPets.length === 0 ? (
+            {/* THIS IS THE IMPORTANT CHANGE - Check loading state first */}
+            {loading ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
+                    {Array(8).fill().map((_, index) => (
+                        <PetCardSkeleton key={index} />
+                    ))}
+                </div>
+            ) : filteredPets.length === 0 ? (
                 <div className="bg-white rounded-lg shadow p-6 text-center">
                     <p className="text-gray-600">No pets match your filter criteria. Try adjusting your filters.</p>
                     {pets.length > 0 && (
@@ -203,13 +203,9 @@ export default function PetsPage() {
                     )}
                 </div>
             ) : (
-                // Card grid with centered, max-width cards
-                <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-4 gap-6 justify-items-center">
+                <div className="grid px-0 xl:px-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
                     {filteredPets.map(pet => (
-                        <div
-                            key={pet._id}
-                            className="relative group bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 transition-all duration-300 hover:shadow-xl hover:translate-y-[-4px] w-full max-w-[300px]"
-                        >
+                        <div key={pet._id} className="relative group bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 transition-all duration-300 hover:shadow-xl hover:translate-y-[-4px] w-full max-w-[300px]">
                             {/* Top ribbon based on status */}
                             <div className={`absolute top-0 left-0 w-full h-1 ${pet.status === 'available' ? 'bg-green-500' :
                                 pet.status === 'rehabilitating' ? 'bg-amber-500' :
