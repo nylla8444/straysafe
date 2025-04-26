@@ -57,6 +57,13 @@ const userSchema = new mongoose.Schema({
         required: function () { return this.userType === 'adopter'; }
     },
 
+    status: {
+        type: String,
+        enum: ['active', 'suspended'],
+        default: 'active',
+        required: function () { return this.userType === 'adopter'; }
+    },
+
 
     // Organization-specific fields
     organizationName: {

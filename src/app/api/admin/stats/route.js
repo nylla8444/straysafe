@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
 import User from '../../../../../models/User';
 import connectionToDB from '../../../../../lib/mongoose';
 import { withCache } from '../../../../../middleware/cacheMiddleware';
@@ -7,34 +6,51 @@ import { withAdminAuth } from '../../../../../middleware/adminAuthMiddleware';
 
 export async function GET(request) {
     return withAdminAuth(request, async (req, decoded) => {
-        return withCache(req, async () => {
-            try {
-                await connectionToDB();
+        try {
+            await connectionToDB();
 
-                // Get stats
-                const totalUsers = await User.countDocuments();
-                const adopters = await User.countDocuments({ userType: 'adopter' });
-                const organizations = await User.countDocuments({ userType: 'organization' });
-                const pendingOrganizations = await User.countDocuments({
+            // Use more efficient queries with single database call
+            const [
+                totalUsers,
+                adopters,
+                adoptersActive,
+                adoptersSuspended,
+                organizations,
+                pendingOrganizations
+            ] = await Promise.all([
+                User.countDocuments(),
+                User.countDocuments({ userType: 'adopter' }),
+                User.countDocuments({ userType: 'adopter', status: { $ne: 'suspended' } }),
+                User.countDocuments({ userType: 'adopter', status: 'suspended' }),
+                User.countDocuments({ userType: 'organization' }),
+                User.countDocuments({
                     userType: 'organization',
                     verificationStatus: 'pending',
                     isVerified: false
-                });
+                })
+            ]);
 
-                return NextResponse.json({
-                    success: true,
-                    totalUsers,
-                    adopters,
-                    organizations,
-                    pendingOrganizations
-                });
-            } catch (error) {
-                console.error('Admin stats error:', error);
-                return NextResponse.json({
-                    success: false,
-                    error: 'Failed to fetch stats'
-                }, { status: 500 });
-            }
-        }, { duration: 120 * 1000 }); // 2 minutes cache - stats change infrequently
+            // Add cache control headers to ensure fresh data
+            const headers = new Headers();
+            headers.append('Cache-Control', 'no-cache, no-store, must-revalidate');
+            headers.append('Pragma', 'no-cache');
+            headers.append('Expires', '0');
+
+            return NextResponse.json({
+                totalUsers,
+                adopters,
+                adoptersActive,
+                adoptersSuspended,
+                organizations,
+                pendingOrganizations
+            }, { headers });
+
+        } catch (error) {
+            console.error('Admin stats error:', error);
+            return NextResponse.json({
+                success: false,
+                error: 'Failed to fetch stats'
+            }, { status: 500 });
+        }
     });
 }
