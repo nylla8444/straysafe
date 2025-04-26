@@ -18,7 +18,14 @@ export default function PetDetailModal({ pet, onClose, onEdit }) {
         );
     };
 
+    // Function to handle edit and close together
+    const handleEdit = () => {
+        onClose(); // Close the modal first
+        onEdit(pet); // Then trigger the edit function
+    };
+
     const getStatusBadge = (status) => {
+        // Status badge code remains unchanged
         switch (status) {
             case 'available':
                 return <span className="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">Available</span>;
@@ -150,7 +157,7 @@ export default function PetDetailModal({ pet, onClose, onEdit }) {
 
                 <div className="border-t p-4 flex justify-end">
                     <button
-                        onClick={() => onEdit(pet)}
+                        onClick={handleEdit} // Use the combined function
                         className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
                     >
                         Edit Pet
