@@ -1,14 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    // External packages for server components - moved from experimental
-    serverExternalPackages: ['cloudinary'],
-
-    // Configure larger payload sizes
+    // Your existing configuration
+    serverExternalPackages: ['cloudinary', 'mongoose'],
     serverRuntimeConfig: {
-        maxBodySize: '10mb', // This works for API routes
+        maxBodySize: '10mb',
     },
-
-    // Add this images configuration
     images: {
         remotePatterns: [
             {
@@ -19,10 +15,55 @@ const nextConfig = {
             },
         ],
     },
-
-    // Any other experimental features you need
     experimental: {
-        // Empty for now, add any other experimental features here
+        // Your experimental configurations
+        serverActions: {
+            bodySizeLimit: '10mb'
+        },
+        optimizePackageImports: [
+            'react', 'react-dom', 'next', 'swr'
+        ],
+        serverComponentsHmrCache: true,
+        ...(process.env.NODE_ENV === 'development' && {
+            webpackBuildWorker: true
+        })
+    },
+
+    // Add Turbopack configuration here
+    turbopack: {
+        // Mirror your webpack configuration
+        resolveExtensions: ['.mjs', '.js', '.jsx', '.json', '.ts', '.tsx'],
+        // If you're using any webpack loaders, configure them here
+        rules: {
+            // Example SVG handling if needed
+            '*.svg': {
+                loaders: ['@svgr/webpack'],
+                as: '*.js',
+            },
+        },
+    },
+
+    // Keep your existing webpack configuration
+    webpack(config) {
+        if (process.env.NODE_ENV === 'development') {
+            config.cache = true;
+        }
+        return config;
+    },
+
+    // Your headers configuration
+    async headers() {
+        return [
+            {
+                source: '/api/:path*',
+                headers: [
+                    {
+                        key: 'Cache-Control',
+                        value: 'public, max-age=30, stale-while-revalidate=300',
+                    },
+                ],
+            },
+        ];
     },
 };
 
