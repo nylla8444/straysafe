@@ -1,16 +1,18 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Readex_Pro, Fredoka } from "next/font/google";
 import { AuthProvider } from '../../context/AuthContext';
 import { AdminAuthProvider } from '../../context/AdminAuthContext';
 import Navbar from '../components/Navbar';
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+
+
+const readexPro = Readex_Pro({
+  variable: "--font-readex-pro",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const fredoka = Fredoka({
+  variable: "--font-fredoka",
   subsets: ["latin"],
 });
 
@@ -23,7 +25,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${readexPro.variable} ${fredoka.variable} antialiased`}
       >
         <AuthProvider>
           <AdminAuthProvider>
