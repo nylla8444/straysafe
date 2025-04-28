@@ -166,22 +166,27 @@ export default function PetsPage() {
                 </div>
             </div>
 
-            {/* Search bar and filter panel as before */}
-            <div className="mb-4">
+            {/* Search bar and filter panel with improved responsiveness */}
+            <div className="mb-4 md:mb-6 lg:mb-8 flex flex-col sm:flex-row gap-4 px-4 sm:px-12">
                 <SearchBar
                     placeholder="Search pets by name, breed, or tags..."
                     onSearch={handleSearch}
-                    className="max-w-2xl"
+                    className="max-w-2xl w-full"
                 />
+
+                {/* Filter Panel - Shows only icon on small screens and positioned below search */}
+                <div className="self-end sm:self-auto">
+                    <FilterPanel
+                        filters={filters}
+                        onFilterChange={handleFilterChange}
+                        onReset={resetFilters}
+                        totalCount={pets.length}
+                        filteredCount={filteredPets.length}
+                        showIconOnly={true} /* Pass prop to indicate we want icon-only on small screens */
+                    />
+                </div>
             </div>
 
-            <FilterPanel
-                filters={filters}
-                onFilterChange={handleFilterChange}
-                onReset={resetFilters}
-                totalCount={pets.length}
-                filteredCount={filteredPets.length}
-            />
 
             {/* THIS IS THE IMPORTANT CHANGE - Check loading state first */}
             {loading ? (

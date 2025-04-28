@@ -309,22 +309,28 @@ export default function ShelterDetailPage({ params }) {
                     </div>
                 </div>
 
-                {/* Add search bar here */}
-                <div className="mb-4">
+                {/* search bar and filter */}
+                <div className="mb-4 md:mb-6 lg:mb-8 flex flex-col sm:flex-row gap-4 ">
                     <SearchBar
                         placeholder="Search shelter pets..."
                         onSearch={setSearchTerm}
-                        className="max-w-2xl"
+                        className="max-w-2xl w-full"
                     />
+
+                    {/* Filter Panel - Shows only icon on small screens and positioned below search */}
+                    <div className="self-end sm:self-auto">
+                        <FilterPanel
+                            filters={filters}
+                            onFilterChange={handleFilterChange}
+                            onReset={resetFilters}
+                            totalCount={pets.length}
+                            filteredCount={filteredPets.length}
+                            showIconOnly={true} /* Pass prop to indicate we want icon-only on small screens */
+                        />
+                    </div>
                 </div>
 
-                <FilterPanel
-                    filters={filters}
-                    onFilterChange={handleFilterChange}
-                    onReset={resetFilters}
-                    totalCount={pets.length}
-                    filteredCount={filteredPets.length}
-                />
+
 
                 {/* Pet grid */}
                 {filteredPets.length === 0 ? (
