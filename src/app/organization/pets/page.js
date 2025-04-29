@@ -28,8 +28,14 @@ export default function ManagePetsPage() {
     const [viewingPet, setViewingPet] = useState(null);
 
     useEffect(() => {
+        console.log('Auth state:', { loading, isAuthenticated, isOrganization: isOrganization(), isVerified: user?.isVerified });
+
         if (!loading && isAuthenticated && isOrganization() && user?.isVerified) {
+            console.log('Fetching pets...');
             fetchPets();
+        } else if (!loading) {
+            console.log('Not fetching pets - auth conditions not met');
+            setIsLoading(false); // Force loading to false if we're not going to fetch
         }
     }, [loading, isAuthenticated, user, isOrganization]);
 
@@ -54,13 +60,25 @@ export default function ManagePetsPage() {
         try {
             setIsLoading(true);
             const response = await axios.get('/api/organization/pets');
-            if (response.data.success) {
-                setAllPets(response.data.pets);
+
+            // Ensure we set pets array even if success is false
+            if (response.data && response.data.success) {
+                setAllPets(response.data.pets || []);
+            } else {
+                // If API doesn't return success:true, initialize with empty array
+                setAllPets([]);
+
+                // Only set error if there's an error message
+                if (response.data && response.data.error) {
+                    setError(response.data.error);
+                }
             }
         } catch (err) {
             console.error('Failed to fetch pets:', err);
             setError('Failed to load pets. Please try again.');
+            setAllPets([]); // Initialize with empty array on error
         } finally {
+            // Ensure loading is set to false regardless of outcome
             setIsLoading(false);
         }
     };
