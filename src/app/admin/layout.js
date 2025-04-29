@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAdminAuth } from '../../../context/AdminAuthContext';
+import { motion } from 'framer-motion';
 
 export default function AdminLayout({ children }) {
     const { admin, loading, isAuthenticated, authInitialized, refreshAdminToken } = useAdminAuth();
@@ -12,18 +13,18 @@ export default function AdminLayout({ children }) {
     useEffect(() => {
         // Skip refresh attempt if we're in the process of logging out
         const isLoggingOut = sessionStorage.getItem('adminLoggingOut') === 'true';
-        
+
         if (!loading && !isAuthenticated && !isLoggingOut) {
             // Try to refresh the token before redirecting
             const attemptRefresh = async () => {
                 const refreshed = await refreshAdminToken();
-                
+
                 // Only redirect if refresh fails and we're sure we're not authenticated
                 if (!refreshed && authInitialized && !isLoggingOut) {
                     router.push('/login/admin');
                 }
             };
-            
+
             attemptRefresh();
         }
     }, [loading, isAuthenticated, authInitialized, refreshAdminToken, router]);
@@ -31,20 +32,28 @@ export default function AdminLayout({ children }) {
     // Show loading state during authentication check
     if (loading) {
         return (
-            <div className="min-h-screen flex justify-center items-center bg-gray-50">
-                <div className="flex flex-col items-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700 mb-4"></div>
-                    <p className="text-gray-600">Verifying admin session...</p>
-                </div>
+            <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50">
+                <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                <p className="text-blue-600 font-medium mt-4">Verifying admin session...</p>
+                <p className="text-gray-500 text-sm mt-2">This may take a moment</p>
             </div>
         );
     }
 
     // Don't show children until we're sure the user is authenticated
     // This prevents content flashing before redirect
-    return isAuthenticated ? children : (
-        <div className="min-h-screen flex justify-center items-center bg-gray-50">
-            <p className="text-gray-500">Checking admin credentials...</p>
+    return isAuthenticated ? (
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+        >
+            {children}
+        </motion.div>
+    ) : (
+        <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50">
+            <div className="w-12 h-12 border-4 border-gray-300 border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-gray-600 mt-4">Checking admin credentials...</p>
         </div>
     );
 }
