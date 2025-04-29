@@ -16,7 +16,9 @@ export async function GET(request) {
                 adoptersActive,
                 adoptersSuspended,
                 organizations,
-                pendingOrganizations
+                pendingOrganizations,
+                verifiedOrganizations,
+                rejectedOrganizations
             ] = await Promise.all([
                 User.countDocuments(),
                 User.countDocuments({ userType: 'adopter' }),
@@ -26,6 +28,15 @@ export async function GET(request) {
                 User.countDocuments({
                     userType: 'organization',
                     verificationStatus: 'pending',
+                    isVerified: false
+                }),
+                User.countDocuments({
+                    userType: 'organization',
+                    isVerified: true
+                }),
+                User.countDocuments({
+                    userType: 'organization',
+                    verificationStatus: 'rejected',
                     isVerified: false
                 })
             ]);
@@ -42,7 +53,9 @@ export async function GET(request) {
                 adoptersActive,
                 adoptersSuspended,
                 organizations,
-                pendingOrganizations
+                pendingOrganizations,
+                verifiedOrganizations,  // Added this to the response
+                rejectedOrganizations   // Added this to the response
             }, { headers });
 
         } catch (error) {
