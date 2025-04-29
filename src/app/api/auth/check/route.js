@@ -27,6 +27,7 @@ export async function GET(request) {
                     contactNumber: user.contactNumber,
                     location: user.location,
                     profileImage: user.profileImage,
+                    status: user.status,
                     isVerified: user.isVerified,
                     verificationStatus: user.verificationStatus,
                     verificationNotes: user.verificationNotes
