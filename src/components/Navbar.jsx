@@ -11,8 +11,10 @@ export default function Navbar() {
     const { user, isAuthenticated, logout } = useAuth();
     const { admin, isAuthenticated: isAdminAuthenticated, adminLogout } = useAdminAuth();
     const [menuOpen, setMenuOpen] = useState(false);
+    const [suspensionBannerVisible, setSuspensionBannerVisible] = useState(true); // Add this line
     const menuRef = useRef(null);
     const pathname = usePathname();
+
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
@@ -77,7 +79,29 @@ export default function Navbar() {
     }, [menuOpen]);
 
     return (
-        <nav className="bg-blue-600 text-white p-4 relative z-50">
+        <nav className="bg-blue-600 text-white p-4 relative z-60">
+            {user?.userType === 'adopter' && user?.status === 'suspended' && suspensionBannerVisible && (
+                <div className="w-full bg-red-600 text-white py-2 px-4 text-center mb-4 relative">
+                    <div className="container mx-auto flex items-center justify-center">
+                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <span>Your account has been suspended. Visit your profile for more information.</span>
+                    </div>
+
+                    {/* Add the dismiss button */}
+                    <button
+                        onClick={() => setSuspensionBannerVisible(false)}
+                        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-red-200 transition-colors"
+                        aria-label="Dismiss notification"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            )}
+
             <div className="max-w-7xl mx-auto flex justify-between items-center">
                 <div className="flex items-center">
                     <Link href="/" className="text-xl font-bold">
@@ -117,7 +141,12 @@ export default function Navbar() {
                     {isAuthenticated && !isAdminAuthenticated && (
                         <>
                             {user?.userType === 'adopter' && (
-                                <Link href="/profile" className="hover:text-blue-100">My Profile</Link>
+                                <Link href="/profile" className="hover:text-blue-100 flex items-center">
+                                    My Profile
+                                    {user.status === 'suspended' && (
+                                        <span className="ml-1 bg-red-500 rounded-full w-2 h-2"></span>
+                                    )}
+                                </Link>
                             )}
                             {user?.userType === 'organization' && (
                                 <Link href="/organization" className="hover:text-blue-100">Organization Dashboard</Link>
@@ -189,7 +218,12 @@ export default function Navbar() {
                                 {isAuthenticated && !isAdminAuthenticated && (
                                     <>
                                         {user?.userType === 'adopter' && (
-                                            <Link href="/profile" className="text-white hover:text-blue-100 text-lg">My Profile</Link>
+                                            <Link href="/profile" className="text-white hover:text-blue-100 text-lg flex items-center">
+                                                My Profile
+                                                {user.status === 'suspended' && (
+                                                    <span className="ml-1 bg-red-500 rounded-full w-2 h-2"></span>
+                                                )}
+                                            </Link>
                                         )}
                                         {user?.userType === 'organization' && (
                                             <Link href="/organization" className="text-white hover:text-blue-100 text-lg">Organization Dashboard</Link>
