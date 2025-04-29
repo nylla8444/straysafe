@@ -42,7 +42,7 @@ export async function POST(request) {
             cloudinary.uploader.upload(
                 dataURI,
                 {
-                    folder: 'straysafe/pets',
+                    folder: 'strayspot/pets',
                     resource_type: 'auto'
                 },
                 (error, result) => {

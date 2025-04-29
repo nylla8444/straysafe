@@ -16,7 +16,7 @@ export default function RegisterTypePage() {
                             <span className="text-white text-2xl font-bold">SS</span>
                         </div>
                     </div>
-                    <h1 className="text-3xl font-bold text-gray-800">Join StraysSafe</h1>
+                    <h1 className="text-3xl font-bold text-gray-800">Join StraySpot</h1>
                     <p className="mt-2 text-gray-600">Choose how you want to make a difference</p>
                 </div>
 

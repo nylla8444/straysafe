@@ -20,7 +20,7 @@ export default function Navbar() {
             <div className="max-w-7xl mx-auto flex justify-between items-center">
                 <div className="flex items-center">
                     <Link href="/" className="text-xl font-bold">
-                        StraySafe
+                        StraySpot
                     </Link>
                 </div>
 

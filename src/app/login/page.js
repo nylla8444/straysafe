@@ -61,7 +61,7 @@ export default function LoginPage() {
                             <span className="text-white text-2xl font-bold">SS</span>
                         </div>
                     </div>
-                    <h1 className="text-3xl font-bold text-gray-800">StraysSafe</h1>
+                    <h1 className="text-3xl font-bold text-gray-800">StraySpot</h1>
                     <p className="mt-2 text-gray-600">Sign in to your account</p>
                 </div>
 

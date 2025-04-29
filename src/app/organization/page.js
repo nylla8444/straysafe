@@ -170,15 +170,27 @@ export default function OrganizationPage() {
                     </div>
                 </div>
 
-                <div className="bg-white shadow rounded-lg p-6">
-                    <h2 className="text-xl font-semibold mb-4">Manage Pets</h2>
-                    <p className="text-gray-600 mb-4">Add, edit, and remove pets available for adoption.</p>
-                    <div className="mt-4">
-                        <Link href="/organization/pets" className="text-blue-600 hover:underline">
-                            Go to Pet Management
-                        </Link>
+                {/* Only show the Manage Pets card if organization is verified */}
+                {user.isVerified && (
+                    <div className="bg-white shadow rounded-lg p-6">
+                        <h2 className="text-xl font-semibold mb-4">Manage Pets</h2>
+                        <p className="text-gray-600 mb-4">Add, edit, and remove pets available for adoption.</p>
+                        <div className="mt-4">
+                            <Link href="/organization/pets" className="text-blue-600 hover:underline">
+                                Go to Pet Management
+                            </Link>
+                        </div>
                     </div>
-                </div>
+                )}
+
+                {/* Show this instead for unverified organizations */}
+                {!user.isVerified && (
+                    <div className="bg-white shadow rounded-lg p-6 border-l-4 border-amber-500">
+                        <h2 className="text-xl font-semibold mb-4">Manage Pets</h2>
+                        <p className="text-amber-600 mb-2">Your organization needs to be verified before you can manage pets.</p>
+                        <p className="text-gray-600">Please complete the verification process to access this feature.</p>
+                    </div>
+                )}
             </div>
 
             <ManageOrganizationModal

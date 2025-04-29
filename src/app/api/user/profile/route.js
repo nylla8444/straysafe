@@ -94,7 +94,7 @@ export async function PUT(request) {
 
                 try {
                     const uploadResult = await uploadToStorage(profileImageFile, {
-                        folder: 'straysafe_user_profiles',
+                        folder: 'strayspot_user_profiles',
                         transformation: [
                             { width: 500, crop: 'limit' },
                             { quality: 'auto:good' }

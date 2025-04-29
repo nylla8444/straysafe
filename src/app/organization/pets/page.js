@@ -30,12 +30,26 @@ export default function ManagePetsPage() {
     useEffect(() => {
         console.log('Auth state:', { loading, isAuthenticated, isOrganization: isOrganization(), isVerified: user?.isVerified });
 
-        if (!loading && isAuthenticated && isOrganization() && user?.isVerified) {
-            console.log('Fetching pets...');
-            fetchPets();
-        } else if (!loading) {
-            console.log('Not fetching pets - auth conditions not met');
-            setIsLoading(false); // Force loading to false if we're not going to fetch
+        if (!loading) {
+            if (!isAuthenticated) {
+                router.push('/login');
+                return;
+            }
+            
+            if (!isOrganization()) {
+                router.push('/profile');
+                return;
+            }
+            
+            // Add this check to redirect unverified organizations
+            if (user && !user.isVerified) {
+                router.push('/organization?error=verification_required');
+                return;
+            }
+
+            if (isAuthenticated && isOrganization() && user?.isVerified) {
+                fetchPets();
+            }
         }
     }, [loading, isAuthenticated, user, isOrganization]);
 

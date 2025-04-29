@@ -17,7 +17,7 @@ const fredoka = Fredoka({
 });
 
 export const metadata = {
-  title: 'StraySafe',
+  title: 'StraySpot',
   description: 'Finding homes for stray animals',
 };
 
