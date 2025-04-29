@@ -17,6 +17,11 @@ export default function OrganizationsManagement({ onUpdateStats }) {
     const [historyOrgId, setHistoryOrgId] = useState(null);
     const [history, setHistory] = useState([]);
     const [loadingHistory, setLoadingHistory] = useState(false);
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+    const [organizationToDelete, setOrganizationToDelete] = useState(null);
+    const [deleteReason, setDeleteReason] = useState('');
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [statusMessage, setStatusMessage] = useState(null);
 
     const router = useRouter();
 
@@ -159,10 +164,80 @@ export default function OrganizationsManagement({ onUpdateStats }) {
         setHistory([]);
     };
 
+    const handleDelete = async (organizationId) => {
+        try {
+            setError('');
+            setIsDeleting(true);
+
+            // Make the API call to delete the organization
+            await axios.delete(`/api/admin/organizations/${organizationId}/delete`, {
+                data: { reason: deleteReason },
+                withCredentials: true
+            });
+
+            // Update local state
+            setOrganizations(prevOrganizations =>
+                prevOrganizations.filter(org => org._id !== organizationId)
+            );
+
+            // Update stats
+            if (onUpdateStats) {
+                await onUpdateStats();
+            }
+
+            // Show success message
+            setStatusMessage({
+                type: 'success',
+                text: 'Organization deleted successfully.'
+            });
+
+            // Close the confirmation modal
+            setShowDeleteConfirmation(false);
+            setOrganizationToDelete(null);
+            setDeleteReason('');
+
+            // If the deleted organization was selected, clear the selection
+            if (selectedOrg && selectedOrg._id === organizationId) {
+                setSelectedOrg(null);
+            }
+        } catch (err) {
+            console.error('Failed to delete organization:', err);
+            handleAuthError(err);
+            setError(`Failed to delete organization: ${err.response?.data?.error || err.message}`);
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
+    const handleConfirmDelete = (organization) => {
+        setOrganizationToDelete(organization);
+        setShowDeleteConfirmation(true);
+    };
+
+    const handleCancelDelete = () => {
+        setShowDeleteConfirmation(false);
+        setOrganizationToDelete(null);
+        setDeleteReason('');
+    };
+
     return (
         <div>
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Organizations Management</h2>
+
+                <div className="flex items-center gap-2">
+                    <h2 className="text-2xl font-bold">Organizations Management</h2>
+                    <button
+                        onClick={() => fetchOrganizations()}
+                        className="p-1.5 rounded-full hover:bg-gray-200 transition-colors"
+                        title="Refresh organizations list"
+                    >
+                        <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                    </button>
+                </div>
+
                 <div className="flex space-x-2">
                     <button
                         onClick={() => setFilter('pending')}
@@ -194,6 +269,15 @@ export default function OrganizationsManagement({ onUpdateStats }) {
             {error && (
                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
                     {error}
+                </div>
+            )}
+
+            {statusMessage && (
+                <div className={`${statusMessage.type === 'success' ? 'bg-green-100 border-green-400 text-green-700' : 'bg-blue-100 border-blue-400 text-blue-700'} px-4 py-3 rounded mb-4 flex justify-between items-center`}>
+                    <div>{statusMessage.text}</div>
+                    <button onClick={() => setStatusMessage(null)} className="text-sm font-semibold">
+                        Dismiss
+                    </button>
                 </div>
             )}
 
@@ -363,6 +447,13 @@ export default function OrganizationsManagement({ onUpdateStats }) {
                                     >
                                         Close
                                     </button>
+
+                                    <button
+                                        onClick={() => handleConfirmDelete(selectedOrg)}
+                                        className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 ml-2"
+                                    >
+                                        Delete Organization
+                                    </button>
                                 </div>
                             </div>
                         ) : (
@@ -401,6 +492,55 @@ export default function OrganizationsManagement({ onUpdateStats }) {
                         ) : (
                             <VerificationHistoryList history={history} />
                         )}
+                    </div>
+                </div>
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {showDeleteConfirmation && organizationToDelete && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                    <div className="bg-white rounded-lg max-w-md w-full p-6">
+                        <h3 className="text-xl font-bold text-red-600 mb-4">Delete Organization</h3>
+                        <p className="mb-4">
+                            Are you sure you want to delete the organization{' '}
+                            <span className="font-semibold">
+                                {organizationToDelete.organizationName}
+                            </span>
+                            ? This action cannot be undone.
+                        </p>
+                        <p className="mb-4 text-sm text-gray-600 bg-yellow-50 p-2 border-l-4 border-yellow-400">
+                            <strong>Warning:</strong> This will also delete all pets, adoption applications, and other data associated with this organization.
+                        </p>
+
+                        <div className="mb-4">
+                            <label className="block text-gray-700 text-sm font-bold mb-2">
+                                Reason for deletion (required):
+                            </label>
+                            <textarea
+                                className="w-full p-2 border rounded"
+                                rows="3"
+                                value={deleteReason}
+                                onChange={(e) => setDeleteReason(e.target.value)}
+                                placeholder="Enter reason for deleting this organization"
+                            />
+                        </div>
+
+                        <div className="flex justify-end space-x-3">
+                            <button
+                                className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+                                onClick={handleCancelDelete}
+                                disabled={isDeleting}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:bg-red-300"
+                                onClick={() => handleDelete(organizationToDelete._id)}
+                                disabled={isDeleting || !deleteReason.trim()}
+                            >
+                                {isDeleting ? "Deleting..." : "Delete"}
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

@@ -14,6 +14,11 @@ export default function AdoptersManagement({ onUpdateStats }) {
     const [historyAdopterId, setHistoryAdopterId] = useState(null);
     const [loadingHistory, setLoadingHistory] = useState(false);
     const [statusChangeMessage, setStatusChangeMessage] = useState(null);
+    // Add this to existing state variables
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+    const [adoptersToDelete, setAdopterToDelete] = useState(null);
+    const [deleteReason, setDeleteReason] = useState('');
+    const [isDeleting, setIsDeleting] = useState(false);
 
     // Ref to track if we're currently processing a status change
     const isChangingStatus = useRef(false);
@@ -210,10 +215,79 @@ export default function AdoptersManagement({ onUpdateStats }) {
         setActivityHistory([]);
     };
 
+    const handleDelete = async (adopterId) => {
+        try {
+            setError('');
+            setIsDeleting(true);
+
+            // Make the API call to delete the adopter
+            await axios.delete(`/api/admin/adopters/${adopterId}/delete`, {
+                data: { reason: deleteReason },
+                withCredentials: true
+            });
+
+            // Update local state
+            setAdopters(prevAdopters =>
+                prevAdopters.filter(adopter => adopter._id !== adopterId)
+            );
+
+            // Update stats
+            if (onUpdateStats) {
+                await onUpdateStats();
+            }
+
+            // Show success message
+            setStatusChangeMessage({
+                type: 'success',
+                text: 'Adopter deleted successfully.'
+            });
+
+            // Close the confirmation modal
+            setShowDeleteConfirmation(false);
+            setAdopterToDelete(null);
+            setDeleteReason('');
+
+            // If the deleted adopter was selected, clear the selection
+            if (selectedAdopter && selectedAdopter._id === adopterId) {
+                setSelectedAdopter(null);
+            }
+        } catch (err) {
+            console.error('Failed to delete adopter:', err);
+            handleAuthError(err);
+            setError(`Failed to delete adopter: ${err.response?.data?.error || err.message}`);
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
+    const handleConfirmDelete = (adopter) => {
+        setAdopterToDelete(adopter);
+        setShowDeleteConfirmation(true);
+    };
+
+    const handleCancelDelete = () => {
+        setShowDeleteConfirmation(false);
+        setAdopterToDelete(null);
+        setDeleteReason('');
+    };
+
     return (
         <div>
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Adopters Management</h2>
+                <div className="flex items-center gap-2">
+                    <h2 className="text-2xl font-bold">Adopters Management</h2>
+                    <button
+                        onClick={() => fetchAdopters()}
+                        className="p-1.5 rounded-full hover:bg-gray-200 transition-colors"
+                        title="Refresh organizations list"
+                    >
+                        <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                    </button>
+                </div>
+
                 <div className="flex space-x-2">
                     <button
                         onClick={() => handleTabChange('all')}
@@ -233,6 +307,7 @@ export default function AdoptersManagement({ onUpdateStats }) {
                     >
                         Suspended
                     </button>
+
                 </div>
             </div>
 
@@ -378,6 +453,12 @@ export default function AdoptersManagement({ onUpdateStats }) {
                                             >
                                                 View Activity
                                             </button>
+                                            <button
+                                                onClick={() => handleConfirmDelete(selectedAdopter)}
+                                                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 ml-2"
+                                            >
+                                                Delete Account
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -430,6 +511,52 @@ export default function AdoptersManagement({ onUpdateStats }) {
                                     ))}
                                 </ul>
                             )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {showDeleteConfirmation && adoptersToDelete && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                    <div className="bg-white rounded-lg max-w-md w-full p-6">
+                        <h3 className="text-xl font-bold text-red-600 mb-4">Delete Adopter</h3>
+                        <p className="mb-4">
+                            Are you sure you want to delete the adopter account for{' '}
+                            <span className="font-semibold">
+                                {adoptersToDelete.firstName} {adoptersToDelete.lastName}
+                            </span>
+                            ? This action cannot be undone.
+                        </p>
+
+                        <div className="mb-4">
+                            <label className="block text-gray-700 text-sm font-bold mb-2">
+                                Reason for deletion (required):
+                            </label>
+                            <textarea
+                                className="w-full p-2 border rounded"
+                                rows="3"
+                                value={deleteReason}
+                                onChange={(e) => setDeleteReason(e.target.value)}
+                                placeholder="Enter reason for deleting this adopter account"
+                            />
+                        </div>
+
+                        <div className="flex justify-end space-x-3">
+                            <button
+                                className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+                                onClick={handleCancelDelete}
+                                disabled={isDeleting}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:bg-red-300"
+                                onClick={() => handleDelete(adoptersToDelete._id)}
+                                disabled={isDeleting || !deleteReason.trim()}
+                            >
+                                {isDeleting ? "Deleting..." : "Delete"}
+                            </button>
                         </div>
                     </div>
                 </div>
