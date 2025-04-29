@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';  // Add useRef
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';  // Add useRouter
 
 export default function BrowseLayout({ children }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const pathname = usePathname();
+    const sidebarRef = useRef(null);  // Add ref to track sidebar element
+    const router = useRouter();
 
     // Auto-close sidebar on smaller screens
     useEffect(() => {
@@ -23,6 +25,23 @@ export default function BrowseLayout({ children }) {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    // Close sidebar on path change
+    useEffect(() => {
+        setSidebarOpen(false);
+    }, [pathname]);
+
+    // Close sidebar when clicking outside
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+                setSidebarOpen(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
     const toggleSidebar = () => {
         setSidebarOpen(!sidebarOpen);
     };
@@ -32,7 +51,9 @@ export default function BrowseLayout({ children }) {
             {/* Sidebar with fixed width - always takes w-16 in the layout */}
             <div className="relative w-16 bg-white shadow-md z-50">
                 {/* Overlay expansion that sits on top of content */}
-                <div className={`
+                <div 
+                    ref={sidebarRef} // Add ref here
+                    className={`
                     absolute top-0 left-0 h-full bg-white shadow-md
                     transition-all duration-300 ease-in-out
                     ${sidebarOpen ? 'w-64' : 'w-16'}
