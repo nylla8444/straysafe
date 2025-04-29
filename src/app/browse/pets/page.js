@@ -167,7 +167,7 @@ export default function PetsPage() {
             </div>
 
             {/* Search bar and filter panel with improved responsiveness */}
-            <div className="mb-4 md:mb-6 lg:mb-8 flex flex-col sm:flex-row gap-4 px-4 sm:px-12">
+            <div className="mb-4 md:mb-6 lg:mb-8 flex flex-col sm:flex-row gap-4 ">
                 <SearchBar
                     placeholder="Search pets by name, breed, or tags..."
                     onSearch={handleSearch}
@@ -375,7 +375,7 @@ export default function PetsPage() {
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                         <span className="font-medium">
-                                            {pet.adoptionFee > 0 ? `$${pet.adoptionFee}` : 'Free Adoption'}
+                                            {pet.adoptionFee > 0 ? `$${pet.adoptionFee}` : 'Free'}
                                         </span>
                                     </div>
 
