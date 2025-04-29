@@ -14,6 +14,7 @@ export default function ProfilePage() {
     // Add this ref to track initial load
     const initialLoadComplete = useRef(false);
 
+
     useEffect(() => {
         console.log("Profile page auth status:", { loading, isAuthenticated, user });
 
@@ -76,6 +77,39 @@ export default function ProfilePage() {
     return (
         <div className="max-w-4xl mx-auto p-6">
             <h1 className="text-3xl font-bold mb-6">Your Profile</h1>
+
+            {/* Suspension Notice - Add this block */}
+            {user?.status === 'suspended' && (
+                <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+                    <div className="flex">
+                        <div className="flex-shrink-0">
+                            <svg className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zm-4 4a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                            </svg>
+                        </div>
+                        <div className="ml-3">
+                            <h3 className="text-lg font-medium text-red-700">Account Suspended</h3>
+                            <div className="mt-2 text-red-600">
+                                <p className="mb-2">Your account has been suspended due to suspicious activity or policy violations. This may include:</p>
+                                <ul className="list-disc pl-5 mb-2">
+                                    <li>Providing false information</li>
+                                    <li>Violation of our adoption policies</li>
+                                    <li>Multiple reports from organizations</li>
+                                    <li>Suspicious adoption patterns</li>
+                                </ul>
+                                <p className="mt-2">
+                                    While suspended, you cannot submit new adoption applications.
+                                </p>
+                                <p className="font-medium mt-4">
+                                    If you believe this is an error, please contact us at{' '}
+                                    <a href="mailto:strayspot@support.com" className="underline">strayspot@support.com</a>
+                                    {' '}or call our support team at <a href="tel:+1234567890" className="underline">123-456-7890</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <div className="bg-white shadow rounded-lg p-6">
                 <div className="flex items-center space-x-6 mb-6">
