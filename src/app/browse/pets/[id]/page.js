@@ -5,6 +5,7 @@ import { use } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion'; // Add this import
 
 export default function PetDetailPage({ params }) {
     // Properly handle the Promise-based params
@@ -15,6 +16,26 @@ export default function PetDetailPage({ params }) {
     const [activeImageIndex, setActiveImageIndex] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [showScrollButton, setShowScrollButton] = useState(false); // Add this state
+
+    // Add this useEffect for scroll detection
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 300) {
+                setShowScrollButton(true);
+            } else {
+                setShowScrollButton(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    // Add this function to scroll to top
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     useEffect(() => {
         const fetchPetData = async () => {
@@ -72,14 +93,6 @@ export default function PetDetailPage({ params }) {
     if (loading) {
         return (
             <div className="max-w-5xl mx-auto p-6">
-                <div className="flex justify-start mb-6">
-                    <Link href="/browse/pets" className="flex items-center text-blue-600 hover:text-blue-800 transition-colors">
-                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                        </svg>
-                        Back to Pets
-                    </Link>
-                </div>
                 <div className="animate-pulse flex flex-col items-center justify-center min-h-[60vh]">
                     <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                     <p className="mt-4 text-gray-600">Loading pet details...</p>
@@ -130,7 +143,7 @@ export default function PetDetailPage({ params }) {
     }
 
     return (
-        <div className="max-w-6xl mx-auto p-4 md:p-6 lg:p-8">
+        <div className="max-w-6xl mx-auto md:p-6 lg:p-8 ">
             {/* Enhanced back navigation with hover effect */}
             <div className="mb-8">
                 <Link
@@ -334,6 +347,7 @@ export default function PetDetailPage({ params }) {
                                             {tag.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
                                         </span>
                                     ))}
+
                                 </div>
                             </div>
                         )}
@@ -422,7 +436,7 @@ export default function PetDetailPage({ params }) {
                                                 href={`/browse/shelters/${pet.organization._id}`}
                                                 className="text-blue-600 hover:text-blue-800 inline-flex items-center group"
                                             >
-                                                <span className="group-hover:underline">Visit shelter page</span>
+                                                <span className="group-hover:underline">Visit shelter</span>
                                                 <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                                                 </svg>
@@ -479,8 +493,43 @@ export default function PetDetailPage({ params }) {
                     </div>
                 )}
 
-
             </div>
+
+            {/* Add the Floating Back to Top Button right before the Mobile Bottom Navigation */}
+            <AnimatePresence>
+                {showScrollButton && (
+                    <motion.button
+                        onClick={scrollToTop}
+                        className="md:hidden fixed right-4 bottom-20 bg-blue-600 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center z-50"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{
+                            opacity: 1,
+                            scale: 1,
+                            y: [0, -10, 0],
+                            transition: {
+                                y: {
+                                    repeat: Infinity,
+                                    duration: 2,
+                                    ease: "easeInOut"
+                                },
+                                opacity: { duration: 0.3 }
+                            }
+                        }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        whileHover={{
+                            backgroundColor: "#3B82F6",
+                            boxShadow: "0 8px 15px rgba(59, 130, 246, 0.3)",
+                            scale: 1.05
+                        }}
+                        aria-label="Scroll to top"
+                    >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                        </svg>
+                    </motion.button>
+                )}
+            </AnimatePresence>
+
         </div>
     );
 }
