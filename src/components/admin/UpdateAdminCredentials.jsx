@@ -95,25 +95,26 @@ export default function UpdateAdminCredentials() {
         }
     };
 
+
     return (
-        <div className="bg-white p-8 rounded-lg shadow-md max-w-2xl">
-            <h3 className="text-xl font-semibold mb-6">Update Admin Credentials</h3>
+        <div className="bg-white p-4 sm:p-6 md:p-8 rounded-lg shadow-md mx-auto w-full max-w-2xl">
+            <h3 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Update Admin Credentials</h3>
 
             {error && (
-                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                <div className="bg-red-100 border border-red-400 text-red-700 px-3 py-2 sm:px-4 sm:py-3 rounded mb-4 text-sm sm:text-base">
                     {error}
                 </div>
             )}
 
             {success && (
-                <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                <div className="bg-green-100 border border-green-400 text-green-700 px-3 py-2 sm:px-4 sm:py-3 rounded mb-4 text-sm sm:text-base">
                     {success}
                 </div>
             )}
 
             <form onSubmit={handleSubmit}>
-                <div className="mb-4">
-                    <label htmlFor="newAdminId" className="block text-gray-700 text-sm font-bold mb-2">
+                <div className="mb-3 sm:mb-4">
+                    <label htmlFor="newAdminId" className="block text-gray-700 text-xs sm:text-sm font-bold mb-1 sm:mb-2">
                         New Admin ID (leave blank to keep current)
                     </label>
                     <input
@@ -122,12 +123,12 @@ export default function UpdateAdminCredentials() {
                         name="newAdminId"
                         value={formData.newAdminId}
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 text-sm sm:text-base leading-tight focus:outline-none focus:shadow-outline"
                     />
                 </div>
 
-                <div className="mb-4">
-                    <label htmlFor="currentPassword" className="block text-gray-700 text-sm font-bold mb-2">
+                <div className="mb-3 sm:mb-4">
+                    <label htmlFor="currentPassword" className="block text-gray-700 text-xs sm:text-sm font-bold mb-1 sm:mb-2">
                         Current Password (required)
                     </label>
                     <input
@@ -136,13 +137,13 @@ export default function UpdateAdminCredentials() {
                         name="currentPassword"
                         value={formData.currentPassword}
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 text-sm sm:text-base leading-tight focus:outline-none focus:shadow-outline"
                         required
                     />
                 </div>
 
-                <div className="mb-4">
-                    <label htmlFor="newPassword" className="block text-gray-700 text-sm font-bold mb-2">
+                <div className="mb-3 sm:mb-4">
+                    <label htmlFor="newPassword" className="block text-gray-700 text-xs sm:text-sm font-bold mb-1 sm:mb-2">
                         New Password (leave blank to keep current)
                     </label>
                     <input
@@ -151,12 +152,12 @@ export default function UpdateAdminCredentials() {
                         name="newPassword"
                         value={formData.newPassword}
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 text-sm sm:text-base leading-tight focus:outline-none focus:shadow-outline"
                     />
                 </div>
 
-                <div className="mb-4">
-                    <label htmlFor="confirmPassword" className="block text-gray-700 text-sm font-bold mb-2">
+                <div className="mb-3 sm:mb-4">
+                    <label htmlFor="confirmPassword" className="block text-gray-700 text-xs sm:text-sm font-bold mb-1 sm:mb-2">
                         Confirm New Password
                     </label>
                     <input
@@ -165,18 +166,18 @@ export default function UpdateAdminCredentials() {
                         name="confirmPassword"
                         value={formData.confirmPassword}
                         onChange={handleChange}
-                        className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formData.newPassword && formData.newPassword !== formData.confirmPassword
-                                ? 'border-red-500'
-                                : ''
+                        className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 text-sm sm:text-base leading-tight focus:outline-none focus:shadow-outline ${formData.newPassword && formData.newPassword !== formData.confirmPassword
+                            ? 'border-red-500'
+                            : ''
                             }`}
                     />
                     {formData.newPassword && formData.newPassword !== formData.confirmPassword && (
-                        <p className="text-red-500 text-xs italic">Passwords don't match</p>
+                        <p className="text-red-500 text-xs italic mt-1">Passwords don't match</p>
                     )}
                 </div>
 
-                <div className="mb-6">
-                    <label htmlFor="newAdminCode" className="block text-gray-700 text-sm font-bold mb-2">
+                <div className="mb-4 sm:mb-6">
+                    <label htmlFor="newAdminCode" className="block text-gray-700 text-xs sm:text-sm font-bold mb-1 sm:mb-2">
                         New Admin Code (leave blank to keep current)
                     </label>
                     <input
@@ -185,7 +186,7 @@ export default function UpdateAdminCredentials() {
                         name="newAdminCode"
                         value={formData.newAdminCode}
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 text-sm sm:text-base leading-tight focus:outline-none focus:shadow-outline"
                     />
                 </div>
 
@@ -193,7 +194,7 @@ export default function UpdateAdminCredentials() {
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:bg-blue-400"
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:bg-blue-400 text-sm sm:text-base"
                     >
                         {isSubmitting ? 'Updating...' : 'Update Credentials'}
                     </button>
