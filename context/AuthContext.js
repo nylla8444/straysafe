@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
@@ -26,49 +26,71 @@ export const AuthProvider = ({ children }) => {
     const [authInitialized, setAuthInitialized] = useState(false);
     const router = useRouter();
 
-    // Helper function to set user and cache in localStorage
-    const setUserWithCache = (userData) => {
-        setUser(userData);
+    // Helper function with improved clearing semantics
+    const setUserWithCache = useCallback((userData) => {
+        console.log("Setting user data:", userData);
+
         if (userData) {
+            // Validate user type to prevent issues
+            if (!userData.userType) {
+                console.error("Warning: User data missing userType property:", userData);
+                return; // Don't set invalid user data
+            }
+
+            // Clear any existing data first for clean slate
+            localStorage.removeItem('user');
+            sessionStorage.removeItem('user');
+
+            // Set new data
+            setUser(userData);
             localStorage.setItem('user', JSON.stringify(userData));
         } else {
+            // Clear everything
+            setUser(null);
             localStorage.removeItem('user');
+            sessionStorage.removeItem('user');
         }
-    };
+    }, []);
 
-    // Check authentication on mount
+    // Check authentication on mount - improved with better error handling
     useEffect(() => {
         const checkAuthStatus = async () => {
             try {
                 console.log("Checking auth status...");
                 const token = Cookies.get('token');
 
+                // Clear state first if no token exists
                 if (!token) {
-                    console.log("No token found");
+                    console.log("No token found, clearing auth state");
                     setUserWithCache(null);
                     setLoading(false);
                     setAuthInitialized(true);
                     return;
                 }
 
-                // If we have a token but auth check fails, try using cached user data
-                if (token && !user) {
-                    const cachedUser = localStorage.getItem('user');
-                    if (cachedUser) {
-                        setUserWithCache(JSON.parse(cachedUser));
-                    }
-                }
-
                 // Token exists, verify with backend
                 console.log("Token exists, verifying...");
-                const response = await axios.get('/api/auth/check');
-                console.log("Auth check successful:", response.data);
-                setUserWithCache(response.data.user);
 
-            } catch (error) {
-                console.error("Auth check failed:", error);
-                Cookies.remove('token'); // Clear invalid token
-                setUserWithCache(null);
+                try {
+                    const response = await axios.get('/api/auth/check', {
+                        headers: { 'Cache-Control': 'no-cache' },
+                        params: { _t: Date.now() } // Cache busting
+                    });
+
+                    // Validate user type from API response
+                    if (!response.data.user || !response.data.user.userType) {
+                        throw new Error("Invalid user data received from server");
+                    }
+
+                    setUserWithCache(response.data.user);
+                } catch (apiError) {
+                    console.error("Auth check failed:", apiError);
+                    // Clean up invalid auth state
+                    Cookies.remove('token', { path: '/' });
+                    localStorage.removeItem('user');
+                    sessionStorage.removeItem('user');
+                    setUser(null);
+                }
             } finally {
                 setLoading(false);
                 setAuthInitialized(true);
@@ -76,19 +98,49 @@ export const AuthProvider = ({ children }) => {
         };
 
         checkAuthStatus();
-    }, [router]);
+    }, [setUserWithCache]);
 
-    // Login function 
+    // Improved login function with better cleanup
     const login = async (email, password) => {
         try {
+            // Clear all previous auth state first
+            Cookies.remove('token', { path: '/' });
+            localStorage.removeItem('user');
+            sessionStorage.removeItem('user');
+            setUser(null);
+
             const response = await axios.post('/api/login', { email, password });
-            Cookies.set('token', response.data.token);
+
+            // Validate user data from login
+            if (!response.data.user || !response.data.user.userType) {
+                console.error("Login API returned invalid user data:", response.data);
+                return {
+                    success: false,
+                    error: 'Invalid user data received from server'
+                };
+            }
+
+            console.log("Login successful, user type:", response.data.user.userType);
+
+            // Set cookie with explicit options for better control
+            Cookies.set('token', response.data.token, {
+                path: '/',
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax'
+            });
+
+            // Set user data after cookie is set
             setUserWithCache(response.data.user);
 
-            // We're no longer redirecting here - let the login page handle it
             return { success: true, user: response.data.user };
         } catch (error) {
             console.error("Login error:", error);
+            // Clean up any partial state
+            Cookies.remove('token', { path: '/' });
+            localStorage.removeItem('user');
+            sessionStorage.removeItem('user');
+            setUser(null);
+
             return {
                 success: false,
                 error: error.response?.data?.error || 'Login failed'
@@ -96,33 +148,44 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    // Complete logout with hard reload
     const logout = async () => {
         try {
+            // First clear all client-side state
+            Cookies.remove('token', { path: '/' });
+            localStorage.clear(); // Clear ALL localStorage
+            sessionStorage.clear(); // Clear ALL sessionStorage
+            setUser(null);
+
+            // Then call logout API
             await axios.post('/api/logout');
         } catch (error) {
             console.error('Logout error:', error);
         } finally {
-            // Even if API fails, clear local state
-            Cookies.remove('token');
-            localStorage.removeItem('user');
-            setUser(null);
-            router.push('/login');
+            // Force a complete page reload instead of a client-side navigation
+            window.location.href = '/login';
         }
     };
 
+    // Improved refresh function
     const refreshUser = async () => {
         try {
             console.log("Refreshing user data...");
             setLoading(true);
-            const response = await axios.get('/api/auth/check');
-            console.log("Refresh user response:", response.data);
-            
-            // Update the user data in state and localStorage
-            if (response.data.user) {
-                setUser(response.data.user);
-                localStorage.setItem('user', JSON.stringify(response.data.user));
+
+            const response = await axios.get('/api/auth/check', {
+                headers: { 'Cache-Control': 'no-cache' },
+                params: { _t: Date.now() } // Cache busting
+            });
+
+            // Validate refreshed user data
+            if (!response.data.user || !response.data.user.userType) {
+                console.error("Warning: Invalid user data from refresh:", response.data);
+                throw new Error("Invalid user data received");
             }
-            
+
+            // Update user data
+            setUserWithCache(response.data.user);
             return response.data.user;
         } catch (error) {
             console.error('Failed to refresh user data:', error);
@@ -132,15 +195,18 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // Helper function to check if user is an organization
-    const isOrganization = () => {
-        return user?.userType === 'organization';
-    };
+    // Helper functions with better logging
+    const isOrganization = useCallback(() => {
+        const result = user?.userType === 'organization';
+        console.log("isOrganization check:", { result, userType: user?.userType, userId: user?._id });
+        return result;
+    }, [user]);
 
-    // Helper function to check if user is an adopter
-    const isAdopter = () => {
-        return user?.userType === 'adopter';
-    };
+    const isAdopter = useCallback(() => {
+        const result = user?.userType === 'adopter';
+        console.log("isAdopter check:", { result, userType: user?.userType, userId: user?._id });
+        return result;
+    }, [user]);
 
     return (
         <AuthContext.Provider value={{
