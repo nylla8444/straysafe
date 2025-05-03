@@ -6,15 +6,54 @@ import { useAuth } from '../../context/AuthContext';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
 export default function Navbar() {
-    const { user, isAuthenticated, logout } = useAuth();
+    const router = useRouter();
+    const { user, isAuthenticated, logout, loading, refreshUser } = useAuth();
     const { admin, isAuthenticated: isAdminAuthenticated, adminLogout } = useAdminAuth();
     const [menuOpen, setMenuOpen] = useState(false);
-    const [suspensionBannerVisible, setSuspensionBannerVisible] = useState(true); // Add this line
+    const [suspensionBannerVisible, setSuspensionBannerVisible] = useState(true);
+    const [clientReady, setClientReady] = useState(false);
     const menuRef = useRef(null);
     const pathname = usePathname();
 
+    // Set client-ready state after initial render to avoid hydration errors
+    useEffect(() => {
+        setClientReady(true);
+
+        // Debug user state
+        console.log('Navbar - Auth state:', {
+            isAuthenticated,
+            userType: user?.userType,
+            loading
+        });
+    }, [isAuthenticated, user, loading]);
+
+    // Add this effect to detect and fix navigation issues
+    useEffect(() => {
+        if (clientReady && !loading && isAuthenticated && user) {
+            console.log(`Navbar mounted - Current path: ${pathname}, User type: ${user?.userType}`);
+
+            // Enforce correct route based on user type
+            const correctRoute = user.userType === 'organization' ? '/organization' : '/profile';
+            if ((user.userType === 'organization' && pathname === '/profile') ||
+                (user.userType === 'adopter' && pathname === '/organization')) {
+                console.log(`Correcting navigation: User is ${user.userType} but on ${pathname}`);
+                router.replace(correctRoute);
+            }
+        }
+    }, [clientReady, loading, isAuthenticated, user, pathname, router]);
+
+    // Add refresh on mount
+    useEffect(() => {
+        if (clientReady && isAuthenticated) {
+            // Refresh user data when component mounts to ensure it's in sync with JWT
+            refreshUser().then(() => {
+                console.log("User data refreshed in navbar");
+            });
+        }
+    }, [clientReady]);
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
@@ -37,33 +76,28 @@ export default function Navbar() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    // Animation variants
-    const menuVariants = {
-        hidden: {
-            opacity: 0,
-            x: "100%"
-        },
-        visible: {
-            opacity: 1,
-            x: 0,
-            transition: {
-                duration: 0.3,
-                ease: "easeInOut"
-            }
-        },
-        exit: {
-            opacity: 0,
-            x: "100%",
-            transition: {
-                duration: 0.2,
-                ease: "easeInOut"
-            }
+    // Handle logout with proper state refresh
+    const handleLogout = async () => {
+        try {
+            // Clear local storage before logout API call
+            localStorage.removeItem('user');
+            sessionStorage.removeItem('user');
+
+            // Call logout
+            await logout();
+
+            // Force reload instead of navigation
+            window.location.href = '/login';
+        } catch (error) {
+            console.error("Logout failed:", error);
+            // Still redirect even if API fails
+            window.location.href = '/login';
         }
     };
 
-    const backdropVariants = {
-        hidden: { opacity: 0 },
-        visible: { opacity: 1 }
+    const handleAdminLogout = async () => {
+        await adminLogout();
+        window.location.href = '/login/admin';
     };
 
     // Prevent body scrolling when menu is open
@@ -78,9 +112,22 @@ export default function Navbar() {
         };
     }, [menuOpen]);
 
+    // Animation variants
+    const menuVariants = {
+        hidden: { opacity: 0, x: "100%" },
+        visible: { opacity: 1, x: 0, transition: { duration: 0.3, ease: "easeInOut" } },
+        exit: { opacity: 0, x: "100%", transition: { duration: 0.2, ease: "easeInOut" } }
+    };
+
+    const backdropVariants = {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1 }
+    };
+
     return (
         <nav className="bg-blue-600 text-white p-4 relative z-60">
-            {user?.userType === 'adopter' && user?.status === 'suspended' && suspensionBannerVisible && (
+            {/* Only render suspension banner on client and when conditions are met */}
+            {clientReady && user?.userType === 'adopter' && user?.status === 'suspended' && suspensionBannerVisible && (
                 <div className="w-full bg-red-600 text-white py-2 px-4 text-center mb-4 relative">
                     <div className="container mx-auto flex items-center justify-center">
                         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,7 +136,6 @@ export default function Navbar() {
                         <span>Your account has been suspended. Visit your profile for more information.</span>
                     </div>
 
-                    {/* Add the dismiss button */}
                     <button
                         onClick={() => setSuspensionBannerVisible(false)}
                         className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-red-200 transition-colors"
@@ -127,45 +173,63 @@ export default function Navbar() {
 
                 {/* Desktop menu items */}
                 <div className="hidden md:flex space-x-6">
-                    {/* Existing desktop menu */}
                     <Link href="/" className="hover:text-blue-100">Home</Link>
                     <Link href="/about" className="hover:text-blue-100">About</Link>
                     <Link href="/browse" className="hover:text-blue-100">Browse</Link>
 
-                    {/* Admin-specific navigation */}
-                    {isAdminAuthenticated && (
-                        <Link href="/admin/dashboard" className="hover:text-blue-100">Admin Dashboard</Link>
-                    )}
-
-                    {/* Regular user navigation */}
-                    {isAuthenticated && !isAdminAuthenticated && (
-                        <>
-                            {user?.userType === 'adopter' && (
-                                <Link href="/profile" className="hover:text-blue-100 flex items-center">
-                                    My Profile
-                                    {user.status === 'suspended' && (
-                                        <span className="ml-1 bg-red-500 rounded-full w-2 h-2"></span>
-                                    )}
-                                </Link>
-                            )}
-                            {user?.userType === 'organization' && (
-                                <Link href="/organization" className="hover:text-blue-100">Organization Dashboard</Link>
-                            )}
-                        </>
-                    )}
-
-                    {/* Authentication buttons */}
-                    {isAuthenticated || isAdminAuthenticated ? (
-                        <button
-                            onClick={isAdminAuthenticated ? adminLogout : logout}
-                            className="hover:text-blue-100"
-                        >
-                            {isAdminAuthenticated ? 'Admin Logout' : 'Logout'}
-                        </button>
-                    ) : (
+                    {/* Always render the links/buttons, but use client-side logic for visibility */}
+                    {!clientReady ? (
+                        // During SSR and initial hydration, show login/register by default
                         <>
                             <Link href="/login" className="hover:text-blue-100">Login</Link>
                             <Link href="/register" className="hover:text-blue-100">Register</Link>
+                        </>
+                    ) : (
+                        // After hydration, show appropriate content based on auth state
+                        <>
+                            {isAdminAuthenticated && (
+                                <Link href="/admin/dashboard" className="hover:text-blue-100">Admin Dashboard</Link>
+                            )}
+
+                            {isAuthenticated && !isAdminAuthenticated && (
+                                <>
+                                    {user?.userType === 'adopter' && (
+                                        <Link
+                                            href="/profile"
+                                            className="hover:text-blue-100 flex items-center"
+                                            onClick={() => console.log("Profile link clicked by user:", user)}
+                                        >
+                                            My Profile
+                                            {user.status === 'suspended' && (
+                                                <span className="ml-1 bg-red-500 rounded-full w-2 h-2"></span>
+                                            )}
+                                        </Link>
+                                    )}
+                                    {user?.userType === 'organization' && (
+                                        <Link
+                                            href="/organization"
+                                            className="hover:text-blue-100"
+                                            onClick={() => console.log("Organization link clicked by user:", user)}
+                                        >
+                                            Organization Dashboard
+                                        </Link>
+                                    )}
+                                </>
+                            )}
+
+                            {isAuthenticated || isAdminAuthenticated ? (
+                                <button
+                                    onClick={isAdminAuthenticated ? handleAdminLogout : handleLogout}
+                                    className="hover:text-blue-100"
+                                >
+                                    {isAdminAuthenticated ? 'Admin Logout' : 'Logout'}
+                                </button>
+                            ) : (
+                                <>
+                                    <Link href="/login" className="hover:text-blue-100">Login</Link>
+                                    <Link href="/register" className="hover:text-blue-100">Register</Link>
+                                </>
+                            )}
                         </>
                     )}
                 </div>
@@ -175,7 +239,6 @@ export default function Navbar() {
             <AnimatePresence>
                 {menuOpen && (
                     <>
-                        {/* Backdrop/overlay */}
                         <motion.div
                             className="fixed inset-0 bg-black/50 z-40"
                             initial="hidden"
@@ -184,7 +247,6 @@ export default function Navbar() {
                             variants={backdropVariants}
                         />
 
-                        {/* Menu panel */}
                         <motion.div
                             ref={menuRef}
                             className="fixed top-0 right-0 h-full w-45 bg-blue-700 shadow-lg z-50 p-6 pt-16 md:hidden"
@@ -193,7 +255,6 @@ export default function Navbar() {
                             exit="exit"
                             variants={menuVariants}
                         >
-                            {/* Add close button at the top */}
                             <button
                                 onClick={() => setMenuOpen(false)}
                                 className="absolute top-4 right-4 text-white hover:text-blue-200 transition-colors duration-200"
@@ -209,40 +270,57 @@ export default function Navbar() {
                                 <Link href="/about" className="text-white hover:text-blue-100 text-lg">About</Link>
                                 <Link href="/browse" className="text-white hover:text-blue-100 text-lg">Browse</Link>
 
-                                {/* Admin-specific navigation - mobile */}
-                                {isAdminAuthenticated && (
-                                    <Link href="/admin/dashboard" className="text-white hover:text-blue-100 text-lg">Admin Dashboard</Link>
-                                )}
-
-                                {/* Regular user navigation - mobile */}
-                                {isAuthenticated && !isAdminAuthenticated && (
-                                    <>
-                                        {user?.userType === 'adopter' && (
-                                            <Link href="/profile" className="text-white hover:text-blue-100 text-lg flex items-center">
-                                                My Profile
-                                                {user.status === 'suspended' && (
-                                                    <span className="ml-1 bg-red-500 rounded-full w-2 h-2"></span>
-                                                )}
-                                            </Link>
-                                        )}
-                                        {user?.userType === 'organization' && (
-                                            <Link href="/organization" className="text-white hover:text-blue-100 text-lg">Organization Dashboard</Link>
-                                        )}
-                                    </>
-                                )}
-
-                                {/* Authentication buttons - mobile */}
-                                {isAuthenticated || isAdminAuthenticated ? (
-                                    <button
-                                        onClick={isAdminAuthenticated ? adminLogout : logout}
-                                        className="text-white hover:text-blue-100 text-lg text-left"
-                                    >
-                                        {isAdminAuthenticated ? 'Admin Logout' : 'Logout'}
-                                    </button>
-                                ) : (
+                                {/* Same approach for mobile menu */}
+                                {!clientReady ? (
                                     <>
                                         <Link href="/login" className="text-white hover:text-blue-100 text-lg">Login</Link>
                                         <Link href="/register" className="text-white hover:text-blue-100 text-lg">Register</Link>
+                                    </>
+                                ) : (
+                                    <>
+                                        {isAdminAuthenticated && (
+                                            <Link href="/admin/dashboard" className="text-white hover:text-blue-100 text-lg">Admin Dashboard</Link>
+                                        )}
+
+                                        {isAuthenticated && !isAdminAuthenticated && (
+                                            <>
+                                                {user?.userType === 'adopter' && (
+                                                    <Link
+                                                        href="/profile"
+                                                        className="text-white hover:text-blue-100 text-lg flex items-center"
+                                                        onClick={() => console.log("Profile link clicked by user:", user)}
+                                                    >
+                                                        My Profile
+                                                        {user.status === 'suspended' && (
+                                                            <span className="ml-1 bg-red-500 rounded-full w-2 h-2"></span>
+                                                        )}
+                                                    </Link>
+                                                )}
+                                                {user?.userType === 'organization' && (
+                                                    <Link
+                                                        href="/organization"
+                                                        className="text-white hover:text-blue-100 text-lg"
+                                                        onClick={() => console.log("Organization link clicked by user:", user)}
+                                                    >
+                                                        Organization Dashboard
+                                                    </Link>
+                                                )}
+                                            </>
+                                        )}
+
+                                        {isAuthenticated || isAdminAuthenticated ? (
+                                            <button
+                                                onClick={isAdminAuthenticated ? handleAdminLogout : handleLogout}
+                                                className="text-white hover:text-blue-100 text-lg text-left"
+                                            >
+                                                {isAdminAuthenticated ? 'Admin Logout' : 'Logout'}
+                                            </button>
+                                        ) : (
+                                            <>
+                                                <Link href="/login" className="text-white hover:text-blue-100 text-lg">Login</Link>
+                                                <Link href="/register" className="text-white hover:text-blue-100 text-lg">Register</Link>
+                                            </>
+                                        )}
                                     </>
                                 )}
                             </div>
@@ -253,3 +331,4 @@ export default function Navbar() {
         </nav>
     );
 }
+

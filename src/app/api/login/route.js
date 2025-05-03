@@ -9,36 +9,39 @@ export async function POST(request) {
     console.log("Login request received");
     await connectionToDB();
     console.log("connected to db");
-    
+
     const { email, password } = await request.json();
-    
+
     // Find the user
     const user = await User.findOne({ email });
-    
+
     if (!user) {
       return NextResponse.json(
-        { error: 'Invalid email or password' }, 
+        { error: 'Invalid email or password' },
         { status: 401 }
       );
     }
-    
+
     // Check password
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    
+
     if (!isPasswordValid) {
       return NextResponse.json(
-        { error: 'Invalid email or password' }, 
+        { error: 'Invalid email or password' },
         { status: 401 }
       );
     }
-    
+
     // Create JWT token
     const token = jwt.sign(
-      { userId: user._id },
+      {
+        userId: user._id,
+        userType: user.userType // Add userType to the token payload
+      },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
-    
+
     // Prepare user data to send back (excluding password)
     const userData = {
       _id: user._id,
@@ -49,13 +52,13 @@ export async function POST(request) {
       organizationName: user.organizationName,
       isVerified: user.isVerified
     };
-    
+
     return NextResponse.json({
       success: true,
       token,
       user: userData
     });
-    
+
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json(

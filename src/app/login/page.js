@@ -11,14 +11,19 @@ export default function LoginPage() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const { user, loading, isAuthenticated, login } = useAuth();
+    const { user, loading, isAuthenticated, login, isOrganization, isAdopter } = useAuth();
     const router = useRouter();
 
-    // If already authenticated, redirect to home page
+    // If already authenticated, redirect based on user type
     useEffect(() => {
-        if (!loading && isAuthenticated) {
-            console.log("Already authenticated in login page, redirecting to home");
-            router.push('/');
+        if (!loading && isAuthenticated && user) {
+            console.log("Already authenticated in login page, redirecting based on role");
+
+            if (user.userType === 'organization') {
+                router.push('/organization');
+            } else {
+                router.push('/profile');
+            }
         }
     }, [user, loading, isAuthenticated, router]);
 
@@ -26,18 +31,35 @@ export default function LoginPage() {
         setError("");
     };
 
+    useEffect(() => {
+        // Clear any stale data when the login page loads
+        localStorage.removeItem('user');
+        sessionStorage.removeItem('user');
+    }, []);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
         setIsSubmitting(true);
 
         try {
+            // First clear any potential stale data
+            localStorage.removeItem('user');
+            sessionStorage.removeItem('user');
+
+
             // Use the login function from AuthContext
             const result = await login(email, password);
 
             if (result.success) {
-                // Redirect to home page after successful login
-                router.push('/');
+                console.log("Login successful, redirecting based on user type:", result.user?.userType);
+
+                // Redirect based on user type
+                if (result.user?.userType === 'organization') {
+                    router.push('/organization');
+                } else {
+                    router.push('/profile');
+                }
             } else {
                 setError(result.error || "Login failed");
                 setPassword("");
