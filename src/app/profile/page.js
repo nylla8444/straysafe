@@ -5,35 +5,36 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '../../../context/AuthContext';
 import Image from 'next/image';
 import EditProfileModal from '../../components/EditProfileModal';
+import axios from 'axios';
+import Link from 'next/link';
+import AdopterApplicationsList from '../../components/adopter/ApplicationsList';
 
 export default function ProfilePage() {
     const { user, loading, isAuthenticated, isAdopter, refreshUser } = useAuth();
     const router = useRouter();
     const [fullName, setFullName] = useState('');
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    // Add this ref to track initial load
     const initialLoadComplete = useRef(false);
-
+    const [applications, setApplications] = useState([]);
+    const [loadingApplications, setLoadingApplications] = useState(true);
+    const [applicationsError, setApplicationsError] = useState('');
 
     useEffect(() => {
         console.log("Profile page auth status:", { loading, isAuthenticated, user });
 
         if (!loading) {
-            // If not logged in, redirect to login
             if (!isAuthenticated) {
                 console.log("Not authenticated in profile page, redirecting to login");
                 router.push('/login');
                 return;
             }
 
-            // If user is an organization, redirect to organization page
             if (user?.userType === 'organization') {
                 console.log("User is an organization, redirecting to organization page");
                 router.push('/organization');
                 return;
             }
 
-            // Only refresh user data ONCE on initial load
             if (user && isAuthenticated && !initialLoadComplete.current) {
                 console.log("Initial profile load - refreshing user data once");
                 refreshUser();
@@ -41,12 +42,36 @@ export default function ProfilePage() {
             }
         }
 
-        // Set the user's full name
         if (user?.firstName && user?.lastName) {
             setFullName(`${user.firstName} ${user.lastName}`);
         }
 
-    }, [loading, isAuthenticated, user, router]); // Don't include refreshUser in dependencies
+    }, [loading, isAuthenticated, user, router]);
+
+    useEffect(() => {
+        const fetchApplications = async () => {
+            if (!isAuthenticated || !user || !isAdopter()) return;
+
+            try {
+                setLoadingApplications(true);
+                const response = await axios.get('/api/adoptions/adopter');
+                if (response.data.success) {
+                    setApplications(response.data.applications || []);
+                } else {
+                    setApplicationsError('Could not load your applications');
+                }
+            } catch (error) {
+                console.error('Error fetching applications:', error);
+                setApplicationsError('Failed to fetch applications. Please try again later.');
+            } finally {
+                setLoadingApplications(false);
+            }
+        };
+
+        if (user && isAuthenticated) {
+            fetchApplications();
+        }
+    }, [user, isAuthenticated, isAdopter]);
 
     const handleOpenEditModal = () => {
         setIsEditModalOpen(true);
@@ -62,14 +87,12 @@ export default function ProfilePage() {
         setIsEditModalOpen(false);
     };
 
-    // Show loading state
     if (loading) {
         return <div className="text-center p-12">
             <div className="animate-pulse">Loading your profile...</div>
         </div>;
     }
 
-    // Don't render anything if not authenticated or still checking or not an adopter
     if (!isAuthenticated || !user || !isAdopter()) {
         return null;
     }
@@ -78,7 +101,6 @@ export default function ProfilePage() {
         <div className="max-w-4xl mx-auto p-6">
             <h1 className="text-3xl font-bold mb-6">Your Profile</h1>
 
-            {/* Suspension Notice - Add this block */}
             {user?.status === 'suspended' && (
                 <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
                     <div className="flex">
@@ -156,26 +178,31 @@ export default function ProfilePage() {
                 </div>
             </div>
 
-            <div className="mt-8">
-                <h2 className="text-2xl font-semibold mb-4">Your Recent Activity</h2>
-                <div className="bg-white shadow rounded-lg p-6">
-                    <p className="text-gray-600">No recent activity.</p>
-                </div>
-            </div>
 
             <div className="mt-8">
                 <h2 className="text-2xl font-semibold mb-4">Adoption Applications</h2>
                 <div className="bg-white shadow rounded-lg p-6">
-                    <p className="text-gray-600">You haven&apos;t submitted any adoption applications yet.</p>
-                    <div className="mt-4">
-                        <a href="/animals" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 inline-block">
-                            Browse Animals for Adoption
-                        </a>
-                    </div>
+                    {loadingApplications ? (
+                        <div className="flex justify-center py-4">
+                            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+                        </div>
+                    ) : applicationsError ? (
+                        <div className="text-red-500">{applicationsError}</div>
+                    ) : applications.length > 0 ? (
+                        <AdopterApplicationsList applications={applications} />
+                    ) : (
+                        <div>
+                            <p className="text-gray-600">You haven&apos;t submitted any adoption applications yet.</p>
+                            <div className="mt-4">
+                                <Link href="/browse/pets" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 inline-block">
+                                    Browse Pets for Adoption
+                                </Link>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 
-            {/* Edit Profile Modal */}
             <EditProfileModal
                 user={user}
                 isOpen={isEditModalOpen}

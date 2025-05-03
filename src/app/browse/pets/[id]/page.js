@@ -5,18 +5,21 @@ import { use } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion'; // Add this import
+import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../../../../../context/AuthContext'; // Add this import
 
 export default function PetDetailPage({ params }) {
     // Properly handle the Promise-based params
     const resolvedParams = use(params);
     const petId = resolvedParams.id;
 
+    const { user, isAuthenticated, isAdopter } = useAuth(); // Add auth context
+
     const [pet, setPet] = useState(null);
     const [activeImageIndex, setActiveImageIndex] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [showScrollButton, setShowScrollButton] = useState(false); // Add this state
+    const [showScrollButton, setShowScrollButton] = useState(false);
 
     // Add this useEffect for scroll detection
     useEffect(() => {
@@ -87,6 +90,79 @@ export default function PetDetailPage({ params }) {
                 return <span className="bg-blue-100 text-blue-700 text-sm font-medium px-3 py-1 rounded-full">Adopted</span>;
             default:
                 return null;
+        }
+    };
+
+    const canUserAdopt = () => {
+        if (!isAuthenticated) return false;
+        if (!isAdopter()) return false;
+
+        // Only check if the user is active (not suspended)
+        if (user && user.status === 'active') {
+            return true;
+        }
+
+        return false;
+    };
+
+    const getAdoptionButtonMessage = () => {
+        if (!isAuthenticated) {
+            return "Sign in to adopt";
+        } else if (!isAdopter()) {
+            return "Only adopters can submit applications";
+        } else if (user && user.status === 'suspended') {
+            return "Your account is suspended";
+        } else if (user && user.status !== 'active') {
+            return "Your account is not active";
+        }
+
+        return "Request to Adopt";
+    };
+
+    const renderAdoptionCTA = () => {
+        if (pet.status !== 'available') {
+            return (
+                <div className="w-full mb-6 px-6 py-4 bg-gray-100 border border-gray-200 rounded-lg text-center">
+                    <p className="text-gray-600">
+                        {pet.status === 'rehabilitating'
+                            ? `${pet.name} is currently being rehabilitated and not available for adoption yet.`
+                            : `${pet.name} has already been adopted and found a forever home.`}
+                    </p>
+                </div>
+            );
+        }
+
+        if (canUserAdopt()) {
+            // User can adopt - show the adoption button
+            return (
+                <Link
+                    href={`/adopt/${pet._id}`}
+                    className="w-full mb-6 px-6 py-3 bg-blue-600 text-white text-lg font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg flex items-center justify-center group"
+                >
+                    <span>Request to Adopt</span>
+                    <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                </Link>
+            );
+        } else {
+            // User cannot adopt - show appropriate message
+            return (
+                <div className="mb-6 space-y-3">
+                    <div className="px-6 py-4 bg-blue-50 border border-blue-100 rounded-lg text-center">
+                        <p className="text-blue-700">{getAdoptionButtonMessage()}</p>
+                    </div>
+
+                    {!isAuthenticated && (
+                        <Link
+                            href={`/login?redirect=/browse/pets/${pet._id}`}
+                            className="w-full px-6 py-3 bg-blue-600 text-white text-lg font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg flex items-center justify-center"
+                        >
+                            Sign in to continue
+                        </Link>
+                    )}
+                </div>
+            );
         }
     };
 
@@ -366,30 +442,7 @@ export default function PetDetailPage({ params }) {
                         </div>
 
                         {/* Call-to-action for available pets */}
-                        {pet.status === 'available' && (
-                            <button
-                                className="w-full mb-6 px-6 py-3 bg-blue-600 text-white text-lg font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg flex items-center justify-center group"
-                                onClick={() => {
-                                    alert('This feature will be implemented in the future!');
-                                }}
-                            >
-                                <span>Request to Adopt</span>
-                                <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                </svg>
-                            </button>
-                        )}
-
-                        {/* If not available, show the status message */}
-                        {pet.status !== 'available' && (
-                            <div className="w-full mb-6 px-6 py-4 bg-gray-100 border border-gray-200 rounded-lg text-center">
-                                <p className="text-gray-600">
-                                    {pet.status === 'rehabilitating'
-                                        ? `${pet.name} is currently being rehabilitated and not available for adoption yet.`
-                                        : `${pet.name} has already been adopted and found a forever home.`}
-                                </p>
-                            </div>
-                        )}
+                        {renderAdoptionCTA()}
                     </div>
                 </div>
 

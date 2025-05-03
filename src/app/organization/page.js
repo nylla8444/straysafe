@@ -150,47 +150,62 @@ export default function OrganizationPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white shadow rounded-lg p-6">
-                    <h2 className="text-xl font-semibold mb-4">Recent Rescues</h2>
-                    <p className="text-gray-600">No rescue records found.</p>
-                    <div className="mt-4">
-                        <button className="text-blue-600 hover:underline">
-                            Add New Rescue
-                        </button>
-                    </div>
-                </div>
 
-                <div className="bg-white shadow rounded-lg p-6">
-                    <h2 className="text-xl font-semibold mb-4">Animals for Adoption</h2>
-                    <p className="text-gray-600">No animals listed for adoption.</p>
-                    <div className="mt-4">
-                        <button className="text-blue-600 hover:underline">
-                            List Animal for Adoption
-                        </button>
-                    </div>
-                </div>
+                {/* Only show clickable Manage Pets card if organization is verified */}
+                {user.isVerified ? (
+                    <>
+                        <Link
+                            href="/organization/pets"
+                            className="flex items-center p-4 bg-white rounded-lg shadow hover:bg-gray-50 transition-colors"
+                        >
+                            <div className="p-2 bg-green-100 rounded-lg">
+                                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                            </div>
+                            <div className="ml-4">
+                                <h2 className="font-semibold">Manage Pets</h2>
+                                <p className="text-sm text-gray-600">Add, edit, and track adoption status</p>
+                            </div>
+                            <svg className="w-5 h-5 ml-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </Link>
 
-                {/* Only show the Manage Pets card if organization is verified */}
-                {user.isVerified && (
-                    <div className="bg-white shadow rounded-lg p-6">
-                        <h2 className="text-xl font-semibold mb-4">Manage Pets</h2>
-                        <p className="text-gray-600 mb-4">Add, edit, and remove pets available for adoption.</p>
-                        <div className="mt-4">
-                            <Link href="/organization/pets" className="text-blue-600 hover:underline">
-                                Go to Pet Management
-                            </Link>
+
+                        <Link
+                            href="/organization/applications"
+                            className="flex items-center p-4 bg-white rounded-lg shadow hover:bg-gray-50 transition-colors"
+                        >
+                            <div className="p-2 bg-blue-100 rounded-lg">
+                                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                            </div>
+                            <div className="ml-4">
+                                <h2 className="font-semibold">Adoption Applications</h2>
+                                <p className="text-sm text-gray-600">Manage adoption requests</p>
+                            </div>
+                            <svg className="w-5 h-5 ml-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </Link>
+                    </>
+                ) : (
+                    /* Show disabled-looking card for unverified organizations */
+                    <div className="flex items-center p-4 bg-white rounded-lg shadow opacity-75 border-l-4 border-amber-500">
+                        <div className="p-2 bg-gray-100 rounded-lg">
+                            <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                        </div>
+                        <div className="ml-4">
+                            <h2 className="font-semibold">Manage Pets</h2>
+                            <p className="text-sm text-amber-600">Verification required to access</p>
                         </div>
                     </div>
                 )}
 
-                {/* Show this instead for unverified organizations */}
-                {!user.isVerified && (
-                    <div className="bg-white shadow rounded-lg p-6 border-l-4 border-amber-500">
-                        <h2 className="text-xl font-semibold mb-4">Manage Pets</h2>
-                        <p className="text-amber-600 mb-2">Your organization needs to be verified before you can manage pets.</p>
-                        <p className="text-gray-600">Please complete the verification process to access this feature.</p>
-                    </div>
-                )}
             </div>
 
             <ManageOrganizationModal
