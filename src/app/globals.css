@@ -8,8 +8,10 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-readex-pro); /* Updated to match your variable */
-  --font-mono: var(--font-fredoka); /* Updated to match your variable */
+  --font-sans: var(--font-readex-pro);
+  /* Updated to match your variable */
+  --font-mono: var(--font-fredoka);
+  /* Updated to match your variable */
 }
 
 body {
@@ -17,4 +19,24 @@ body {
   color: var(--foreground);
   /* Remove or update the hardcoded font-family */
   font-family: var(--font-readex-pro), Arial, sans-serif;
+}
+
+
+/* Hide browser's default password reveal buttons */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none !important;
+}
+
+input[type="password"]::-webkit-contacts-auto-fill-button,
+input[type="password"]::-webkit-credentials-auto-fill-button {
+  visibility: hidden;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+}
+
+/* Additional protection for Chromium browsers */
+input[type="password"] {
+  -webkit-text-security: disc !important;
 }
