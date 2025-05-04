@@ -19,20 +19,71 @@ export default function AdoptionApplicationPage() {
     const [error, setError] = useState('');
 
     const [formData, setFormData] = useState({
-        housingStatus: '', // Rent or own
-        petsAllowed: '', // Are pets allowed - now blank
-        petLocation: '', // Where will pet stay
-        primaryCaregiver: '', // Who will care for pet
-        otherPets: '', // Do you have other pets - now blank
-        financiallyPrepared: '', // Financial preparedness - now blank
-        emergencyPetCare: '', // Where pet would stay during emergency
+        housingStatus: '',
+        petsAllowed: '',
+        petLocation: '',
+        primaryCaregiver: '',
+        otherPets: '',
+        financiallyPrepared: '',
+        emergencyPetCare: '',
         reference: {
             name: '',
             email: '',
             phone: ''
         },
-        termsAccepted: false // Terms and conditions checkbox
+        termsAccepted: false
     });
+
+    // Add validation state for form fields
+    const [validationErrors, setValidationErrors] = useState({
+        housingStatus: '',
+        petsAllowed: '',
+        petLocation: '',
+        primaryCaregiver: '',
+        otherPets: '',
+        financiallyPrepared: '',
+        emergencyPetCare: '',
+        'reference.name': '',
+        'reference.email': '',
+        'reference.phone': '',
+        termsAccepted: ''
+    });
+
+    // Validation functions
+    const validateSelect = (value, fieldName) => {
+        if (!value) return `Please select an option for ${fieldName}`;
+        return '';
+    };
+
+    const validateText = (value, fieldName) => {
+        if (!value) return `${fieldName} is required`;
+        if (value.trim() === '') return `${fieldName} cannot be just spaces`;
+        return '';
+    };
+
+    const validateEmail = (email) => {
+        if (!email) return 'Email is required';
+        if (email.trim() === '') return 'Email cannot be just spaces';
+        if (email.includes(' ')) return 'Email cannot contain spaces';
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email) ? '' : 'Please enter a valid email address';
+    };
+
+    const validatePhone = (phone) => {
+        if (!phone) return 'Phone number is required';
+        if (phone.trim() === '') return 'Phone number cannot be just spaces';
+
+        const digits = phone.replace(/\D/g, '');
+        if (digits.length !== 11) return 'Phone number must contain exactly 11 digits';
+        if (digits[0] !== '0') return 'Phone number must start with 0';
+
+        return '';
+    };
+
+    const validateTerms = (accepted) => {
+        return accepted ? '' : 'You must agree to the terms and conditions';
+    };
 
     useEffect(() => {
         // Redirect if not authenticated or not an adopter
@@ -66,9 +117,35 @@ export default function AdoptionApplicationPage() {
         fetchPet();
     }, [petId, isAuthenticated, router, isAdopter]);
 
+    // Check if the form has any validation errors
+    const hasValidationErrors = () => {
+        return Object.values(validationErrors).some(error => error !== '');
+    };
+
+    // Get complete validation status (including empty fields)
+    const validateForm = () => {
+        const errors = {
+            housingStatus: validateSelect(formData.housingStatus, 'housing status'),
+            petsAllowed: validateSelect(formData.petsAllowed, 'pets allowed'),
+            petLocation: validateText(formData.petLocation, 'Pet location'),
+            primaryCaregiver: validateText(formData.primaryCaregiver, 'Primary caregiver'),
+            otherPets: validateSelect(formData.otherPets, 'other pets'),
+            financiallyPrepared: validateSelect(formData.financiallyPrepared, 'financial preparedness'),
+            emergencyPetCare: validateText(formData.emergencyPetCare, 'Emergency pet care'),
+            'reference.name': validateText(formData.reference.name, 'Reference name'),
+            'reference.email': validateEmail(formData.reference.email),
+            'reference.phone': validatePhone(formData.reference.phone),
+            termsAccepted: validateTerms(formData.termsAccepted)
+        };
+
+        setValidationErrors(errors);
+        return !Object.values(errors).some(error => error !== '');
+    };
+
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
 
+        // Update form data
         if (name.includes('.')) {
             // Handle nested objects (for reference fields)
             const [parent, child] = name.split('.');
@@ -79,19 +156,62 @@ export default function AdoptionApplicationPage() {
                     [child]: value
                 }
             }));
+
+            // Validate reference fields
+            if (child === 'email') {
+                setValidationErrors(prev => ({
+                    ...prev,
+                    [name]: validateEmail(value)
+                }));
+            } else if (child === 'phone') {
+                setValidationErrors(prev => ({
+                    ...prev,
+                    [name]: validatePhone(value)
+                }));
+            } else {
+                setValidationErrors(prev => ({
+                    ...prev,
+                    [name]: validateText(value, child)
+                }));
+            }
         } else {
             // Handle regular fields
             setFormData(prev => ({
                 ...prev,
                 [name]: type === 'checkbox' ? checked : value
             }));
+
+            // Validate the field based on its type
+            if (name === 'termsAccepted') {
+                setValidationErrors(prev => ({
+                    ...prev,
+                    [name]: validateTerms(checked)
+                }));
+            } else if (['housingStatus', 'petsAllowed', 'otherPets', 'financiallyPrepared'].includes(name)) {
+                setValidationErrors(prev => ({
+                    ...prev,
+                    [name]: validateSelect(value, name.replace(/([A-Z])/g, ' $1').toLowerCase())
+                }));
+            } else {
+                setValidationErrors(prev => ({
+                    ...prev,
+                    [name]: validateText(value, name.replace(/([A-Z])/g, ' $1').toLowerCase())
+                }));
+            }
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!formData.termsAccepted) {
-            alert('You must agree to the terms and conditions to proceed.');
+
+        // Validate all fields before submission
+        if (!validateForm()) {
+            // Scroll to the first error
+            const firstErrorField = Object.keys(validationErrors).find(key => validationErrors[key]);
+            const errorElement = document.querySelector(`[name="${firstErrorField}"]`);
+            if (errorElement) {
+                errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
             return;
         }
 
@@ -117,6 +237,45 @@ export default function AdoptionApplicationPage() {
             setLoading(false);
         }
     };
+
+    // Helper function for input field styling
+    const getInputClassName = (fieldName) => {
+        const baseClasses = "w-full p-2 border rounded-md";
+        if (!validationErrors[fieldName]) {
+            return `${baseClasses} border-gray-300`;
+        }
+        return `${baseClasses} border-red-500`;
+    };
+
+
+    // Check if all required fields are filled
+    const isFormComplete = () => {
+        // Check all required select/radio fields
+        if (!formData.housingStatus || !formData.petsAllowed ||
+            !formData.otherPets || !formData.financiallyPrepared) {
+            return false;
+        }
+
+        // Check all required text fields
+        if (!formData.petLocation.trim() || !formData.primaryCaregiver.trim() ||
+            !formData.emergencyPetCare.trim()) {
+            return false;
+        }
+
+        // Check reference fields
+        if (!formData.reference.name.trim() || !formData.reference.email.trim() ||
+            !formData.reference.phone.trim()) {
+            return false;
+        }
+
+        // Check terms acceptance
+        if (!formData.termsAccepted) {
+            return false;
+        }
+
+        return true;
+    };
+
 
     if (loading) {
         return (
@@ -217,7 +376,7 @@ export default function AdoptionApplicationPage() {
                                         name="housingStatus"
                                         value={formData.housingStatus}
                                         onChange={handleChange}
-                                        className="w-full p-2 border border-gray-300 rounded-md"
+                                        className={getInputClassName('housingStatus')}
                                         required
                                     >
                                         <option value="">Please select</option>
@@ -226,6 +385,9 @@ export default function AdoptionApplicationPage() {
                                         <option value="live with friends/relatives">Live with friends/relatives</option>
                                         <option value="other">Other</option>
                                     </select>
+                                    {validationErrors.housingStatus && (
+                                        <p className="mt-1 text-sm text-red-600">{validationErrors.housingStatus}</p>
+                                    )}
                                 </div>
 
                                 <div>
@@ -255,6 +417,9 @@ export default function AdoptionApplicationPage() {
                                             No
                                         </label>
                                     </div>
+                                    {validationErrors.petsAllowed && (
+                                        <p className="mt-1 text-sm text-red-600">{validationErrors.petsAllowed}</p>
+                                    )}
                                 </div>
 
                                 <div>
@@ -263,11 +428,14 @@ export default function AdoptionApplicationPage() {
                                         name="petLocation"
                                         value={formData.petLocation}
                                         onChange={handleChange}
-                                        className="w-full p-2 border border-gray-300 rounded-md"
+                                        className={getInputClassName('petLocation')}
                                         rows="2"
                                         placeholder="E.g. Inside the house, backyard, etc."
                                         required
                                     ></textarea>
+                                    {validationErrors.petLocation && (
+                                        <p className="mt-1 text-sm text-red-600">{validationErrors.petLocation}</p>
+                                    )}
                                 </div>
 
                                 <div>
@@ -277,10 +445,13 @@ export default function AdoptionApplicationPage() {
                                         name="primaryCaregiver"
                                         value={formData.primaryCaregiver}
                                         onChange={handleChange}
-                                        className="w-full p-2 border border-gray-300 rounded-md"
+                                        className={getInputClassName('primaryCaregiver')}
                                         placeholder="Name and relationship to you"
                                         required
                                     />
+                                    {validationErrors.primaryCaregiver && (
+                                        <p className="mt-1 text-sm text-red-600">{validationErrors.primaryCaregiver}</p>
+                                    )}
                                 </div>
 
                                 <div>
@@ -294,6 +465,7 @@ export default function AdoptionApplicationPage() {
                                                 checked={formData.otherPets === 'yes'}
                                                 onChange={handleChange}
                                                 className="mr-2"
+                                                required
                                             />
                                             Yes
                                         </label>
@@ -309,6 +481,9 @@ export default function AdoptionApplicationPage() {
                                             No
                                         </label>
                                     </div>
+                                    {validationErrors.otherPets && (
+                                        <p className="mt-1 text-sm text-red-600">{validationErrors.otherPets}</p>
+                                    )}
                                 </div>
 
                                 <div>
@@ -338,6 +513,9 @@ export default function AdoptionApplicationPage() {
                                             No
                                         </label>
                                     </div>
+                                    {validationErrors.financiallyPrepared && (
+                                        <p className="mt-1 text-sm text-red-600">{validationErrors.financiallyPrepared}</p>
+                                    )}
                                 </div>
 
                                 <div>
@@ -346,11 +524,14 @@ export default function AdoptionApplicationPage() {
                                         name="emergencyPetCare"
                                         value={formData.emergencyPetCare}
                                         onChange={handleChange}
-                                        className="w-full p-2 border border-gray-300 rounded-md"
+                                        className={getInputClassName('emergencyPetCare')}
                                         rows="3"
                                         placeholder="Describe your emergency care plan"
                                         required
                                     ></textarea>
+                                    {validationErrors.emergencyPetCare && (
+                                        <p className="mt-1 text-sm text-red-600">{validationErrors.emergencyPetCare}</p>
+                                    )}
                                 </div>
 
                                 <div className="border-t pt-6 mt-6">
@@ -363,20 +544,27 @@ export default function AdoptionApplicationPage() {
                                                 name="reference.name"
                                                 value={formData.reference.name}
                                                 onChange={handleChange}
-                                                className="w-full p-2 border border-gray-300 rounded-md"
+                                                className={getInputClassName('reference.name')}
                                                 required
                                             />
+                                            {validationErrors['reference.name'] && (
+                                                <p className="mt-1 text-sm text-red-600">{validationErrors['reference.name']}</p>
+                                            )}
                                         </div>
                                         <div>
                                             <label className="block mb-2 font-medium">Email</label>
                                             <input
-                                                type="email"
+                                                type="text" // Changed from email for custom validation
                                                 name="reference.email"
                                                 value={formData.reference.email}
                                                 onChange={handleChange}
-                                                className="w-full p-2 border border-gray-300 rounded-md"
+                                                className={getInputClassName('reference.email')}
                                                 required
+                                                placeholder="example@email.com"
                                             />
+                                            {validationErrors['reference.email'] && (
+                                                <p className="mt-1 text-sm text-red-600">{validationErrors['reference.email']}</p>
+                                            )}
                                         </div>
                                         <div className="md:col-span-2">
                                             <label className="block mb-2 font-medium">Phone Number</label>
@@ -385,9 +573,14 @@ export default function AdoptionApplicationPage() {
                                                 name="reference.phone"
                                                 value={formData.reference.phone}
                                                 onChange={handleChange}
-                                                className="w-full p-2 border border-gray-300 rounded-md"
+                                                className={getInputClassName('reference.phone')}
                                                 required
+                                                placeholder="09XXXXXXXXX"
                                             />
+                                            {validationErrors['reference.phone'] && (
+                                                <p className="mt-1 text-sm text-red-600">{validationErrors['reference.phone']}</p>
+                                            )}
+                                            <p className="mt-1 text-xs text-gray-500">Must be 11 digits starting with 0</p>
                                         </div>
                                     </div>
                                 </div>
@@ -418,7 +611,7 @@ export default function AdoptionApplicationPage() {
                                             name="termsAccepted"
                                             checked={formData.termsAccepted}
                                             onChange={handleChange}
-                                            className="w-4 h-4 border border-gray-300 rounded"
+                                            className={validationErrors.termsAccepted ? "w-4 h-4 border border-red-500 rounded" : "w-4 h-4 border border-gray-300 rounded"}
                                             required
                                         />
                                     </div>
@@ -426,12 +619,19 @@ export default function AdoptionApplicationPage() {
                                         I have read and agree to all terms and conditions
                                     </label>
                                 </div>
+                                {validationErrors.termsAccepted && (
+                                    <p className="mb-4 text-sm text-red-600">{validationErrors.termsAccepted}</p>
+                                )}
 
                                 <button
                                     type="submit"
-                                    className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm transition-colors"
+                                    disabled={loading || hasValidationErrors() || !isFormComplete()}
+                                    className={`w-full py-3 px-4 font-medium rounded-md shadow-sm transition-colors ${loading || hasValidationErrors() || !isFormComplete()
+                                        ? 'bg-blue-400 cursor-not-allowed text-white'
+                                        : 'bg-blue-600 hover:bg-blue-700 text-white'
+                                        }`}
                                 >
-                                    Submit Application
+                                    {loading ? 'Submitting...' : 'Submit Application'}
                                 </button>
                             </div>
 
