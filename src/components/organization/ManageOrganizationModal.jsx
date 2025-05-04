@@ -18,10 +18,20 @@ export default function ManageOrganizationModal({ organization, isOpen, onClose,
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
+    // Add validation state
+    const [validationErrors, setValidationErrors] = useState({
+        organizationName: '',
+        contactNumber: '',
+        city: '',
+        province: '',
+        profileImage: ''
+    });
+
+    const fileInputRef = useRef(null);
     const modalRef = useRef();
 
-    // Initialize form data when organization data is loaded
-    useEffect(() => {
+    // Add a reset function to restore original data
+    const resetFormData = () => {
         if (organization) {
             // Split location into city and province if it contains a comma
             const locationParts = organization.location?.split(',').map(part => part.trim()) || ['', ''];
@@ -33,11 +43,36 @@ export default function ManageOrganizationModal({ organization, isOpen, onClose,
                 province: locationParts[1] || '',
             });
 
-            if (organization.profileImage) {
-                setPreviewUrl(organization.profileImage);
+            // Reset image preview to original
+            setProfileImage(null);
+            setPreviewUrl(organization.profileImage || '');
+
+            // Clear file input if it exists
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
             }
+
+            // Reset validation errors
+            setValidationErrors({
+                organizationName: '',
+                contactNumber: '',
+                city: '',
+                province: '',
+                profileImage: ''
+            });
+
+            // Clear any error/success messages
+            setError('');
+            setSuccess('');
         }
-    }, [organization]);
+    };
+
+    // Initialize form data when modal opens or organization changes
+    useEffect(() => {
+        if (isOpen && organization) {
+            resetFormData();
+        }
+    }, [organization, isOpen]);
 
     // Close modal when clicking outside
     useEffect(() => {
@@ -56,41 +91,153 @@ export default function ManageOrganizationModal({ organization, isOpen, onClose,
         };
     }, [isOpen, onClose]);
 
-    // Handle form changes
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
+    // Validation functions
+    const validateName = (name) => {
+        if (!name) return 'Organization name is required';
+        if (name.trim() === '') return 'Organization name cannot be just spaces';
+        return '';
     };
 
-    // Handle file selection
+    const validatePhone = (phone) => {
+        if (!phone) return 'Contact number is required';
+
+        const digits = phone.replace(/\D/g, '');
+        if (digits.length !== 11) return 'Contact number must contain exactly 11 digits';
+        if (digits[0] !== '0') return 'Contact number must start with 0';
+        if (!/^[0-9+\-\s()]+$/.test(phone)) return 'Contact number contains invalid characters';
+
+        return '';
+    };
+
+    const validateLocation = (value, fieldName) => {
+        if (!value) return `${fieldName} is required`;
+        if (value.trim() === '') return `${fieldName} cannot be just spaces`;
+        return '';
+    };
+
+    // Handle form changes with validation
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+
+        // Real-time validation
+        if (name === 'organizationName') {
+            setValidationErrors(prev => ({
+                ...prev,
+                organizationName: validateName(value)
+            }));
+        }
+        else if (name === 'contactNumber') {
+            setValidationErrors(prev => ({
+                ...prev,
+                contactNumber: validatePhone(value)
+            }));
+        }
+        else if (name === 'city') {
+            setValidationErrors(prev => ({
+                ...prev,
+                city: validateLocation(value, 'City')
+            }));
+        }
+        else if (name === 'province') {
+            setValidationErrors(prev => ({
+                ...prev,
+                province: validateLocation(value, 'Province')
+            }));
+        }
+    };
+
+    // Enhanced file selection handler
     const handleImageChange = (e) => {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
 
             // Only accept images
             if (!file.type.startsWith('image/')) {
-                setError('Please select an image file');
+                setValidationErrors(prev => ({
+                    ...prev,
+                    profileImage: 'Please select an image file'
+                }));
+                // Reset the file input
+                if (fileInputRef.current) fileInputRef.current.value = '';
                 return;
             }
 
             // File size validation (max 5MB)
             if (file.size > 5 * 1024 * 1024) {
-                setError('Image must be smaller than 5MB');
+                const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                setValidationErrors(prev => ({
+                    ...prev,
+                    profileImage: `Image size (${fileSizeMB}MB) exceeds the 5MB limit`
+                }));
+
+                // Reset the file input
+                if (fileInputRef.current) fileInputRef.current.value = '';
+
+                // Alert for immediate feedback
+                alert(`The selected image (${fileSizeMB}MB) is too large. Please select an image under 5MB.`);
                 return;
             }
 
+            // Clear any previous validation error
+            setValidationErrors(prev => ({
+                ...prev,
+                profileImage: ''
+            }));
+
             setProfileImage(file);
             setPreviewUrl(URL.createObjectURL(file));
+            setError(''); // Clear any general errors
         }
     };
 
-    // Handle form submission
+    // Check if the form is valid before submission
+    const isFormValid = () => {
+        const orgNameError = validateName(formData.organizationName);
+        const phoneError = validatePhone(formData.contactNumber);
+        const cityError = validateLocation(formData.city, 'City');
+        const provinceError = validateLocation(formData.province, 'Province');
+
+        // Update all validation errors
+        setValidationErrors({
+            organizationName: orgNameError,
+            contactNumber: phoneError,
+            city: cityError,
+            province: provinceError,
+            profileImage: validationErrors.profileImage // Keep existing image error if any
+        });
+
+        return !orgNameError && !phoneError && !cityError &&
+            !provinceError && !validationErrors.profileImage;
+    };
+
+    // Input styling based on validation
+    const getInputClassName = (fieldName) => {
+        const baseClasses = "w-full p-2 border rounded";
+
+        if (!formData[fieldName]) return baseClasses;
+
+        return validationErrors[fieldName]
+            ? `${baseClasses} border-red-500`
+            : `${baseClasses} border-green-500`;
+    };
+
+    // Enhanced form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         setSuccess('');
+
+        // Validate all fields before submission
+        if (!isFormValid()) {
+            setError('Please fix the validation errors before submitting');
+            return;
+        }
+
         setIsSubmitting(true);
 
         try {
@@ -131,6 +278,12 @@ export default function ManageOrganizationModal({ organization, isOpen, onClose,
         }
     };
 
+    // Create a wrapper for onClose that resets data first
+    const handleClose = () => {
+        resetFormData();
+        onClose();
+    };
+
     if (!isOpen) return null;
 
     return (
@@ -140,7 +293,7 @@ export default function ManageOrganizationModal({ organization, isOpen, onClose,
                     <div className="flex justify-between items-center mb-4">
                         <h2 className="text-xl font-semibold">Manage Organization</h2>
                         <button
-                            onClick={onClose}
+                            onClick={handleClose} // Use the new wrapper
                             className="text-gray-500 hover:text-gray-700"
                         >
                             ✕
@@ -182,9 +335,13 @@ export default function ManageOrganizationModal({ organization, isOpen, onClose,
                                         type="file"
                                         accept="image/*"
                                         onChange={handleImageChange}
+                                        ref={fileInputRef}
                                         className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none p-2"
                                     />
                                     <p className="mt-1 text-xs text-gray-500">PNG, JPG, or JPEG (max 5MB)</p>
+                                    {validationErrors.profileImage && (
+                                        <p className="mt-1 text-sm text-red-600">{validationErrors.profileImage}</p>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -197,8 +354,11 @@ export default function ManageOrganizationModal({ organization, isOpen, onClose,
                                 value={formData.organizationName}
                                 onChange={handleChange}
                                 required
-                                className="w-full p-2 border rounded"
+                                className={getInputClassName('organizationName')}
                             />
+                            {validationErrors.organizationName && (
+                                <p className="mt-1 text-sm text-red-600">{validationErrors.organizationName}</p>
+                            )}
                         </div>
 
                         <div className="mb-4">
@@ -209,8 +369,15 @@ export default function ManageOrganizationModal({ organization, isOpen, onClose,
                                 value={formData.contactNumber}
                                 onChange={handleChange}
                                 required
-                                className="w-full p-2 border rounded"
+                                placeholder="09XXXXXXXXX"
+                                className={getInputClassName('contactNumber')}
                             />
+                            {validationErrors.contactNumber && (
+                                <p className="mt-1 text-sm text-red-600">{validationErrors.contactNumber}</p>
+                            )}
+                            <p className="text-xs text-gray-500 mt-1">
+                                Must be 11 digits starting with 0 (e.g., 09123456789)
+                            </p>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -222,8 +389,11 @@ export default function ManageOrganizationModal({ organization, isOpen, onClose,
                                     value={formData.city}
                                     onChange={handleChange}
                                     required
-                                    className="w-full p-2 border rounded"
+                                    className={getInputClassName('city')}
                                 />
+                                {validationErrors.city && (
+                                    <p className="mt-1 text-sm text-red-600">{validationErrors.city}</p>
+                                )}
                             </div>
 
                             <div>
@@ -234,23 +404,30 @@ export default function ManageOrganizationModal({ organization, isOpen, onClose,
                                     value={formData.province}
                                     onChange={handleChange}
                                     required
-                                    className="w-full p-2 border rounded"
+                                    className={getInputClassName('province')}
                                 />
+                                {validationErrors.province && (
+                                    <p className="mt-1 text-sm text-red-600">{validationErrors.province}</p>
+                                )}
                             </div>
                         </div>
 
                         <div className="flex justify-end gap-2 mt-6">
                             <button
                                 type="button"
-                                onClick={onClose}
+                                onClick={handleClose} // Use the new wrapper
                                 className="px-4 py-2 text-gray-700 bg-gray-200 rounded hover:bg-gray-300"
+                                disabled={isSubmitting}
                             >
                                 Cancel
                             </button>
                             <button
                                 type="submit"
-                                disabled={isSubmitting}
-                                className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700 disabled:bg-blue-400"
+                                disabled={isSubmitting || Object.values(validationErrors).some(error => error !== '')}
+                                className={`px-4 py-2 text-white rounded ${isSubmitting || Object.values(validationErrors).some(error => error !== '')
+                                    ? 'bg-blue-400 cursor-not-allowed'
+                                    : 'bg-blue-600 hover:bg-blue-700'
+                                    }`}
                             >
                                 {isSubmitting ? 'Saving...' : 'Save Changes'}
                             </button>
