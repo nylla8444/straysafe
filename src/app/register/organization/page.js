@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import axios from 'axios';
@@ -29,6 +29,8 @@ export default function OrganizationRegistrationPage() {
         verificationFile: ''
     });
     const [isFormValid, setIsFormValid] = useState(false);
+
+    const fileInputRef = useRef(null);
 
     const router = useRouter();
 
@@ -198,7 +200,8 @@ export default function OrganizationRegistrationPage() {
     };
 
     const handleFileChange = (e) => {
-        if (e.target.files && e.target.files[0]) {
+        // Check if a file was actually selected
+        if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
             setVerificationFile(file);
 
@@ -207,8 +210,30 @@ export default function OrganizationRegistrationPage() {
                 ...prev,
                 verificationFile: validateVerificationFile(file)
             }));
+        } else {
+            // User canceled file selection, revert to no file state
+            setVerificationFile(null);
+            setValidationErrors(prev => ({
+                ...prev,
+                verificationFile: 'Please upload a verification document'
+            }));
         }
     };
+
+
+    // click handler to reset validation when user clicks to select a file
+    const handleFileInputClick = () => {
+        // Only reset if there's a chance user is replacing an existing file
+        if (verificationFile) {
+            fileInputRef.current.value = ''; // Clear the input
+            setVerificationFile(null);
+            setValidationErrors(prev => ({
+                ...prev,
+                verificationFile: 'Please upload a verification document'
+            }));
+        }
+    };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -452,6 +477,8 @@ export default function OrganizationRegistrationPage() {
                         <input
                             type="file"
                             onChange={handleFileChange}
+                            onClick={handleFileInputClick}
+                            ref={fileInputRef}
                             required
                             className={getInputClassName('verificationFile')}
                             accept="image/*, application/pdf"
