@@ -315,8 +315,8 @@ export default function ManageOrganizationModal({ organization, isOpen, onClose,
                     <form onSubmit={handleSubmit}>
                         <div className="mb-6">
                             <label className="block mb-2 font-medium">Profile Image</label>
-                            <div className="flex items-center gap-4">
-                                <div className="relative w-24 h-24 bg-gray-200 rounded-full overflow-hidden">
+                            <div className="flex items-center">
+                                <div className="relative w-24 h-24 bg-gray-200 rounded-full overflow-hidden mr-4">
                                     {previewUrl ? (
                                         <Image
                                             src={previewUrl}
@@ -333,12 +333,21 @@ export default function ManageOrganizationModal({ organization, isOpen, onClose,
                                 <div>
                                     <input
                                         type="file"
-                                        accept="image/*"
-                                        onChange={handleImageChange}
                                         ref={fileInputRef}
-                                        className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none p-2"
+                                        onChange={handleImageChange}
+                                        accept="image/jpeg,image/png"
+                                        className="hidden"
                                     />
-                                    <p className="mt-1 text-xs text-gray-500">PNG, JPG, or JPEG (max 5MB)</p>
+                                    <button
+                                        type="button"
+                                        onClick={() => fileInputRef.current.click()}
+                                        className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded"
+                                    >
+                                        Choose Image
+                                    </button>
+                                    <p className="text-xs text-gray-500 mt-1">
+                                        Max size: 5MB (JPEG, PNG).<br />Large files may be automatically rejected.
+                                    </p>
                                     {validationErrors.profileImage && (
                                         <p className="mt-1 text-sm text-red-600">{validationErrors.profileImage}</p>
                                     )}
