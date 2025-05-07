@@ -3,11 +3,30 @@ import connectionToDB from '../../../../../lib/mongoose';
 import AdoptionApplication from '../../../../../models/AdoptionApplication';
 import User from '../../../../../models/User';
 import { withAuth } from '../../../../../middleware/authMiddleware';
+import Pet from '../../../../../models/Pet';
+import mongoose from 'mongoose';
+
+// Ensure all models are registered before executing queries
+function ensureModels() {
+    // This makes sure the models are compiled
+    if (mongoose.modelNames().indexOf('Pet') === -1) {
+        console.warn('Pet model was not registered. Forcing registration.');
+        mongoose.model('Pet', Pet.schema);
+    }
+
+    if (mongoose.modelNames().indexOf('AdoptionApplication') === -1) {
+        console.warn('AdoptionApplication model was not registered. Forcing registration.');
+        mongoose.model('AdoptionApplication', AdoptionApplication.schema);
+    }
+}
 
 export async function GET(request) {
     return withAuth(request, async (req, decoded) => {
         try {
             await connectionToDB();
+
+            // Make sure models are registered
+            ensureModels();
 
             // Get the organization details using the decoded token
             const organization = await User.findOne({
@@ -47,10 +66,10 @@ export async function GET(request) {
             });
 
         } catch (error) {
-            console.error('Error fetching organization applications:', error);
+            console.error('Error fetching organization applications:', error.stack || error);
             return NextResponse.json({
                 success: false,
-                error: 'Failed to fetch applications'
+                error: `Failed to fetch applications: ${error.message}`
             }, { status: 500 });
         }
     });
