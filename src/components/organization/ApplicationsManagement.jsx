@@ -224,8 +224,10 @@ export default function ApplicationsManagement() {
                                             )}
                                         </div>
                                         <div className="ml-3 flex-grow">
-                                            <div className="flex justify-between">
-                                                <p className="text-sm font-medium">{app.petId.name}</p>
+                                            <div className="flex items-center justify-between">
+                                                <p className="text-sm font-medium truncate max-w-[150px] mr-2">
+                                                    {app.petId.name}
+                                                </p>
                                                 {getStatusBadge(app.status)}
                                             </div>
                                             <p className="text-xs text-gray-500">
@@ -276,7 +278,7 @@ export default function ApplicationsManagement() {
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                                <div className="bg-gray-50 p-4 rounded">
+                                <div className="bg-gray-50 p-4 rounded capitalize">
                                     <h4 className="font-medium mb-2 text-sm text-gray-500">Pet Information</h4>
                                     <p className="text-sm"><span className="font-medium">Name:</span> {selectedApp.petId.name}</p>
                                     <p className="text-sm"><span className="font-medium">Species:</span> {selectedApp.petId.specie}</p>
@@ -295,15 +297,15 @@ export default function ApplicationsManagement() {
                             </div>
 
                             <div className="mb-6">
-                                <h4 className="font-medium mb-3 text-sm text-gray-500">Application Details</h4>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <p className="text-sm"><span className="font-medium">Housing Status:</span> {selectedApp.housingStatus}</p>
+                                <h4 className="px-4 font-medium mb-3 text-sm text-gray-500">Application Details</h4>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 capitalize">
+                                    <div className='px-4 '>
+                                        <p className="text-sm "><span className="font-medium">Housing Status:</span> {selectedApp.housingStatus}</p>
                                         <p className="text-sm"><span className="font-medium">Pets Allowed:</span> {selectedApp.petsAllowed}</p>
                                         <p className="text-sm"><span className="font-medium">Other Pets:</span> {selectedApp.otherPets}</p>
                                         <p className="text-sm"><span className="font-medium">Financially Prepared:</span> {selectedApp.financiallyPrepared}</p>
                                     </div>
-                                    <div>
+                                    <div className='px-4'>
                                         <p className="text-sm"><span className="font-medium">Pet Location:</span> {selectedApp.petLocation}</p>
                                         <p className="text-sm"><span className="font-medium">Primary Caregiver:</span> {selectedApp.primaryCaregiver}</p>
                                         <p className="text-sm"><span className="font-medium">Emergency Care:</span> {selectedApp.emergencyPetCare}</p>
@@ -311,7 +313,7 @@ export default function ApplicationsManagement() {
                                 </div>
                             </div>
 
-                            <div className="mb-6">
+                            <div className="mb-6 px-4">
                                 <h4 className="font-medium mb-3 text-sm text-gray-500">Reference</h4>
                                 <p className="text-sm"><span className="font-medium">Name:</span> {selectedApp.reference.name}</p>
                                 <p className="text-sm"><span className="font-medium">Email:</span> {selectedApp.reference.email}</p>

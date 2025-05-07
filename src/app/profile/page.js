@@ -181,6 +181,8 @@ export default function ProfilePage() {
 
             <div className="mt-8">
                 <h2 className="text-2xl font-semibold mb-4">Adoption Applications</h2>
+
+
                 <div className="bg-white shadow rounded-lg p-6">
                     {loadingApplications ? (
                         <div className="flex justify-center py-4">

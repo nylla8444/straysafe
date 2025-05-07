@@ -368,7 +368,7 @@ export default function AdoptionApplicationPage() {
 
                             <div className="mb-4">
                                 <h3 className="font-medium text-gray-700">Status</h3>
-                                <span className="inline-block px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                                <span className="inline-block px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 capitalize">
                                     {pet.status}
                                 </span>
                             </div>
@@ -647,8 +647,8 @@ export default function AdoptionApplicationPage() {
                                     type="submit"
                                     disabled={loading || hasValidationErrors() || !isFormComplete() || hasExistingApplication}
                                     className={`w-full py-3 px-4 font-medium rounded-md shadow-sm transition-colors ${loading || hasValidationErrors() || !isFormComplete() || hasExistingApplication
-                                            ? 'bg-blue-400 cursor-not-allowed text-white'
-                                            : 'bg-blue-600 hover:bg-blue-700 text-white'
+                                        ? 'bg-blue-400 cursor-not-allowed text-white'
+                                        : 'bg-blue-600 hover:bg-blue-700 text-white'
                                         }`}
                                 >
                                     {loading ? 'Submitting...' : hasExistingApplication ? 'Already Applied' : 'Submit Application'}

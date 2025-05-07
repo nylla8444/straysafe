@@ -138,7 +138,35 @@ export default function SheltersPage() {
                                         {/* Organization name and verification badge */}
                                         <div className="ml-4">
                                             <div className="flex items-center">
-                                                <h3 className="font-bold text-lg text-gray-800">{shelter.organizationName}</h3>
+
+                                                <div className="relative group/tooltip">
+                                                    <h3 className="font-bold text-lg text-gray-800">
+                                                        {(() => {
+                                                            // Get a plain text version first
+                                                            const plainText = shelter.organizationName
+                                                                .normalize("NFKD")  // Decompose characters to standard form
+                                                                .replace(/[^\x00-\x7F]/g, "") // Remove any remaining non-ASCII chars
+                                                                || shelter.organizationName;  // Fallback to original if completely stripped
+
+                                                            return plainText.length > 30
+                                                                ? plainText.split(/\s+/).map(word => word[0] || '').join('').toUpperCase()
+                                                                : plainText;
+                                                        })()}
+                                                    </h3>
+
+                                                    {shelter.organizationName.length > 30 && (
+                                                        <div className="absolute opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-300 
+                                                        left-0 top-full mt-1 z-50 bg-gray-900/90 backdrop-blur-sm text-white text-sm rounded-md
+                                                        px-2.5 py-1.5 shadow-lg pointer-events-none w-52 whitespace-normal max-w-md">
+                                                            {/* Simplified process for tooltip text */}
+                                                            {shelter.organizationName
+                                                                .normalize("NFKD")
+                                                                .replace(/[^\x00-\x7F]/g, "")
+                                                                || shelter.organizationName}
+                                                        </div>
+                                                    )}
+                                                </div>
+
                                                 {shelter.isVerified && (
                                                     <span className="ml-2">
                                                         <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">

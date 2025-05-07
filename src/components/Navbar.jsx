@@ -220,7 +220,7 @@ export default function Navbar() {
                             {isAuthenticated || isAdminAuthenticated ? (
                                 <button
                                     onClick={isAdminAuthenticated ? handleAdminLogout : handleLogout}
-                                    className="hover:text-blue-100"
+                                    className="hover:text-blue-100 hover:cursor-pointer"
                                 >
                                     {isAdminAuthenticated ? 'Admin Logout' : 'Logout'}
                                 </button>

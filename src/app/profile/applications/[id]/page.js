@@ -7,6 +7,7 @@ import Image from 'next/image';
 import axios from 'axios';
 import { useAuth } from '../../../../../context/AuthContext';
 import { use } from 'react';
+import { format } from 'date-fns';
 
 export default function ApplicationDetailPage({ params }) {
     // Unwrap params using React.use()
@@ -168,7 +169,7 @@ export default function ApplicationDetailPage({ params }) {
                                     )}
                                 </div>
                                 <h3 className="font-medium text-lg">{application.petId.name}</h3>
-                                <p className="text-gray-600 mb-2">
+                                <p className="text-gray-600 mb-2 capitalize">
                                     {application.petId.breed} • {application.petId.gender} • {application.petId.specie}
                                 </p>
                                 <p className="text-gray-600">
@@ -183,10 +184,10 @@ export default function ApplicationDetailPage({ params }) {
                             <h2 className="font-semibold text-lg mb-3">Application Details</h2>
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <div className="mb-6">
-                                    <p className="text-sm text-gray-500">Submitted on {new Date(application.createdAt).toLocaleDateString()}</p>
+                                    <p className="text-sm text-gray-500">Submitted on {format(new Date(application.createdAt), 'MMM d, yyyy')}</p>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 capitalize">
                                     <div>
                                         <p className="mb-2"><span className="font-medium">Housing Status:</span> {application.housingStatus}</p>
                                         <p className="mb-2"><span className="font-medium">Pets Allowed:</span> {application.petsAllowed}</p>

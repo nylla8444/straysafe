@@ -136,12 +136,12 @@ export default function PetForm({ pet, onSubmit, onCancel }) {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Species*</label>
+                        <label className="block text-sm font-medium text-gray-700 ">Species*</label>
                         <select
                             name="specie"
                             value={formData.specie}
                             onChange={handleChange}
-                            className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm"
+                            className="capitalize mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm"
                             required
                         >
                             {specieOptions.map(option => (

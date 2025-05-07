@@ -35,12 +35,12 @@ export default function ManagePetsPage() {
                 router.push('/login');
                 return;
             }
-            
+
             if (!isOrganization()) {
                 router.push('/profile');
                 return;
             }
-            
+
             // Add this check to redirect unverified organizations
             if (user && !user.isVerified) {
                 router.push('/organization?error=verification_required');

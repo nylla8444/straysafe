@@ -159,10 +159,10 @@ export default function PetsPage() {
 
     return (
         <div>
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                 <div>
-                    <h1 className="text-3xl font-bold">Browse Pets</h1>
-                    <p className="text-gray-600 mt-1">Find your perfect companion.</p>
+                    <h1 className="text-3xl font-bold mb-6">Browse Pets</h1>
+                    <p className="text-gray-600 mb-6">Find your perfect companion.</p>
                 </div>
             </div>
 
@@ -190,8 +190,8 @@ export default function PetsPage() {
 
             {/* THIS IS THE IMPORTANT CHANGE - Check loading state first */}
             {loading ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
-                    {Array(8).fill().map((_, index) => (
+                <div className="flex flex-wrap gap-6 justify-center sm:justify-start px-4 md:px-6">
+                    {Array(20).fill().map((_, index) => (
                         <PetCardSkeleton key={index} />
                     ))}
                 </div>
@@ -208,9 +208,13 @@ export default function PetsPage() {
                     )}
                 </div>
             ) : (
-                <div className="grid px-0 xl:px-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
+                <div className="flex flex-wrap gap-6 justify-center sm:justify-start px-4 md:px-6">
                     {filteredPets.map(pet => (
-                        <div key={pet._id} className="relative group bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 transition-all duration-300 hover:shadow-xl hover:translate-y-[-4px] w-full max-w-[300px]">
+                        <div
+                            key={pet._id}
+                            className="relative group bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 transition-all duration-300 hover:shadow-xl hover:translate-y-[-4px] 
+                            w-[300px] max-w-[300px] sm:w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] xl:w-[calc(20%-19.2px)]"
+                        >
                             {/* Top ribbon based on status */}
                             <div className={`absolute top-0 left-0 w-full h-1 ${pet.status === 'available' ? 'bg-green-500' :
                                 pet.status === 'rehabilitating' ? 'bg-amber-500' :
@@ -276,10 +280,19 @@ export default function PetsPage() {
                             <div className="p-5">
                                 {/* Pet name row with age and favorite button */}
                                 <div className="flex justify-between items-start mb-2">
-                                    <div className="flex-1">
+                                    <div className="flex-1 relative">
                                         <h3 className="font-bold text-xl text-gray-800 leading-tight group-hover:text-blue-700 transition-colors duration-300">
-                                            {pet.name}
+                                            {pet.name.length > 15 ? `${pet.name.substring(0, 15)}...` : pet.name}
                                         </h3>
+
+                                        {pet.name.length > 15 && (
+                                            <div className="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300 
+                        left-0 top-full mt-1 z-50 bg-gray-900/90 backdrop-blur-sm text-white text-sm 
+                        rounded-md px-2.5 py-1.5 shadow-lg pointer-events-none">
+                                                {pet.name}
+                                            </div>
+                                        )}
+
                                         {pet.age && (
                                             <p className="text-sm text-gray-500 mt-0.5">{pet.age} old</p>
                                         )}
@@ -358,7 +371,7 @@ export default function PetsPage() {
                                         ))}
                                         {pet.tags.length > 2 && (
                                             <span className="bg-gray-50 text-gray-600 text-xs px-2.5 py-0.5 rounded-full font-medium border border-gray-100 hover:bg-gray-100 transition-colors duration-200">
-                                                +{pet.tags.length - 2} more
+                                                +{pet.tags.length - 2}
                                             </span>
                                         )}
                                     </div>
@@ -398,7 +411,9 @@ export default function PetsPage() {
                                                 )}
                                             </div>
                                             <span className="text-xs text-gray-600 hover:text-blue-600 transition-colors duration-200">
-                                                {pet.organization.organizationName}
+                                                {pet.organization.organizationName.length > 40
+                                                    ? `${pet.organization.organizationName.substring(0, 40)}...`
+                                                    : pet.organization.organizationName}
                                             </span>
                                         </div>
                                     )}

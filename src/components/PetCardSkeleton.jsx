@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function PetCardSkeleton() {
     return (
-        <div className="relative bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 w-full max-w-[300px]">
+        <div className="relative bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 max-w-[300px] sm:w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] xl:w-[calc(20%-19.2px)]">
             {/* Image placeholder */}
             <div className="relative h-56 overflow-hidden bg-gray-200 animate-pulse"></div>
 

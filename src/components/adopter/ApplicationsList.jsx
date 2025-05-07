@@ -79,8 +79,11 @@ export default function ApplicationsList() {
 
     return (
         <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="p-5 border-b">
+            <div className="p-5 border-b flex justify-between items-center">
                 <h3 className="text-lg font-medium text-gray-900">Your Adoption Applications</h3>
+                <Link href="/browse/pets" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                    Adopt More Pets
+                </Link>
             </div>
             <ul className="divide-y divide-gray-200">
                 {applications.map((app) => (

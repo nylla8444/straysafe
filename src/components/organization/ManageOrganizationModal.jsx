@@ -197,7 +197,7 @@ export default function ManageOrganizationModal({ organization, isOpen, onClose,
 
     // Check if the form is valid before submission
     const isFormValid = () => {
-        const orgNameError = validateName(formData.organizationName);
+        const orgNameError = organization?.isVerified ? '' : validateName(formData.organizationName);
         const phoneError = validatePhone(formData.contactNumber);
         const cityError = validateLocation(formData.city, 'City');
         const provinceError = validateLocation(formData.province, 'Province');
@@ -356,14 +356,23 @@ export default function ManageOrganizationModal({ organization, isOpen, onClose,
                         </div>
 
                         <div className="mb-4">
-                            <label className="block mb-2 font-medium">Organization Name</label>
+                            <label className="block mb-2 font-medium">
+                                Organization Name
+                                {organization?.isVerified && (
+                                    <span className="ml-2 text-xs text-blue-600 font-normal">
+                                        (Verified organizations cannot change their name)
+                                    </span>
+                                )}
+                            </label>
                             <input
                                 type="text"
                                 name="organizationName"
                                 value={formData.organizationName}
                                 onChange={handleChange}
                                 required
-                                className={getInputClassName('organizationName')}
+                                disabled={organization?.isVerified}
+                                className={`${getInputClassName('organizationName')} ${organization?.isVerified ? 'bg-gray-100 cursor-not-allowed' : ''
+                                    }`}
                             />
                             {validationErrors.organizationName && (
                                 <p className="mt-1 text-sm text-red-600">{validationErrors.organizationName}</p>
