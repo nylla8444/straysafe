@@ -1,6 +1,7 @@
 import { Readex_Pro, Fredoka } from "next/font/google";
 import { AuthProvider } from '../../context/AuthContext';
 import { AdminAuthProvider } from '../../context/AdminAuthContext';
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import Navbar from '../components/Navbar';
 import "./globals.css";
 
@@ -31,6 +32,7 @@ export default function RootLayout({ children }) {
           <AdminAuthProvider>
             <Navbar />
             {children}
+            <SpeedInsights />
           </AdminAuthProvider>
         </AuthProvider>
       </body>
