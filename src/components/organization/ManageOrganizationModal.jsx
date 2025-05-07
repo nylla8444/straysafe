@@ -382,7 +382,7 @@ export default function ManageOrganizationModal({ organization, isOpen, onClose,
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                             <div>
-                                <label className="block mb-2 font-medium">City</label>
+                                <label className="block mb-2 font-medium">City/Municipality</label>
                                 <input
                                     type="text"
                                     name="city"

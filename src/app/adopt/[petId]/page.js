@@ -343,7 +343,7 @@ export default function AdoptionApplicationPage() {
 
                             <div className="mb-4">
                                 <h3 className="font-medium text-gray-700">Adoption Fee</h3>
-                                <p className="text-gray-900">{pet.adoptionFee > 0 ? `$${pet.adoptionFee}` : 'Free'}</p>
+                                <p className="text-gray-900">{pet.adoptionFee > 0 ? `₱${pet.adoptionFee}` : 'Free'}</p>
                             </div>
 
                             <div className="mb-4">

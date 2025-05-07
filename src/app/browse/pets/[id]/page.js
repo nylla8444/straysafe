@@ -397,7 +397,7 @@ export default function PetDetailPage({ params }) {
                                 <p className="text-gray-600 font-medium">Adoption Fee</p>
                                 <div className={`text-xl font-bold ${pet.adoptionFee > 0 ? 'text-emerald-600' : 'text-blue-600'
                                     }`}>
-                                    {pet.adoptionFee > 0 ? `$${pet.adoptionFee}` : 'Free'}
+                                    {pet.adoptionFee > 0 ? `₱${pet.adoptionFee}` : 'Free'}
                                 </div>
                             </div>
                         </div>

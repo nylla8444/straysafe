@@ -70,7 +70,7 @@ export default function PetsList({ pets, onEdit, onDelete, onViewDetails, isOrga
                             <div className="flex justify-between items-start">
                                 <h3 className="text-lg font-bold">{pet.name}</h3>
                                 <p className="text-green-600 font-medium">
-                                    {pet.adoptionFee > 0 ? `$${pet.adoptionFee}` : 'Free'}
+                                    {pet.adoptionFee > 0 ? `₱${pet.adoptionFee}` : 'Free'}
                                 </p>
                             </div>
 

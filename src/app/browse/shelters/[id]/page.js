@@ -398,7 +398,7 @@ export default function ShelterDetailPage({ params }) {
                                             View Details
                                         </Link>
                                         <span className="text-green-600 font-medium">
-                                            {pet.adoptionFee > 0 ? `$${pet.adoptionFee}` : 'Free'}
+                                            {pet.adoptionFee > 0 ? `₱${pet.adoptionFee}` : 'Free'}
                                         </span>
                                     </div>
                                 </div>

@@ -124,7 +124,7 @@ export default function PetDetailModal({ pet, onClose, onEdit }) {
                                     </p>
                                 </div>
                                 <p className="text-green-600 font-medium text-lg">
-                                    {pet.adoptionFee > 0 ? `$${pet.adoptionFee}` : 'Free'}
+                                    {pet.adoptionFee > 0 ? `₱${pet.adoptionFee}` : 'Free'}
                                 </p>
                             </div>
 
