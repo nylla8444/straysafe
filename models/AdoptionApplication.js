@@ -5,7 +5,7 @@ const adoptionApplicationSchema = new mongoose.Schema({
         type: Number,
         unique: true
     },
-    
+
     // Relationship to user and pet
     adopterId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -22,14 +22,14 @@ const adoptionApplicationSchema = new mongoose.Schema({
         ref: 'User', // References the organization in User model
         required: true
     },
-    
+
     // Application status
     status: {
         type: String,
         enum: ['pending', 'reviewing', 'approved', 'rejected', 'withdrawn'],
         default: 'pending'
     },
-    
+
     // Form data from the application
     housingStatus: {
         type: String,
@@ -85,7 +85,7 @@ const adoptionApplicationSchema = new mongoose.Schema({
             message: "Terms and conditions must be accepted"
         }
     },
-    
+
     // For organization's response
     organizationNotes: {
         type: String,
@@ -99,7 +99,7 @@ const adoptionApplicationSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
-    
+
     // Timestamps
     createdAt: {
         type: Date,
@@ -134,6 +134,8 @@ adoptionApplicationSchema.index({ petId: 1 });
 adoptionApplicationSchema.index({ organizationId: 1 });
 adoptionApplicationSchema.index({ status: 1 });
 adoptionApplicationSchema.index({ createdAt: 1 });
+adoptionApplicationSchema.index({ adopterId: 1, petId: 1, status: 1 });
+
 
 const AdoptionApplication = mongoose.models.AdoptionApplication || mongoose.model("AdoptionApplication", adoptionApplicationSchema);
 

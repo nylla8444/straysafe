@@ -20,6 +20,8 @@ export default function PetDetailPage({ params }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [showScrollButton, setShowScrollButton] = useState(false);
+    const [hasExistingApplication, setHasExistingApplication] = useState(false);
+    const [applicationStatus, setApplicationStatus] = useState('');
 
     // Add this useEffect for scroll detection
     useEffect(() => {
@@ -41,13 +43,30 @@ export default function PetDetailPage({ params }) {
     };
 
     useEffect(() => {
-        const fetchPetData = async () => {
+        const fetchPetAndApplicationData = async () => {
             try {
                 setLoading(true);
                 const response = await axios.get(`/api/pets/${petId}`);
 
                 if (response.data.success) {
                     setPet(response.data.pet);
+
+                    // Check for existing applications if the user is authenticated
+                    if (isAuthenticated && isAdopter()) {
+                        const applicationsResponse = await axios.get('/api/adoptions/adopter');
+                        if (applicationsResponse.data.success) {
+                            const applications = applicationsResponse.data.applications;
+                            const existingApp = applications.find(
+                                app => app.petId._id === petId &&
+                                    ['pending', 'reviewing', 'approved'].includes(app.status)
+                            );
+
+                            if (existingApp) {
+                                setHasExistingApplication(true);
+                                setApplicationStatus(existingApp.status);
+                            }
+                        }
+                    }
                 } else {
                     setError('Failed to load pet information.');
                 }
@@ -60,9 +79,9 @@ export default function PetDetailPage({ params }) {
         };
 
         if (petId) {
-            fetchPetData();
+            fetchPetAndApplicationData();
         }
-    }, [petId]);
+    }, [petId, isAuthenticated, isAdopter]);
 
     const nextImage = () => {
         if (pet?.img_arr?.length > 1) {
@@ -133,7 +152,21 @@ export default function PetDetailPage({ params }) {
         }
 
         if (canUserAdopt()) {
-            // User can adopt - show the adoption button
+            // User can adopt - but check if they already applied
+            if (hasExistingApplication) {
+                return (
+                    <button
+                        disabled
+                        className="w-full mb-6 px-6 py-3 bg-gray-400 text-white text-lg font-medium rounded-lg cursor-not-allowed"
+                    >
+                        {applicationStatus === 'approved' ? 'Application Approved' :
+                            applicationStatus === 'reviewing' ? 'Application Being Reviewed' :
+                                'Already Applied'}
+                    </button>
+                );
+            }
+
+            // Normal adoption button (no existing application)
             return (
                 <Link
                     href={`/adopt/${pet._id}`}

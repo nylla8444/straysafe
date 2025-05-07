@@ -17,6 +17,7 @@ export default function AdoptionApplicationPage() {
     const [pet, setPet] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [hasExistingApplication, setHasExistingApplication] = useState(false);
 
     const [formData, setFormData] = useState({
         housingStatus: '',
@@ -96,25 +97,44 @@ export default function AdoptionApplicationPage() {
             return;
         }
 
-        // Fetch pet data
-        const fetchPet = async () => {
+        // Fetch pet data and check for existing applications
+        const fetchPetAndCheckApplications = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`/api/pets/${petId}`);
-                if (response.data.success) {
-                    setPet(response.data.pet);
-                } else {
+
+                // Fetch pet data
+                const petResponse = await axios.get(`/api/pets/${petId}`);
+                if (!petResponse.data.success) {
                     setError('Unable to load pet information.');
+                    setLoading(false);
+                    return;
+                }
+
+                setPet(petResponse.data.pet);
+
+                // Check for existing applications
+                const applicationsResponse = await axios.get('/api/adoptions/adopter');
+                if (applicationsResponse.data.success) {
+                    const applications = applicationsResponse.data.applications;
+                    const existingApp = applications.find(
+                        app => app.petId._id === petId &&
+                            ['pending', 'reviewing', 'approved'].includes(app.status)
+                    );
+
+                    if (existingApp) {
+                        setHasExistingApplication(true);
+                        setError(`You already have an active application for this pet (Application #${existingApp.applicationId}). Please check your applications in your profile.`);
+                    }
                 }
             } catch (err) {
-                console.error('Failed to fetch pet:', err);
-                setError('Failed to load pet information. Please try again.');
+                console.error('Failed to fetch data:', err);
+                setError('Failed to load information. Please try again.');
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchPet();
+        fetchPetAndCheckApplications();
     }, [petId, isAuthenticated, router, isAdopter]);
 
     // Check if the form has any validation errors
@@ -625,13 +645,13 @@ export default function AdoptionApplicationPage() {
 
                                 <button
                                     type="submit"
-                                    disabled={loading || hasValidationErrors() || !isFormComplete()}
-                                    className={`w-full py-3 px-4 font-medium rounded-md shadow-sm transition-colors ${loading || hasValidationErrors() || !isFormComplete()
-                                        ? 'bg-blue-400 cursor-not-allowed text-white'
-                                        : 'bg-blue-600 hover:bg-blue-700 text-white'
+                                    disabled={loading || hasValidationErrors() || !isFormComplete() || hasExistingApplication}
+                                    className={`w-full py-3 px-4 font-medium rounded-md shadow-sm transition-colors ${loading || hasValidationErrors() || !isFormComplete() || hasExistingApplication
+                                            ? 'bg-blue-400 cursor-not-allowed text-white'
+                                            : 'bg-blue-600 hover:bg-blue-700 text-white'
                                         }`}
                                 >
-                                    {loading ? 'Submitting...' : 'Submit Application'}
+                                    {loading ? 'Submitting...' : hasExistingApplication ? 'Already Applied' : 'Submit Application'}
                                 </button>
                             </div>
 

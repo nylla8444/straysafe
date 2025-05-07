@@ -37,7 +37,7 @@ export async function POST(request) {
                 }, { status: 400 });
             }
 
-            // Check if user already applied for this pet
+            // Enhanced check for existing applications - ensure string comparison for ObjectIds
             const existingApplication = await AdoptionApplication.findOne({
                 adopterId: user._id,
                 petId: pet._id,
@@ -45,9 +45,11 @@ export async function POST(request) {
             });
 
             if (existingApplication) {
+                console.log(`Duplicate adoption attempt detected - User: ${user._id}, Pet: ${pet._id}, Existing application: ${existingApplication._id} (${existingApplication.status})`);
+                
                 return NextResponse.json({
                     success: false,
-                    error: 'You have already applied to adopt this pet'
+                    error: 'You already have an active application for this pet. Check your application status in your profile.'
                 }, { status: 400 });
             }
 
