@@ -8,6 +8,7 @@ import EditProfileModal from '../../components/EditProfileModal';
 import axios from 'axios';
 import Link from 'next/link';
 import AdopterApplicationsList from '../../components/adopter/ApplicationsList';
+import PaymentsSection from '../../components/payments/PaymentsSection';
 
 export default function ProfilePage() {
     const { user, loading, isAuthenticated, isAdopter, refreshUser } = useAuth();
@@ -18,6 +19,7 @@ export default function ProfilePage() {
     const [applications, setApplications] = useState([]);
     const [loadingApplications, setLoadingApplications] = useState(true);
     const [applicationsError, setApplicationsError] = useState('');
+    const [activeTab, setActiveTab] = useState('applications');
 
     useEffect(() => {
         console.log("Profile page auth status:", { loading, isAuthenticated, user });
@@ -180,27 +182,54 @@ export default function ProfilePage() {
 
 
             <div className="mt-8">
-                <h2 className="text-2xl font-semibold mb-4">Adoption Applications</h2>
+                <div className="border-b border-gray-200 mb-4">
+                    <nav className="-mb-px flex space-x-8">
+                        <button
+                            onClick={() => setActiveTab('applications')}
+                            className={`py-2 px-1 border-b-2 font-medium text-md ${activeTab === 'applications'
+                                ? 'border-blue-500 text-blue-600'
+                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                }`}
+                        >
+                            Adoption Applications
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('payments')}
+                            className={`py-2 px-1 border-b-2 font-medium text-md ${activeTab === 'payments'
+                                ? 'border-blue-500 text-blue-600'
+                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                }`}
+                        >
+                            Payments
+                        </button>
+                    </nav>
+                </div>
 
-
+                {/* Content based on active tab */}
                 <div className="bg-white shadow rounded-lg sm:p-3 md:p-4 lg:p-6">
-                    {loadingApplications ? (
-                        <div className="flex justify-center py-4">
-                            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-                        </div>
-                    ) : applicationsError ? (
-                        <div className="text-red-500">{applicationsError}</div>
-                    ) : applications.length > 0 ? (
-                        <AdopterApplicationsList applications={applications} />
-                    ) : (
-                        <div>
-                            <p className="text-gray-600">You haven&apos;t submitted any adoption applications yet.</p>
-                            <div className="mt-4">
-                                <Link href="/browse/pets" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 inline-block">
-                                    Browse Pets for Adoption
-                                </Link>
+                    {activeTab === 'applications' ? (
+                        // Applications tab content
+                        loadingApplications ? (
+                            <div className="flex justify-center py-4">
+                                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
                             </div>
-                        </div>
+                        ) : applicationsError ? (
+                            <div className="text-red-500">{applicationsError}</div>
+                        ) : applications.length > 0 ? (
+                            <AdopterApplicationsList applications={applications} />
+                        ) : (
+                            <div>
+                                <p className="text-gray-600">You haven&apos;t submitted any adoption applications yet.</p>
+                                <div className="mt-4">
+                                    <Link href="/browse/pets" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 inline-block">
+                                        Browse Pets for Adoption
+                                    </Link>
+                                </div>
+                            </div>
+                        )
+                    ) : (
+                        // Payments tab content
+                        <PaymentsSection userId={user._id} userType={user.userType} />
                     )}
                 </div>
             </div>

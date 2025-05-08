@@ -151,6 +151,7 @@ export default function OrganizationPage() {
             </div>
 
             {/* Action Cards - Responsive grid with better spacing */}
+            {/* Action Cards - Responsive grid with better spacing */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 {user.isVerified ? (
                     <>
@@ -189,19 +190,53 @@ export default function OrganizationPage() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                             </svg>
                         </Link>
+
+                        {/* New Payment Management Card */}
+                        <Link
+                            href="/organization/payments"
+                            className="flex items-center p-4 bg-white rounded-lg shadow hover:bg-gray-50 transition-colors"
+                        >
+                            <div className="p-2 bg-purple-100 rounded-lg">
+                                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                            <div className="ml-4 flex-grow">
+                                <h2 className="font-semibold">Payment Management</h2>
+                                <p className="text-sm text-gray-600">Verify and track adoption payments</p>
+                            </div>
+                            <svg className="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </Link>
                     </>
                 ) : (
-                    <div className="flex items-center p-4 bg-white rounded-lg shadow opacity-75 border-l-4 border-amber-500">
-                        <div className="p-2 bg-gray-100 rounded-lg">
-                            <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
+                    <>
+                        <div className="flex items-center p-4 bg-white rounded-lg shadow opacity-75 border-l-4 border-amber-500">
+                            <div className="p-2 bg-gray-100 rounded-lg">
+                                <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                            </div>
+                            <div className="ml-4">
+                                <h2 className="font-semibold">Manage Pets</h2>
+                                <p className="text-sm text-amber-600">Verification required to access</p>
+                            </div>
                         </div>
-                        <div className="ml-4">
-                            <h2 className="font-semibold">Manage Pets</h2>
-                            <p className="text-sm text-amber-600">Verification required to access</p>
+
+                        {/* Add disabled payment card for unverified organizations */}
+                        <div className="flex items-center p-4 bg-white rounded-lg shadow opacity-75 border-l-4 border-amber-500">
+                            <div className="p-2 bg-gray-100 rounded-lg">
+                                <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                            <div className="ml-4">
+                                <h2 className="font-semibold">Payment Management</h2>
+                                <p className="text-sm text-amber-600">Verification required to access</p>
+                            </div>
                         </div>
-                    </div>
+                    </>
                 )}
             </div>
 

@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { format } from 'date-fns';
 import axios from 'axios';
+import PaymentSetupForm from '../payments/PaymentSetupForm';
+import PaymentStatus from '../payments/PaymentStatus';
 
 export default function ApplicationsManagement() {
     const [applications, setApplications] = useState([]);
@@ -16,6 +19,7 @@ export default function ApplicationsManagement() {
     const [isDeleting, setIsDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState('');
     const [showMobileDetails, setShowMobileDetails] = useState(false);
+    const [showPaymentSetup, setShowPaymentSetup] = useState(false);
 
     useEffect(() => {
         fetchApplications();
@@ -153,7 +157,7 @@ export default function ApplicationsManagement() {
             {/* Header with responsive filter system */}
             <div className="p-4 sm:p-5 border-b">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                    <h2 className="text-xl font-semibold">Applications</h2>
+                    <h2 className="text-xl font-semibold">Applications 1</h2>
 
                     {/* Mobile: Filter dropdown */}
                     <div className="w-full sm:hidden">
@@ -445,6 +449,49 @@ export default function ApplicationsManagement() {
                                     </div>
                                 </div>
                             )}
+
+                            {/* Payment setup for approved applications */}
+                            {selectedApp && selectedApp.status === 'approved' && (
+                                <div className="border-t pt-4 mt-4 px-2 sm:px-0">
+                                    <div className="flex justify-between items-center flex-wrap gap-2 mb-3">
+                                        <h4 className="font-medium">Payment Setup</h4>
+                                    </div>
+
+                                    {/* Check if payment is already set up */}
+                                    {selectedApp.paymentId ? (
+                                        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                                            <div>
+                                                <PaymentStatus status={selectedApp.paymentStatus || 'pending'} />
+                                                <p className="mt-2 text-sm text-gray-600">
+                                                    Payment #{selectedApp.paymentId}
+                                                    {selectedApp.paymentStatus === 'pending' ? ' awaiting payment' :
+                                                        selectedApp.paymentStatus === 'submitted' ? ' awaiting verification' :
+                                                            selectedApp.paymentStatus === 'verified' ? ' has been verified' : ' was rejected'}
+                                                </p>
+                                            </div>
+                                            <Link
+                                                href={`/organization/payments/${selectedApp.paymentId}`}
+                                                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-center sm:text-left w-full sm:w-auto"
+                                            >
+                                                View Payment Details
+                                            </Link>
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                                            <p className="text-gray-600">No payment has been set up for this application yet.</p>
+                                            <button
+                                                onClick={() => setShowPaymentSetup(true)}
+                                                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-center sm:text-left w-full sm:w-auto flex items-center justify-center"
+                                            >
+                                                <svg className="w-5 h-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-2m2-4h.01M17 16h.01" />
+                                                </svg>
+                                                Setup Payment
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
@@ -474,6 +521,42 @@ export default function ApplicationsManagement() {
                             >
                                 Cancel
                             </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Payment Setup Modal */}
+            {showPaymentSetup && selectedApp && (
+                <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+                        <div className="p-4">
+                            <div className="flex justify-between items-center mb-4">
+                                <h2 className="text-xl font-bold">Setup Payment</h2>
+                                <button
+                                    onClick={() => setShowPaymentSetup(false)}
+                                    className="text-gray-500 hover:text-gray-700"
+                                >
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <PaymentSetupForm
+                                applicationId={selectedApp._id}
+                                petDetails={selectedApp.petId}
+                                onSuccess={(paymentData) => {
+                                    setShowPaymentSetup(false);
+                                    // Update selectedApp with payment info
+                                    setSelectedApp(prev => ({
+                                        ...prev,
+                                        paymentId: paymentData._id,
+                                        paymentStatus: paymentData.status
+                                    }));
+                                    // Refresh applications to get updated data
+                                    setTimeout(fetchApplications, 1000);
+                                }}
+                            />
                         </div>
                     </div>
                 </div>
