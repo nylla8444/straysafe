@@ -15,26 +15,29 @@ export default function ApplicationsManagement() {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState('');
+    const [showMobileDetails, setShowMobileDetails] = useState(false);
 
     useEffect(() => {
         fetchApplications();
     }, []);
 
-
     useEffect(() => {
-        // If a filter is active (not 'all') and there's a selected app
         if (filter !== 'all' && selectedApp) {
-            // Check if the selected application is still in the filtered list
             const isSelectedAppInFilteredList = applications.some(
                 app => app._id === selectedApp._id && app.status === filter
             );
-
-            // If the selected app is not in the current filter, deselect it
             if (!isSelectedAppInFilteredList) {
                 setSelectedApp(null);
             }
         }
     }, [filter, applications, selectedApp]);
+
+    // Show details view automatically when an application is selected on mobile
+    useEffect(() => {
+        if (selectedApp) {
+            setShowMobileDetails(true);
+        }
+    }, [selectedApp]);
 
     const fetchApplications = async () => {
         try {
@@ -72,6 +75,7 @@ export default function ApplicationsManagement() {
                 setUpdateSuccess('Application deleted successfully');
                 setShowDeleteModal(false);
                 setSelectedApp(null);
+                setShowMobileDetails(false);
                 setTimeout(() => setUpdateSuccess(''), 5000);
             }
         } catch (err) {
@@ -146,56 +150,94 @@ export default function ApplicationsManagement() {
 
     return (
         <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="p-5 border-b flex justify-between items-center">
-                <h2 className="text-xl font-semibold">Applications</h2>
-                <div className="flex space-x-2">
-                    <button
-                        className={`px-3 py-1 rounded-full text-sm ${filter === 'all' ? 'bg-gray-800 text-white' : 'bg-gray-200'}`}
-                        onClick={() => setFilter('all')}
-                    >
-                        All
-                    </button>
-                    <button
-                        className={`px-3 py-1 rounded-full text-sm ${filter === 'pending' ? 'bg-yellow-600 text-white' : 'bg-gray-200'}`}
-                        onClick={() => setFilter('pending')}
-                    >
-                        Pending
-                    </button>
-                    <button
-                        className={`px-3 py-1 rounded-full text-sm ${filter === 'reviewing' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-                        onClick={() => setFilter('reviewing')}
-                    >
-                        Reviewing
-                    </button>
-                    <button
-                        className={`px-3 py-1 rounded-full text-sm ${filter === 'approved' ? 'bg-green-600 text-white' : 'bg-gray-200'}`}
-                        onClick={() => setFilter('approved')}
-                    >
-                        Approved
-                    </button>
-                    <button
-                        className={`px-3 py-1 rounded-full text-sm ${filter === 'rejected' ? 'bg-red-600 text-white' : 'bg-gray-200'}`}
-                        onClick={() => setFilter('rejected')}
-                    >
-                        Rejected
-                    </button>
+            {/* Header with responsive filter system */}
+            <div className="p-4 sm:p-5 border-b">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <h2 className="text-xl font-semibold">Applications</h2>
+
+                    {/* Mobile: Filter dropdown */}
+                    <div className="w-full sm:hidden">
+                        <select
+                            className="w-full bg-white border rounded py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            value={filter}
+                            onChange={(e) => setFilter(e.target.value)}
+                        >
+                            <option value="all">All Applications</option>
+                            <option value="pending">Pending</option>
+                            <option value="reviewing">Reviewing</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+
+                    {/* Desktop: Filter buttons */}
+                    <div className="hidden sm:flex space-x-2 flex-wrap justify-end">
+                        <button
+                            className={`px-3 py-1 rounded-full text-sm ${filter === 'all' ? 'bg-gray-800 text-white' : 'bg-gray-200'}`}
+                            onClick={() => setFilter('all')}
+                        >
+                            All
+                        </button>
+                        <button
+                            className={`px-3 py-1 rounded-full text-sm ${filter === 'pending' ? 'bg-yellow-600 text-white' : 'bg-gray-200'}`}
+                            onClick={() => setFilter('pending')}
+                        >
+                            Pending
+                        </button>
+                        <button
+                            className={`px-3 py-1 rounded-full text-sm ${filter === 'reviewing' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+                            onClick={() => setFilter('reviewing')}
+                        >
+                            Reviewing
+                        </button>
+                        <button
+                            className={`px-3 py-1 rounded-full text-sm ${filter === 'approved' ? 'bg-green-600 text-white' : 'bg-gray-200'}`}
+                            onClick={() => setFilter('approved')}
+                        >
+                            Approved
+                        </button>
+                        <button
+                            className={`px-3 py-1 rounded-full text-sm ${filter === 'rejected' ? 'bg-red-600 text-white' : 'bg-gray-200'}`}
+                            onClick={() => setFilter('rejected')}
+                        >
+                            Rejected
+                        </button>
+                    </div>
                 </div>
             </div>
 
+            {/* Notification messages */}
             {updateSuccess && (
-                <div className="bg-green-50 p-4 border-l-4 border-green-500">
-                    <p className="text-green-700">{updateSuccess}</p>
+                <div className="bg-green-50 p-3 sm:p-4 border-l-4 border-green-500">
+                    <p className="text-green-700 text-sm sm:text-base">{updateSuccess}</p>
                 </div>
             )}
 
             {deleteError && (
-                <div className="bg-red-50 p-4 border-l-4 border-red-500">
-                    <p className="text-red-700">{deleteError}</p>
+                <div className="bg-red-50 p-3 sm:p-4 border-l-4 border-red-500">
+                    <p className="text-red-700 text-sm sm:text-base">{deleteError}</p>
                 </div>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-3">
-                <div className="col-span-1 border-r h-[calc(100vh-250px)] overflow-y-auto">
+            {/* Mobile: Back button when viewing details */}
+            {showMobileDetails && selectedApp && (
+                <div className="md:hidden p-3 border-b">
+                    <button
+                        onClick={() => setShowMobileDetails(false)}
+                        className="flex items-center text-blue-600"
+                    >
+                        <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                        Back to applications
+                    </button>
+                </div>
+            )}
+
+            {/* Main content area with responsive layout */}
+            <div className="md:grid md:grid-cols-3">
+                {/* Application list - hidden on mobile when details are shown */}
+                <div className={`col-span-1 border-r ${showMobileDetails ? 'hidden md:block' : ''} max-h-[calc(100vh-250px)] overflow-y-auto`}>
                     {filteredApplications.length === 0 ? (
                         <div className="p-4 text-center text-gray-500">
                             No applications found
@@ -209,7 +251,7 @@ export default function ApplicationsManagement() {
                                     onClick={() => setSelectedApp(app)}
                                 >
                                     <div className="flex items-center">
-                                        <div className="h-12 w-12 rounded-full overflow-hidden relative flex-shrink-0">
+                                        <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full overflow-hidden relative flex-shrink-0">
                                             {app.petId.img_arr && app.petId.img_arr.length > 0 ? (
                                                 <Image
                                                     src={app.petId.img_arr[0]}
@@ -223,14 +265,14 @@ export default function ApplicationsManagement() {
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="ml-3 flex-grow">
+                                        <div className="ml-3 flex-grow min-w-0">
                                             <div className="flex items-center justify-between">
-                                                <p className="text-sm font-medium truncate max-w-[150px] mr-2">
+                                                <p className="text-sm font-medium truncate max-w-[120px] sm:max-w-[150px] mr-2">
                                                     {app.petId.name}
                                                 </p>
                                                 {getStatusBadge(app.status)}
                                             </div>
-                                            <p className="text-xs text-gray-500">
+                                            <p className="text-xs text-gray-500 truncate">
                                                 {app.adopterId.firstName} {app.adopterId.lastName}
                                             </p>
                                             <p className="text-xs text-gray-400">
@@ -244,20 +286,21 @@ export default function ApplicationsManagement() {
                     )}
                 </div>
 
-                <div className="col-span-1 md:col-span-2 p-4 h-[calc(100vh-250px)] overflow-y-auto">
+                {/* Application details - shown on mobile only when an app is selected */}
+                <div className={`col-span-1 md:col-span-2 p-3 sm:p-4 ${!showMobileDetails ? 'hidden md:block' : ''} max-h-[calc(100vh-250px)] overflow-y-auto`}>
                     {!selectedApp ? (
                         <div className="flex flex-col items-center justify-center h-full text-gray-400">
-                            <svg className="w-16 h-16 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-12 h-12 sm:w-16 sm:h-16 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
-                            <p>Select an application to view details</p>
+                            <p className="text-center">Select an application to view details</p>
                         </div>
                     ) : (
                         <div>
-                            <div className="flex justify-between items-start mb-4">
-                                <h3 className="text-lg font-semibold">
+                            <div className="flex justify-between items-start mb-4 flex-wrap gap-2">
+                                <h3 className="text-base sm:text-lg font-semibold">
                                     Application for {selectedApp.petId.name}
-                                    <span className="text-sm font-normal text-gray-500 ml-2">
+                                    <span className="text-xs sm:text-sm font-normal text-gray-500 block sm:inline sm:ml-2">
                                         (ID: {selectedApp.applicationId})
                                     </span>
                                 </h3>
@@ -277,8 +320,9 @@ export default function ApplicationsManagement() {
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                                <div className="bg-gray-50 p-4 rounded capitalize">
+                            {/* Pet and applicant info - stacked on mobile, side-by-side on tablets+ */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-5">
+                                <div className="bg-gray-50 p-3 sm:p-4 rounded capitalize">
                                     <h4 className="font-medium mb-2 text-sm text-gray-500">Pet Information</h4>
                                     <p className="text-sm"><span className="font-medium">Name:</span> {selectedApp.petId.name}</p>
                                     <p className="text-sm"><span className="font-medium">Species:</span> {selectedApp.petId.specie}</p>
@@ -287,25 +331,26 @@ export default function ApplicationsManagement() {
                                     <p className="text-sm"><span className="font-medium">Status:</span> {selectedApp.petId.status}</p>
                                 </div>
 
-                                <div className="bg-gray-50 p-4 rounded">
+                                <div className="bg-gray-50 p-3 sm:p-4 rounded">
                                     <h4 className="font-medium mb-2 text-sm text-gray-500">Applicant Information</h4>
-                                    <p className="text-sm"><span className="font-medium">Name:</span> {selectedApp.adopterId.firstName} {selectedApp.adopterId.lastName}</p>
-                                    <p className="text-sm"><span className="font-medium">Email:</span> {selectedApp.adopterId.email}</p>
+                                    <p className="text-sm break-words"><span className="font-medium">Name:</span> {selectedApp.adopterId.firstName} {selectedApp.adopterId.lastName}</p>
+                                    <p className="text-sm break-words"><span className="font-medium">Email:</span> {selectedApp.adopterId.email}</p>
                                     <p className="text-sm"><span className="font-medium">Phone:</span> {selectedApp.adopterId.contactNumber}</p>
                                     <p className="text-sm"><span className="font-medium">Location:</span> {selectedApp.adopterId.location}</p>
                                 </div>
                             </div>
 
-                            <div className="mb-6">
-                                <h4 className="px-4 font-medium mb-3 text-sm text-gray-500">Application Details</h4>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 capitalize">
-                                    <div className='px-4 '>
-                                        <p className="text-sm "><span className="font-medium">Housing Status:</span> {selectedApp.housingStatus}</p>
+                            {/* Application details section */}
+                            <div className="mb-5">
+                                <h4 className="px-2 sm:px-4 font-medium mb-3 text-sm text-gray-500">Application Details</h4>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 capitalize">
+                                    <div className='px-2 sm:px-4'>
+                                        <p className="text-sm"><span className="font-medium">Housing Status:</span> {selectedApp.housingStatus}</p>
                                         <p className="text-sm"><span className="font-medium">Pets Allowed:</span> {selectedApp.petsAllowed}</p>
                                         <p className="text-sm"><span className="font-medium">Other Pets:</span> {selectedApp.otherPets}</p>
                                         <p className="text-sm"><span className="font-medium">Financially Prepared:</span> {selectedApp.financiallyPrepared}</p>
                                     </div>
-                                    <div className='px-4'>
+                                    <div className='px-2 sm:px-4'>
                                         <p className="text-sm"><span className="font-medium">Pet Location:</span> {selectedApp.petLocation}</p>
                                         <p className="text-sm"><span className="font-medium">Primary Caregiver:</span> {selectedApp.primaryCaregiver}</p>
                                         <p className="text-sm"><span className="font-medium">Emergency Care:</span> {selectedApp.emergencyPetCare}</p>
@@ -313,15 +358,17 @@ export default function ApplicationsManagement() {
                                 </div>
                             </div>
 
-                            <div className="mb-6 px-4">
+                            {/* Reference section */}
+                            <div className="mb-5 px-2 sm:px-4">
                                 <h4 className="font-medium mb-3 text-sm text-gray-500">Reference</h4>
                                 <p className="text-sm"><span className="font-medium">Name:</span> {selectedApp.reference.name}</p>
-                                <p className="text-sm"><span className="font-medium">Email:</span> {selectedApp.reference.email}</p>
+                                <p className="text-sm break-words"><span className="font-medium">Email:</span> {selectedApp.reference.email}</p>
                                 <p className="text-sm"><span className="font-medium">Phone:</span> {selectedApp.reference.phone}</p>
                             </div>
 
+                            {/* Status update section */}
                             {(selectedApp.status === 'pending' || selectedApp.status === 'reviewing') && (
-                                <div className="border-t pt-4 mt-4">
+                                <div className="border-t pt-4 mt-4 px-2 sm:px-0">
                                     <h4 className="font-medium mb-3">Update Application Status</h4>
 
                                     <div className="mb-4">
@@ -355,7 +402,7 @@ export default function ApplicationsManagement() {
                                     </div>
 
                                     <button
-                                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-blue-300"
+                                        className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-blue-300"
                                         disabled={!updateStatus}
                                         onClick={handleStatusUpdate}
                                     >
@@ -364,9 +411,10 @@ export default function ApplicationsManagement() {
                                 </div>
                             )}
 
+                            {/* Notes section for approved/rejected applications */}
                             {(selectedApp.status === 'approved' || selectedApp.status === 'rejected') && (
-                                <div className="border-t pt-4 mt-4">
-                                    <div className="flex justify-between items-center">
+                                <div className="border-t pt-4 mt-4 px-2 sm:px-0">
+                                    <div className="flex justify-between items-center flex-wrap gap-2">
                                         <h4 className="font-medium mb-2">Organization Notes</h4>
                                         {selectedApp.status === 'rejected' && (
                                             <button
@@ -382,11 +430,11 @@ export default function ApplicationsManagement() {
                                     </div>
                                     <div className="bg-gray-50 p-3 rounded">
                                         {selectedApp.status === 'rejected' && (
-                                            <p className="text-sm mb-2">
+                                            <p className="text-sm mb-2 break-words">
                                                 <span className="font-medium">Rejection Reason:</span> {selectedApp.rejectionReason || 'No reason provided'}
                                             </p>
                                         )}
-                                        <p className="text-sm">
+                                        <p className="text-sm break-words">
                                             <span className="font-medium">Notes:</span> {selectedApp.organizationNotes || 'No notes added'}
                                         </p>
                                         {selectedApp.reviewedBy && (
@@ -402,28 +450,29 @@ export default function ApplicationsManagement() {
                 </div>
             </div>
 
+            {/* Mobile-friendly delete modal */}
             {showDeleteModal && selectedApp && (
-                <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 max-w-md w-full">
-                        <h3 className="font-bold text-xl mb-4 text-red-600">Delete Application</h3>
-                        <p className="mb-6">
+                <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg p-4 sm:p-6 max-w-md w-full">
+                        <h3 className="font-bold text-lg sm:text-xl mb-3 sm:mb-4 text-red-600">Delete Application</h3>
+                        <p className="mb-5 text-sm sm:text-base">
                             Are you sure you want to delete the application for <b>{selectedApp.petId.name}</b> submitted by <b>{selectedApp.adopterId.firstName} {selectedApp.adopterId.lastName}</b>? This action cannot be undone.
                         </p>
 
-                        <div className="flex justify-end space-x-3">
-                            <button
-                                onClick={() => setShowDeleteModal(false)}
-                                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
-                                disabled={isDeleting}
-                            >
-                                Cancel
-                            </button>
+                        <div className="flex flex-col sm:flex-row-reverse gap-3 sm:gap-4">
                             <button
                                 onClick={handleDeleteApplication}
-                                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:bg-red-300"
+                                className="w-full sm:w-auto px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:bg-red-300 text-sm sm:text-base"
                                 disabled={isDeleting}
                             >
                                 {isDeleting ? "Deleting..." : "Delete Application"}
+                            </button>
+                            <button
+                                onClick={() => setShowDeleteModal(false)}
+                                className="w-full sm:w-auto px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 text-sm sm:text-base"
+                                disabled={isDeleting}
+                            >
+                                Cancel
                             </button>
                         </div>
                     </div>

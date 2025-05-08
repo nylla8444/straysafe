@@ -52,25 +52,37 @@ export default function ApplicationsList() {
     if (loading) {
         return (
             <div className="flex justify-center items-center h-40">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                <div className="flex flex-col items-center">
+                    <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+                    <p className="mt-3 text-sm text-gray-500">Loading applications...</p>
+                </div>
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-5">
-                <p className="text-red-700">{error}</p>
+            <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r">
+                <p className="text-red-700 text-sm sm:text-base">{error}</p>
             </div>
         );
     }
 
     if (applications.length === 0) {
         return (
-            <div className="text-center py-10 bg-white rounded-lg shadow">
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No Adoption Applications</h3>
-                <p className="text-gray-500 mb-6">You haven't submitted any adoption applications yet.</p>
-                <Link href="/browse/pets" className="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">
+            <div className="text-center py-8 bg-white rounded-lg shadow">
+                <div className="mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No Applications</h3>
+                <p className="text-gray-500 mb-6 px-4">You haven't submitted any adoption applications yet.</p>
+                <Link href="/browse/pets" className="text-white bg-blue-600 hover:bg-blue-700 px-5 py-2.5 rounded-lg inline-flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                        <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                    </svg>
                     Browse Pets for Adoption
                 </Link>
             </div>
@@ -79,18 +91,28 @@ export default function ApplicationsList() {
 
     return (
         <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="p-5 border-b flex justify-between items-center">
+            {/* Header - Responsive layout */}
+            <div className="p-4 sm:p-5 border-b flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
                 <h3 className="text-lg font-medium text-gray-900">Your Adoption Applications</h3>
-                <Link href="/browse/pets" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                <Link
+                    href="/browse/pets"
+                    className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-center sm:text-left w-full sm:w-auto flex justify-center items-center"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1.5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                    </svg>
                     Adopt More Pets
                 </Link>
             </div>
+
+            {/* Applications list - Mobile optimized */}
             <ul className="divide-y divide-gray-200">
                 {applications.map((app) => (
-                    <li key={app._id} className="p-4 hover:bg-gray-50 transition-colors cursor-pointer">
-                        <Link href={`/profile/applications/${app.applicationId}`} className="block" aria-label={`View application for ${app.petId.name}`}>
+                    <li key={app._id} className="hover:bg-gray-50 transition-colors">
+                        <Link href={`/profile/applications/${app.applicationId}`} className="block p-3 sm:p-4" aria-label={`View application for ${app.petId.name}`}>
                             <div className="flex items-center">
-                                <div className="h-16 w-16 rounded-md overflow-hidden relative flex-shrink-0">
+                                {/* Pet image - Responsive sizing */}
+                                <div className="h-14 w-14 sm:h-16 sm:w-16 rounded-md overflow-hidden relative flex-shrink-0">
                                     {app.petId.img_arr && app.petId.img_arr.length > 0 ? (
                                         <Image
                                             src={app.petId.img_arr[0]}
@@ -100,31 +122,36 @@ export default function ApplicationsList() {
                                         />
                                     ) : (
                                         <div className="bg-gray-200 h-full w-full flex items-center justify-center">
-                                            <span className="text-gray-500">No image</span>
+                                            <span className="text-xs text-gray-500">No image</span>
                                         </div>
                                     )}
                                 </div>
-                                <div className="ml-4 flex-grow">
-                                    <div className="flex justify-between items-start">
-                                        <div>
-                                            <p className="text-gray-900 font-medium">{app.petId.name}</p>
-                                            <p className="text-sm text-gray-500">{app.petId.breed}</p>
+
+                                {/* Application details - Better mobile layout */}
+                                <div className="ml-3 sm:ml-4 flex-grow min-w-0">
+                                    {/* Top section with pet name and status */}
+                                    <div className="flex justify-between items-start flex-wrap gap-y-1">
+                                        <div className="pr-2 min-w-0">
+                                            <p className="text-gray-900 font-medium truncate">{app.petId.name}</p>
+                                            <p className="text-xs sm:text-sm text-gray-500 truncate">{app.petId.breed}</p>
                                         </div>
-                                        <div>
+                                        <div className="flex-shrink-0">
                                             {getStatusBadge(app.status)}
                                         </div>
                                     </div>
-                                    <div className="flex justify-between items-center mt-2">
-                                        <p className="text-xs text-gray-500">
-                                            Submitted on {format(new Date(app.createdAt), 'MMM d, yyyy')}
+
+                                    {/* Bottom section with date and application ID */}
+                                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-2 gap-1">
+                                        <p className="text-xs text-gray-500 order-2 sm:order-1">
+                                            Submitted: {format(new Date(app.createdAt), 'MMM d, yyyy')}
                                         </p>
-                                        <div className="flex items-center">
-                                            <p className="text-xs text-gray-500 mr-2">
-                                                Application #{app.applicationId}
-                                            </p>
-                                            <span className="text-xs text-blue-600 font-medium flex items-center">
-                                                View details
-                                                <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+                                        {/* View details button - Better touch target */}
+                                        <div className="order-1 sm:order-2 mt-1 sm:mt-0">
+                                            <span className="text-xs text-blue-600 font-medium flex items-center justify-end sm:justify-start">
+                                                <span className="hidden sm:inline mr-1">Application #</span>
+                                                <span className="truncate max-w-[100px]">{app.applicationId}</span>
+                                                <svg className="w-4 h-4 ml-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                                                 </svg>
                                             </span>

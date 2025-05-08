@@ -35,7 +35,6 @@ export default function AdoptionApplicationPage() {
         termsAccepted: false
     });
 
-    // Add validation state for form fields
     const [validationErrors, setValidationErrors] = useState({
         housingStatus: '',
         petsAllowed: '',
@@ -50,7 +49,6 @@ export default function AdoptionApplicationPage() {
         termsAccepted: ''
     });
 
-    // Validation functions
     const validateSelect = (value, fieldName) => {
         if (!value) return `Please select an option for ${fieldName}`;
         return '';
@@ -87,7 +85,6 @@ export default function AdoptionApplicationPage() {
     };
 
     useEffect(() => {
-        // Redirect if not authenticated or not an adopter
         if (!isAuthenticated) {
             router.push(`/login?redirect=/adopt/${petId}`);
             return;
@@ -97,12 +94,10 @@ export default function AdoptionApplicationPage() {
             return;
         }
 
-        // Fetch pet data and check for existing applications
         const fetchPetAndCheckApplications = async () => {
             try {
                 setLoading(true);
 
-                // Fetch pet data
                 const petResponse = await axios.get(`/api/pets/${petId}`);
                 if (!petResponse.data.success) {
                     setError('Unable to load pet information.');
@@ -112,7 +107,6 @@ export default function AdoptionApplicationPage() {
 
                 setPet(petResponse.data.pet);
 
-                // Check for existing applications
                 const applicationsResponse = await axios.get('/api/adoptions/adopter');
                 if (applicationsResponse.data.success) {
                     const applications = applicationsResponse.data.applications;
@@ -137,12 +131,10 @@ export default function AdoptionApplicationPage() {
         fetchPetAndCheckApplications();
     }, [petId, isAuthenticated, router, isAdopter]);
 
-    // Check if the form has any validation errors
     const hasValidationErrors = () => {
         return Object.values(validationErrors).some(error => error !== '');
     };
 
-    // Get complete validation status (including empty fields)
     const validateForm = () => {
         const errors = {
             housingStatus: validateSelect(formData.housingStatus, 'housing status'),
@@ -165,9 +157,7 @@ export default function AdoptionApplicationPage() {
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
 
-        // Update form data
         if (name.includes('.')) {
-            // Handle nested objects (for reference fields)
             const [parent, child] = name.split('.');
             setFormData(prev => ({
                 ...prev,
@@ -177,7 +167,6 @@ export default function AdoptionApplicationPage() {
                 }
             }));
 
-            // Validate reference fields
             if (child === 'email') {
                 setValidationErrors(prev => ({
                     ...prev,
@@ -195,13 +184,11 @@ export default function AdoptionApplicationPage() {
                 }));
             }
         } else {
-            // Handle regular fields
             setFormData(prev => ({
                 ...prev,
                 [name]: type === 'checkbox' ? checked : value
             }));
 
-            // Validate the field based on its type
             if (name === 'termsAccepted') {
                 setValidationErrors(prev => ({
                     ...prev,
@@ -224,9 +211,7 @@ export default function AdoptionApplicationPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Validate all fields before submission
         if (!validateForm()) {
-            // Scroll to the first error
             const firstErrorField = Object.keys(validationErrors).find(key => validationErrors[key]);
             const errorElement = document.querySelector(`[name="${firstErrorField}"]`);
             if (errorElement) {
@@ -245,7 +230,6 @@ export default function AdoptionApplicationPage() {
             });
 
             if (response.data.success) {
-                // Redirect to a success page
                 router.push(`/profile/applications?success=true`);
             } else {
                 setError(response.data.error || 'Failed to submit application. Please try again.');
@@ -258,7 +242,6 @@ export default function AdoptionApplicationPage() {
         }
     };
 
-    // Helper function for input field styling
     const getInputClassName = (fieldName) => {
         const baseClasses = "w-full p-2 border rounded-md";
         if (!validationErrors[fieldName]) {
@@ -267,28 +250,22 @@ export default function AdoptionApplicationPage() {
         return `${baseClasses} border-red-500`;
     };
 
-
-    // Check if all required fields are filled
     const isFormComplete = () => {
-        // Check all required select/radio fields
         if (!formData.housingStatus || !formData.petsAllowed ||
             !formData.otherPets || !formData.financiallyPrepared) {
             return false;
         }
 
-        // Check all required text fields
         if (!formData.petLocation.trim() || !formData.primaryCaregiver.trim() ||
             !formData.emergencyPetCare.trim()) {
             return false;
         }
 
-        // Check reference fields
         if (!formData.reference.name.trim() || !formData.reference.email.trim() ||
             !formData.reference.phone.trim()) {
             return false;
         }
 
-        // Check terms acceptance
         if (!formData.termsAccepted) {
             return false;
         }
@@ -296,33 +273,37 @@ export default function AdoptionApplicationPage() {
         return true;
     };
 
-
     if (loading) {
         return (
-            <div className="max-w-5xl mx-auto p-6 min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            <div className="max-w-5xl mx-auto p-4 sm:p-6 min-h-screen flex items-center justify-center">
+                <div className="flex flex-col items-center">
+                    <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+                    <p className="mt-3 text-sm text-gray-500">Loading application form...</p>
+                </div>
             </div>
         );
     }
 
     if (error || !pet) {
         return (
-            <div className="max-w-5xl mx-auto p-6">
+            <div className="max-w-5xl mx-auto p-4 sm:p-6">
                 <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
                     <p className="text-red-700">{error || 'Pet not found.'}</p>
                 </div>
-                <Link href="/browse/pets" className="text-blue-600 hover:underline">
-                    ← Back to browse pets
+                <Link href="/browse/pets" className="inline-flex items-center text-blue-600 hover:underline py-2">
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    Back to browse pets
                 </Link>
             </div>
         );
     }
 
     return (
-        <div className="max-w-6xl mx-auto p-4 md:p-6">
-            {/* Back navigation */}
+        <div className="max-w-6xl mx-auto p-4 sm:p-6">
             <div className="mb-6">
-                <Link href={`/browse/pets/${pet._id}`} className="inline-flex items-center text-blue-600 hover:text-blue-800">
+                <Link href={`/browse/pets/${pet._id}`} className="inline-flex items-center text-blue-600 hover:text-blue-800 py-2">
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
                     </svg>
@@ -330,13 +311,12 @@ export default function AdoptionApplicationPage() {
                 </Link>
             </div>
 
-            <h1 className="text-3xl font-bold mb-8 text-center">Adoption Application</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center">Adoption Application</h1>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Pet information card */}
-                <div className="lg:col-span-1">
-                    <div className="bg-white rounded-xl shadow-md overflow-hidden sticky top-6">
-                        <div className="relative h-48 w-full">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+                <div className="lg:col-span-1 order-1 lg:order-none">
+                    <div className="bg-white rounded-xl shadow-md overflow-hidden lg:sticky lg:top-6">
+                        <div className="relative h-40 sm:h-48 w-full">
                             {pet.img_arr && pet.img_arr.length > 0 ? (
                                 <Image
                                     src={pet.img_arr[0]}
@@ -356,25 +336,27 @@ export default function AdoptionApplicationPage() {
                             </div>
                         </div>
                         <div className="p-4">
-                            <div className="mb-4">
-                                <h3 className="font-medium text-gray-700">From</h3>
-                                <p className="text-gray-900">{pet.organization?.organizationName || 'Unknown shelter'}</p>
+                            <div className="flex flex-wrap -mx-2">
+                                <div className="px-2 w-1/2 mb-4">
+                                    <h3 className="font-medium text-gray-700 text-sm">From</h3>
+                                    <p className="text-gray-900 truncate">{pet.organization?.organizationName || 'Unknown shelter'}</p>
+                                </div>
+
+                                <div className="px-2 w-1/2 mb-4">
+                                    <h3 className="font-medium text-gray-700 text-sm">Adoption Fee</h3>
+                                    <p className="text-gray-900">{pet.adoptionFee > 0 ? `₱${pet.adoptionFee}` : 'Free'}</p>
+                                </div>
+
+                                <div className="px-2 w-full mb-4">
+                                    <h3 className="font-medium text-gray-700 text-sm">Status</h3>
+                                    <span className="inline-block px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 capitalize">
+                                        {pet.status}
+                                    </span>
+                                </div>
                             </div>
 
-                            <div className="mb-4">
-                                <h3 className="font-medium text-gray-700">Adoption Fee</h3>
-                                <p className="text-gray-900">{pet.adoptionFee > 0 ? `₱${pet.adoptionFee}` : 'Free'}</p>
-                            </div>
-
-                            <div className="mb-4">
-                                <h3 className="font-medium text-gray-700">Status</h3>
-                                <span className="inline-block px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 capitalize">
-                                    {pet.status}
-                                </span>
-                            </div>
-
-                            <div className="border-t pt-4">
-                                <p className="text-sm text-gray-500">
+                            <div className="border-t pt-3">
+                                <p className="text-xs sm:text-sm text-gray-500">
                                     Completing this application is the first step in the adoption process.
                                     The shelter will review your application and contact you.
                                 </p>
@@ -383,20 +365,19 @@ export default function AdoptionApplicationPage() {
                     </div>
                 </div>
 
-                {/* Application form */}
-                <div className="lg:col-span-2">
-                    <div className="bg-white rounded-xl shadow-md p-6">
-                        <h2 className="text-xl font-semibold mb-6">Tell us about you and your home</h2>
+                <div className="lg:col-span-2 order-2">
+                    <div className="bg-white rounded-xl shadow-md p-4 sm:p-6">
+                        <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Tell us about you and your home</h2>
 
                         <form onSubmit={handleSubmit}>
-                            <div className="space-y-6">
+                            <div className="space-y-5 sm:space-y-6">
                                 <div>
-                                    <label className="block mb-2 font-medium">Do you rent or own your home?</label>
+                                    <label className="block mb-2 font-medium text-sm sm:text-base">Do you rent or own your home?</label>
                                     <select
                                         name="housingStatus"
                                         value={formData.housingStatus}
                                         onChange={handleChange}
-                                        className={getInputClassName('housingStatus')}
+                                        className={`${getInputClassName('housingStatus')} h-11 text-base`}
                                         required
                                     >
                                         <option value="">Please select</option>
@@ -411,30 +392,30 @@ export default function AdoptionApplicationPage() {
                                 </div>
 
                                 <div>
-                                    <label className="block mb-2 font-medium">Are pets allowed in your residence?</label>
-                                    <div className="flex gap-4">
-                                        <label className="flex items-center">
+                                    <label className="block mb-2 font-medium text-sm sm:text-base">Are pets allowed in your residence?</label>
+                                    <div className="flex gap-6">
+                                        <label className="flex items-center h-10 cursor-pointer">
                                             <input
                                                 type="radio"
                                                 name="petsAllowed"
                                                 value="yes"
                                                 checked={formData.petsAllowed === 'yes'}
                                                 onChange={handleChange}
-                                                className="mr-2"
+                                                className="w-5 h-5 mr-2"
                                                 required
                                             />
-                                            Yes
+                                            <span className="select-none">Yes</span>
                                         </label>
-                                        <label className="flex items-center">
+                                        <label className="flex items-center h-10 cursor-pointer">
                                             <input
                                                 type="radio"
                                                 name="petsAllowed"
                                                 value="no"
                                                 checked={formData.petsAllowed === 'no'}
                                                 onChange={handleChange}
-                                                className="mr-2"
+                                                className="w-5 h-5 mr-2"
                                             />
-                                            No
+                                            <span className="select-none">No</span>
                                         </label>
                                     </div>
                                     {validationErrors.petsAllowed && (
@@ -443,7 +424,7 @@ export default function AdoptionApplicationPage() {
                                 </div>
 
                                 <div>
-                                    <label className="block mb-2 font-medium">Where will the adopted pet stay most of the time?</label>
+                                    <label className="block mb-2 font-medium text-sm sm:text-base">Where will the adopted pet stay most of the time?</label>
                                     <textarea
                                         name="petLocation"
                                         value={formData.petLocation}
@@ -459,13 +440,13 @@ export default function AdoptionApplicationPage() {
                                 </div>
 
                                 <div>
-                                    <label className="block mb-2 font-medium">Who will primarily care for the pet?</label>
+                                    <label className="block mb-2 font-medium text-sm sm:text-base">Who will primarily care for the pet?</label>
                                     <input
                                         type="text"
                                         name="primaryCaregiver"
                                         value={formData.primaryCaregiver}
                                         onChange={handleChange}
-                                        className={getInputClassName('primaryCaregiver')}
+                                        className={`${getInputClassName('primaryCaregiver')} h-11`}
                                         placeholder="Name and relationship to you"
                                         required
                                     />
@@ -475,30 +456,30 @@ export default function AdoptionApplicationPage() {
                                 </div>
 
                                 <div>
-                                    <label className="block mb-2 font-medium">Do you have other pets at home?</label>
-                                    <div className="flex gap-4">
-                                        <label className="flex items-center">
+                                    <label className="block mb-2 font-medium text-sm sm:text-base">Do you have other pets at home?</label>
+                                    <div className="flex gap-6">
+                                        <label className="flex items-center h-10 cursor-pointer">
                                             <input
                                                 type="radio"
                                                 name="otherPets"
                                                 value="yes"
                                                 checked={formData.otherPets === 'yes'}
                                                 onChange={handleChange}
-                                                className="mr-2"
+                                                className="w-5 h-5 mr-2"
                                                 required
                                             />
-                                            Yes
+                                            <span className="select-none">Yes</span>
                                         </label>
-                                        <label className="flex items-center">
+                                        <label className="flex items-center h-10 cursor-pointer">
                                             <input
                                                 type="radio"
                                                 name="otherPets"
                                                 value="no"
                                                 checked={formData.otherPets === 'no'}
                                                 onChange={handleChange}
-                                                className="mr-2"
+                                                className="w-5 h-5 mr-2"
                                             />
-                                            No
+                                            <span className="select-none">No</span>
                                         </label>
                                     </div>
                                     {validationErrors.otherPets && (
@@ -507,30 +488,30 @@ export default function AdoptionApplicationPage() {
                                 </div>
 
                                 <div>
-                                    <label className="block mb-2 font-medium">Are you financially prepared for pet expenses (e.g., food, vet care)?</label>
-                                    <div className="flex gap-4">
-                                        <label className="flex items-center">
+                                    <label className="block mb-2 font-medium text-sm sm:text-base">Are you financially prepared for pet expenses (e.g., food, vet care)?</label>
+                                    <div className="flex gap-6">
+                                        <label className="flex items-center h-10 cursor-pointer">
                                             <input
                                                 type="radio"
                                                 name="financiallyPrepared"
                                                 value="yes"
                                                 checked={formData.financiallyPrepared === 'yes'}
                                                 onChange={handleChange}
-                                                className="mr-2"
+                                                className="w-5 h-5 mr-2"
                                                 required
                                             />
-                                            Yes
+                                            <span className="select-none">Yes</span>
                                         </label>
-                                        <label className="flex items-center">
+                                        <label className="flex items-center h-10 cursor-pointer">
                                             <input
                                                 type="radio"
                                                 name="financiallyPrepared"
                                                 value="no"
                                                 checked={formData.financiallyPrepared === 'no'}
                                                 onChange={handleChange}
-                                                className="mr-2"
+                                                className="w-5 h-5 mr-2"
                                             />
-                                            No
+                                            <span className="select-none">No</span>
                                         </label>
                                     </div>
                                     {validationErrors.financiallyPrepared && (
@@ -539,7 +520,7 @@ export default function AdoptionApplicationPage() {
                                 </div>
 
                                 <div>
-                                    <label className="block mb-2 font-medium">If you have to leave town, emergently or planned, where would your pet stay?</label>
+                                    <label className="block mb-2 font-medium text-sm sm:text-base">If you have to leave town, emergently or planned, where would your pet stay?</label>
                                     <textarea
                                         name="emergencyPetCare"
                                         value={formData.emergencyPetCare}
@@ -554,17 +535,17 @@ export default function AdoptionApplicationPage() {
                                     )}
                                 </div>
 
-                                <div className="border-t pt-6 mt-6">
-                                    <h3 className="text-lg font-medium mb-4">Personal Reference</h3>
+                                <div className="border-t pt-5 sm:pt-6 mt-5 sm:mt-6">
+                                    <h3 className="text-base sm:text-lg font-medium mb-4">Personal Reference</h3>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
-                                            <label className="block mb-2 font-medium">Name</label>
+                                            <label className="block mb-2 font-medium text-sm sm:text-base">Name</label>
                                             <input
                                                 type="text"
                                                 name="reference.name"
                                                 value={formData.reference.name}
                                                 onChange={handleChange}
-                                                className={getInputClassName('reference.name')}
+                                                className={`${getInputClassName('reference.name')} h-11`}
                                                 required
                                             />
                                             {validationErrors['reference.name'] && (
@@ -572,13 +553,13 @@ export default function AdoptionApplicationPage() {
                                             )}
                                         </div>
                                         <div>
-                                            <label className="block mb-2 font-medium">Email</label>
+                                            <label className="block mb-2 font-medium text-sm sm:text-base">Email</label>
                                             <input
-                                                type="text" // Changed from email for custom validation
+                                                type="text"
                                                 name="reference.email"
                                                 value={formData.reference.email}
                                                 onChange={handleChange}
-                                                className={getInputClassName('reference.email')}
+                                                className={`${getInputClassName('reference.email')} h-11`}
                                                 required
                                                 placeholder="example@email.com"
                                             />
@@ -587,13 +568,13 @@ export default function AdoptionApplicationPage() {
                                             )}
                                         </div>
                                         <div className="md:col-span-2">
-                                            <label className="block mb-2 font-medium">Phone Number</label>
+                                            <label className="block mb-2 font-medium text-sm sm:text-base">Phone Number</label>
                                             <input
                                                 type="tel"
                                                 name="reference.phone"
                                                 value={formData.reference.phone}
                                                 onChange={handleChange}
-                                                className={getInputClassName('reference.phone')}
+                                                className={`${getInputClassName('reference.phone')} h-11`}
                                                 required
                                                 placeholder="09XXXXXXXXX"
                                             />
@@ -606,10 +587,10 @@ export default function AdoptionApplicationPage() {
                                 </div>
                             </div>
 
-                            <div className="mt-8 border-t pt-6">
-                                <h3 className="text-lg font-medium mb-4">Terms and Conditions</h3>
-                                <div className="bg-gray-50 p-4 rounded-md mb-6 max-h-64 overflow-y-auto text-sm">
-                                    <p className="mb-4">By clicking the submit button:</p>
+                            <div className="mt-6 sm:mt-8 border-t pt-5 sm:pt-6">
+                                <h3 className="text-base sm:text-lg font-medium mb-4">Terms and Conditions</h3>
+                                <div className="bg-gray-50 p-3 sm:p-4 rounded-md mb-4 sm:mb-6 max-h-48 sm:max-h-64 overflow-y-auto text-sm">
+                                    <p className="mb-3 sm:mb-4">By clicking the submit button:</p>
                                     <ul className="list-disc pl-5 space-y-2">
                                         <li>I agree to go through the adoption process, will undergo a home check, and interview.</li>
                                         <li>I understand my references will be checked including veterinary and personal.</li>
@@ -624,18 +605,18 @@ export default function AdoptionApplicationPage() {
                                 </div>
 
                                 <div className="flex items-start mb-6">
-                                    <div className="flex items-center h-5">
+                                    <div className="flex items-center h-6">
                                         <input
                                             id="terms"
                                             type="checkbox"
                                             name="termsAccepted"
                                             checked={formData.termsAccepted}
                                             onChange={handleChange}
-                                            className={validationErrors.termsAccepted ? "w-4 h-4 border border-red-500 rounded" : "w-4 h-4 border border-gray-300 rounded"}
+                                            className={`w-5 h-5 ${validationErrors.termsAccepted ? "border-red-500" : "border-gray-300"} rounded`}
                                             required
                                         />
                                     </div>
-                                    <label htmlFor="terms" className="ml-2 text-sm font-medium">
+                                    <label htmlFor="terms" className="ml-3 block text-sm sm:text-base font-medium cursor-pointer">
                                         I have read and agree to all terms and conditions
                                     </label>
                                 </div>
@@ -646,7 +627,7 @@ export default function AdoptionApplicationPage() {
                                 <button
                                     type="submit"
                                     disabled={loading || hasValidationErrors() || !isFormComplete() || hasExistingApplication}
-                                    className={`w-full py-3 px-4 font-medium rounded-md shadow-sm transition-colors ${loading || hasValidationErrors() || !isFormComplete() || hasExistingApplication
+                                    className={`w-full py-3 sm:py-4 px-4 font-medium rounded-md shadow-sm transition-colors text-base ${loading || hasValidationErrors() || !isFormComplete() || hasExistingApplication
                                         ? 'bg-blue-400 cursor-not-allowed text-white'
                                         : 'bg-blue-600 hover:bg-blue-700 text-white'
                                         }`}
@@ -655,7 +636,7 @@ export default function AdoptionApplicationPage() {
                                 </button>
                             </div>
 
-                            <p className="mt-4 text-sm text-gray-500 text-center">
+                            <p className="mt-4 text-xs sm:text-sm text-gray-500 text-center">
                                 By submitting, you agree to be contacted by the shelter about your application.
                             </p>
                         </form>
