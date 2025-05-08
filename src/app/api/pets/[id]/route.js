@@ -1,14 +1,22 @@
 import { NextResponse } from 'next/server';
 import connectionToDB from '../../../../../lib/mongoose';
 import Pet from '../../../../../models/Pet';
+import User from '../../../../../models/User';
 import { withAuth } from '../../../../../middleware/authMiddleware';
 import { withCache } from '../../../../../middleware/cacheMiddleware';
+import mongoose from 'mongoose'; // Ensure mongoose is imported
 
 // Public endpoint with caching for individual pet details
 export async function GET(request, { params }) {
     return withCache(request, async (req) => {
         try {
             await connectionToDB();
+
+            // Make sure User model is registered
+            if (!mongoose.modelNames().includes('User')) {
+                console.log('Registering User model');
+                mongoose.model('User', User.schema);
+            }
 
             const resolvedParams = await Promise.resolve(params);
             const petId = resolvedParams.id;
