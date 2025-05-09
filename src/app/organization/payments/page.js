@@ -66,7 +66,8 @@ export default function OrganizationPaymentsPage() {
             if (!searchTerm) return true;
             const searchLower = searchTerm.toLowerCase();
             return (
-                payment.paymentId.toLowerCase().includes(searchLower) ||
+                // Convert paymentId to string before using string methods
+                String(payment.paymentId).toLowerCase().includes(searchLower) ||
                 `${payment.adopterId.firstName} ${payment.adopterId.lastName}`.toLowerCase().includes(searchLower) ||
                 payment.petId.name.toLowerCase().includes(searchLower)
             );
