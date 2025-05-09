@@ -1,14 +1,35 @@
 import { NextResponse } from 'next/server';
 import connectionToDB from '../../../../../lib/mongoose';
+import mongoose from 'mongoose';
 import Payment from '../../../../../models/Payment';
+import Pet from '../../../../../models/Pet';
+import User from '../../../../../models/User';
+import AdoptionApplication from '../../../../../models/AdoptionApplication';
 import { withAuth } from '../../../../../middleware/authMiddleware';
+
+// Function to ensure models are registered
+function ensureModels() {
+    // Only register models if they aren't already registered
+    if (!mongoose.modelNames().includes('Pet')) {
+        mongoose.model('Pet', Pet.schema);
+    }
+    if (!mongoose.modelNames().includes('User')) {
+        mongoose.model('User', User.schema);
+    }
+    if (!mongoose.modelNames().includes('AdoptionApplication')) {
+        mongoose.model('AdoptionApplication', AdoptionApplication.schema);
+    }
+}
 
 export async function GET(request, { params }) {
     return withAuth(request, async (req, decoded) => {
         try {
             await connectionToDB();
 
-            // Fix 1: Await params before accessing id
+            // Ensure models are registered before querying
+            ensureModels();
+
+            //  Await params before accessing id
             const { id } = await params;
 
             if (!id) {
@@ -41,7 +62,10 @@ export async function GET(request, { params }) {
 
         } catch (error) {
             console.error('Failed to get payment details:', error);
-            return NextResponse.json({ success: false, error: 'Failed to get payment details' }, { status: 500 });
+            return NextResponse.json({
+                success: false,
+                error: 'Failed to get payment details: ' + error.message
+            }, { status: 500 });
         }
     });
 }

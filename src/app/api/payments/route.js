@@ -1,12 +1,29 @@
 import { NextResponse } from 'next/server';
 import connectionToDB from '../../../../lib/mongoose';
+import mongoose from 'mongoose';
 import Payment from '../../../../models/Payment';
+import Pet from '../../../../models/Pet';
+import User from '../../../../models/User';
 import { withAuth } from '../../../../middleware/authMiddleware';
+
+// Function to ensure models are registered
+function ensureModels() {
+    // Only register models if they aren't already registered
+    if (!mongoose.modelNames().includes('Pet')) {
+        mongoose.model('Pet', Pet.schema);
+    }
+    if (!mongoose.modelNames().includes('User')) {
+        mongoose.model('User', User.schema);
+    }
+}
 
 export async function GET(request) {
     return withAuth(request, async (req, decoded) => {
         try {
             await connectionToDB();
+
+            // Ensure models are registered before querying
+            ensureModels();
 
             let query = {};
 
@@ -38,7 +55,7 @@ export async function GET(request) {
             console.error('Failed to get payments:', error);
             return NextResponse.json({
                 success: false,
-                error: 'Failed to get payments'
+                error: 'Failed to get payments: ' + error.message
             }, { status: 500 });
         }
     });
