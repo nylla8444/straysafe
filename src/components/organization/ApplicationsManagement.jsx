@@ -40,6 +40,11 @@ export default function ApplicationsManagement() {
     useEffect(() => {
         if (selectedApp) {
             setShowMobileDetails(true);
+
+            // If application is approved but has no paymentId, check if one exists
+            if (selectedApp.status === 'approved' && !selectedApp.paymentId) {
+                checkPaymentExists(selectedApp._id);
+            }
         }
     }, [selectedApp]);
 
@@ -58,6 +63,30 @@ export default function ApplicationsManagement() {
             setError('Failed to load adoption applications. Please try again.');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const checkPaymentExists = async (applicationId) => {
+        try {
+            const response = await axios.get(`/api/payments/check`, {
+                params: {
+                    applicationId: applicationId
+                }
+            });
+
+            if (response.data.success && response.data.payment) {
+                // Update the selected application with payment data
+                setSelectedApp(prev => ({
+                    ...prev,
+                    paymentId: response.data.payment._id,
+                    paymentStatus: response.data.payment.status
+                }));
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error("Error checking payment status:", error);
+            return false;
         }
     };
 
