@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../../context/AuthContext';
 import Image from 'next/image';
-import EditProfileModal from '../../components/EditProfileModal';
+import EditProfileModal from '../../components/adopter/EditProfileModal';
 import axios from 'axios';
 import Link from 'next/link';
 import AdopterApplicationsList from '../../components/adopter/ApplicationsList';
