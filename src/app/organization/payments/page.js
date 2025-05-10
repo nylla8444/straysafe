@@ -264,39 +264,83 @@ export default function OrganizationPaymentsPage() {
                         {filteredPayments.map(payment => (
                             <div
                                 key={payment._id}
-                                className="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
                                 onClick={() => handleRowClick(payment._id)}
+                                className="p-4 cursor-pointer hover:bg-gray-50 active:bg-gray-100 transition-colors relative"
                             >
-                                <div className="flex justify-between items-start mb-2">
+                                {/* Left border color indicator based on status */}
+                                <div
+                                    className={`absolute left-0 top-0 bottom-0 w-1 ${payment.status === 'pending' ? 'bg-gray-400' :
+                                        payment.status === 'submitted' ? 'bg-blue-500' :
+                                            payment.status === 'verified' ? 'bg-green-500' : 'bg-red-500'
+                                        }`}
+                                ></div>
+
+                                {/* Header row with payment ID, date and status */}
+                                <div className="flex justify-between items-center mb-3 pl-2">
                                     <div>
-                                        <p className="font-medium text-gray-900">Payment #{payment.paymentId}</p>
-                                        <p className="text-sm text-gray-500">
-                                            {new Date(payment.dateCreated).toLocaleDateString()}
+                                        <div className="flex items-center">
+                                            <svg className="w-4 h-4 text-gray-500 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                            </svg>
+                                            <p className="font-medium text-gray-900">#{payment.paymentId}</p>
+                                        </div>
+                                        <p className="text-xs text-gray-500 mt-0.5">
+                                            {new Date(payment.dateCreated).toLocaleDateString(undefined, {
+                                                year: 'numeric',
+                                                month: 'short',
+                                                day: 'numeric'
+                                            })}
                                         </p>
                                     </div>
                                     <PaymentStatus status={payment.status} />
                                 </div>
 
-                                <div className="flex items-center mt-3">
-                                    {payment.petId.img_arr && payment.petId.img_arr.length > 0 ? (
-                                        <div className="h-10 w-10 rounded-full overflow-hidden mr-3">
+                                {/* Main content with pet details and amount */}
+                                <div className="flex items-center pl-2">
+                                    {/* Pet image with fallback */}
+                                    <div className="relative h-14 w-14 rounded-md overflow-hidden bg-gray-100 flex-shrink-0 border border-gray-200">
+                                        {payment.petId.img_arr && payment.petId.img_arr.length > 0 ? (
                                             <Image
                                                 src={payment.petId.img_arr[0]}
                                                 alt={payment.petId.name}
-                                                width={40}
-                                                height={40}
-                                                className="h-full w-full object-cover"
+                                                fill
+                                                className="object-cover"
                                             />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center">
+                                                <svg className="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                                </svg>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Payment details */}
+                                    <div className="ml-3 flex-1">
+                                        <div className="flex justify-between items-start">
+                                            <p className="font-medium text-gray-900 text-sm max-w-[20ch] truncate">{payment.petId.name}</p>
+                                            <p className="font-medium text-gray-900 bg-gray-100 px-2 py-0.5 rounded text-sm">
+                                                ₱{payment.amount.toLocaleString()}
+                                            </p>
                                         </div>
-                                    ) : null}
-                                    <div>
-                                        <p className="text-sm font-medium">{payment.petId.name}</p>
-                                        <p className="text-sm text-gray-500">₱{payment.amount}</p>
+
+                                        <div className="flex items-center mt-1">
+                                            <svg className="w-3.5 h-3.5 text-gray-500 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                            </svg>
+                                            <p className="text-xs text-gray-600">
+                                                {payment.adopterId.firstName} {payment.adopterId.lastName}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div className="mt-2 text-sm text-gray-500">
-                                    From: {payment.adopterId.firstName} {payment.adopterId.lastName}
+                                {/* Action hint */}
+                                <div className="flex justify-end items-center mt-3 text-xs text-blue-600 pl-2">
+                                    <span>View details</span>
+                                    <svg className="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                                    </svg>
                                 </div>
                             </div>
                         ))}
@@ -306,8 +350,22 @@ export default function OrganizationPaymentsPage() {
 
             {/* Footer with pagination/count */}
             {filteredPayments.length > 0 && (
-                <div className="mt-4 bg-white p-3 rounded-lg shadow-sm flex justify-between items-center text-sm text-gray-600">
+                <div className="mt-4 bg-white p-3 sm:p-4 rounded-lg shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-sm text-gray-600">
                     <p>Showing {filteredPayments.length} payment{filteredPayments.length !== 1 ? 's' : ''}</p>
+                    {(filter !== 'all' || searchTerm) && (
+                        <button
+                            onClick={() => {
+                                setFilter('all');
+                                setSearchTerm('');
+                            }}
+                            className="text-blue-600 hover:text-blue-800 flex items-center"
+                        >
+                            <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            Clear filters
+                        </button>
+                    )}
                 </div>
             )}
         </div>
