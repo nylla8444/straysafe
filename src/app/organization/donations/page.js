@@ -454,29 +454,6 @@ export default function DonationSettingsPage() {
                     </div>
                 </form>
             )}
-
-            {/* Donation History Section Preview */}
-            <div className="mt-8 bg-white shadow rounded-lg p-6">
-                <h2 className="text-lg font-medium text-gray-900 mb-4">Donation History</h2>
-                <p className="text-gray-600 mb-6">
-                    View and manage your donation records. Track contributions and generate reports.
-                </p>
-
-                <div className="text-center p-8 border-2 border-dashed border-gray-300 rounded-md">
-                    <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
-                    <h3 className="mt-2 text-sm font-medium text-gray-900">No donations yet</h3>
-                    <p className="mt-1 text-sm text-gray-500">
-                        Donation records will appear here once you start receiving contributions.
-                    </p>
-                    <div className="mt-6">
-                        <Link href="/organization" className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700">
-                            Back to Dashboard
-                        </Link>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 }
