@@ -11,18 +11,15 @@ export async function GET(request, { params }) {
             const resolvedParams = await Promise.resolve(params);
             const organizationId = resolvedParams.id;
 
-            const organization = await User.findOne(
-                {
-                    _id: organizationId,
+            // Instead of using findOne with projection exclusions, use findById with specific includes
+            const organization = await User.findById(organizationId)
+                .select('organizationName email contactNumber location profileImage description isVerified donationSettings verificationStatus city province')
+                .where({
                     userType: 'organization',
                     isVerified: true,
                     verificationStatus: 'verified'
-                },
-                {
-                    password: 0,
-                    verificationDocument: 0
-                }
-            );
+                })
+                .lean();
 
             if (!organization) {
                 return NextResponse.json({

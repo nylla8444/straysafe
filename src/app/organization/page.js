@@ -209,6 +209,25 @@ export default function OrganizationPage() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                             </svg>
                         </Link>
+
+                        {/* New Donation Settings Card */}
+                        <Link
+                            href="/organization/donations"
+                            className="flex items-center p-4 bg-white rounded-lg shadow hover:bg-gray-50 transition-colors"
+                        >
+                            <div className="p-2 bg-purple-100 rounded-lg">
+                                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div className="ml-4 flex-grow">
+                                <h2 className="font-semibold">Donation Settings</h2>
+                                <p className="text-sm text-gray-600">Configure donation methods and payments</p>
+                            </div>
+                            <svg className="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </Link>
                     </>
                 ) : (
                     <>
