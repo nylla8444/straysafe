@@ -228,6 +228,26 @@ export default function OrganizationPage() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                             </svg>
                         </Link>
+
+
+                        {/* New Inventory Management Card */}
+                        <Link
+                            href="/organization/inventory"
+                            className="flex items-center p-4 bg-white rounded-lg shadow hover:bg-gray-50 transition-colors"
+                        >
+                            <div className="p-2 bg-amber-100 rounded-lg">
+                                <svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0v10l-8 4m-8-4V7m16 10l-8-4m-8 4l8-4M4 7l8 4" />
+                                </svg>
+                            </div>
+                            <div className="ml-4 flex-grow">
+                                <h2 className="font-semibold">Inventory Management</h2>
+                                <p className="text-sm text-gray-600">Track supplies, donations, and equipment</p>
+                            </div>
+                            <svg className="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </Link>
                     </>
                 ) : (
                     <>
@@ -255,6 +275,20 @@ export default function OrganizationPage() {
                                 <p className="text-sm text-amber-600">Verification required to access</p>
                             </div>
                         </div>
+
+                        {/* Add disabled inventory card for unverified organizations */}
+                        <div className="flex items-center p-4 bg-white rounded-lg shadow opacity-75 border-l-4 border-amber-500">
+                            <div className="p-2 bg-gray-100 rounded-lg">
+                                <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0v10l-8 4m-8-4V7m16 10l-8-4m-8 4l8-4M4 7l8 4" />
+                                </svg>
+                            </div>
+                            <div className="ml-4">
+                                <h2 className="font-semibold">Inventory Management</h2>
+                                <p className="text-sm text-amber-600">Verification required to access</p>
+                            </div>
+                        </div>
+
                     </>
                 )}
             </div>

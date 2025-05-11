@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import connectionToDB from '../../../../../lib/mongoose';
-import { DonationSettings } from '../../../../../models/Donation';
+import { DonationSettings } from '../../../../../models/DonationSettings';
 import { uploadToStorage } from '../../../../../lib/storage';
 import { withAuth } from '../../../../../middleware/authMiddleware';
 
