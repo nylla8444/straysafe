@@ -87,35 +87,55 @@ export async function middleware(request) {
     }
 
     // Also protect specific API routes by user type
-    if (token && path.startsWith('/api/')) {
-        try {
-            const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-            const { payload } = await jwtVerify(token, secret);
-            const userType = payload.userType || 'unknown';
+    if (path.startsWith('/api/')) {
+        // Check if this is a public donation settings request
+        if (path === '/api/organization/donation-settings') {
+            const url = new URL(request.url);
+            const isPublicRequest = url.searchParams.get('public') === 'true';
 
-            // Organization-only API endpoints
-            if (path.startsWith('/api/organization/') || path.startsWith('/api/pets/manage')) {
-                if (userType !== 'organization') {
-                    return new NextResponse(
-                        JSON.stringify({ error: 'Access denied', message: 'Organizations only' }),
-                        { status: 403, headers: { 'Content-Type': 'application/json' } }
-                    );
-                }
+            if (isPublicRequest) {
+                console.log("Allowing public access to donation settings");
+                return NextResponse.next();
             }
+        }
 
-            // Adopter-only API endpoints
-            if (path.startsWith('/api/adoptions/adopter')) {
-                if (userType !== 'adopter') {
-                    return new NextResponse(
-                        JSON.stringify({ error: 'Access denied', message: 'Adopters only' }),
-                        { status: 403, headers: { 'Content-Type': 'application/json' } }
-                    );
+        // For all other API routes, require authentication
+        if (token) {
+            try {
+                const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+                const { payload } = await jwtVerify(token, secret);
+                const userType = payload.userType || 'unknown';
+
+                // Organization-only API endpoints
+                if (path.startsWith('/api/organization/') || path.startsWith('/api/pets/manage')) {
+                    if (userType !== 'organization') {
+                        return new NextResponse(
+                            JSON.stringify({ error: 'Access denied', message: 'Organizations only' }),
+                            { status: 403, headers: { 'Content-Type': 'application/json' } }
+                        );
+                    }
                 }
+
+                // Adopter-only API endpoints
+                if (path.startsWith('/api/adoptions/adopter')) {
+                    if (userType !== 'adopter') {
+                        return new NextResponse(
+                            JSON.stringify({ error: 'Access denied', message: 'Adopters only' }),
+                            { status: 403, headers: { 'Content-Type': 'application/json' } }
+                        );
+                    }
+                }
+            } catch (error) {
+                // For API routes, return JSON error instead of redirecting
+                return new NextResponse(
+                    JSON.stringify({ error: 'Authentication failed', message: error.message }),
+                    { status: 401, headers: { 'Content-Type': 'application/json' } }
+                );
             }
-        } catch (error) {
-            // For API routes, return JSON error instead of redirecting
+        } else {
+            // No token for a protected API route
             return new NextResponse(
-                JSON.stringify({ error: 'Authentication failed', message: error.message }),
+                JSON.stringify({ error: 'Authentication required' }),
                 { status: 401, headers: { 'Content-Type': 'application/json' } }
             );
         }
@@ -134,6 +154,7 @@ export const config = {
         '/organization/:path*',
         '/organization',
         '/api/organization/:path*',
+        '/api/organization/donation-settings',
         '/api/pets/manage/:path*',
         '/api/adoptions/:path*'
     ],
