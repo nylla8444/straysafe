@@ -3,6 +3,7 @@ import connectionToDB from '../../../../../lib/mongoose';
 import { DonationSettings } from '../../../../../models/DonationSettings';
 import { uploadToStorage } from '../../../../../lib/storage';
 import { withAuth } from '../../../../../middleware/authMiddleware';
+import { isValidObjectId } from 'mongoose';
 
 export async function PUT(request) {
     return withAuth(request, async (req, decoded) => {
@@ -79,18 +80,63 @@ export async function PUT(request) {
     });
 }
 
-// Add a GET endpoint to retrieve settings
+// Fix the GET endpoint to better handle public requests
 export async function GET(request) {
+    const url = new URL(request.url);
+    const isPublicRequest = url.searchParams.get('public') === 'true';
+    const organizationId = url.searchParams.get('organizationId');
+
+    // For public requests, bypass authentication completely
+    if (isPublicRequest && organizationId) {
+        try {
+            await connectionToDB();
+            
+            if (!isValidObjectId(organizationId)) {
+                return NextResponse.json({
+                    success: false,
+                    message: 'Invalid organization ID format'
+                }, { status: 400 });
+            }
+            
+            const settings = await DonationSettings.findOne({ organization: organizationId });
+            
+            // Only return enabled settings for public requests
+            if (settings && settings.enableDonations) {
+                return NextResponse.json({
+                    success: true,
+                    settings: {
+                        donationQR: settings.donationQR,
+                        bankDetails: settings.bankDetails,
+                        enableDonations: settings.enableDonations
+                    }
+                });
+            } else {
+                // Return a safe default for public requests
+                return NextResponse.json({
+                    success: true,
+                    settings: { enableDonations: false }
+                });
+            }
+        } catch (error) {
+            console.error('Fetch public donation settings error:', error);
+            return NextResponse.json({
+                success: false,
+                message: 'Failed to fetch donation settings'
+            }, { status: 500 });
+        }
+    }
+
+    // Handle authenticated requests
     return withAuth(request, async (req, decoded) => {
         try {
             const { searchParams } = new URL(req.url);
-            const organizationId = searchParams.get('organizationId') || decoded.userId;
+            const targetOrgId = searchParams.get('organizationId') || decoded.userId;
 
-            // Only allow fetching settings for your own organization unless it's a public request
-            const isOwnOrganization = decoded.userId === organizationId;
-            const isPublicRequest = searchParams.get('public') === 'true';
-
-            if (!isOwnOrganization && !isPublicRequest && decoded.userType !== 'admin') {
+            // Security check
+            const isOwnOrganization = decoded.userId === targetOrgId;
+            const isAdmin = decoded.userType === 'admin';
+            
+            if (!isOwnOrganization && !isAdmin) {
                 return NextResponse.json({
                     success: false,
                     message: 'Unauthorized to access these settings'
@@ -98,28 +144,18 @@ export async function GET(request) {
             }
 
             await connectionToDB();
-
-            const settings = await DonationSettings.findOne({ organization: organizationId });
-
-            // If public request and donations are disabled, return limited info
-            if (isPublicRequest && settings && !settings.enableDonations) {
-                return NextResponse.json({
-                    success: true,
-                    settings: { enableDonations: false }
-                });
-            }
+            const settings = await DonationSettings.findOne({ organization: targetOrgId });
 
             return NextResponse.json({
                 success: true,
                 settings: settings || { enableDonations: false }
             });
-
         } catch (error) {
-            console.error('Fetch donation settings error:', error);
+            console.error('Fetch authenticated donation settings error:', error);
             return NextResponse.json({
-                success: false,
+                success: false, 
                 message: 'Failed to fetch donation settings'
             }, { status: 500 });
         }
-    }, true); // Allow public access with verification
+    });
 }
