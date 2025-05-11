@@ -242,6 +242,12 @@ export default function StatsDashboard() {
         }
     }
 
+    // Function to calculate responsive pie chart radius based on container width
+    const getResponsivePieRadius = () => {
+        // Use a percentage-based approach for the pie chart radius
+        return isMobile ? '40%' : '60%';
+    };
+
     // Config objects for charts
     const categoryChartConfig = categoryData.reduce((config, item) => {
         config[item.name] = {
@@ -280,28 +286,31 @@ export default function StatsDashboard() {
             title: "Inventory Status",
             description: "Distribution of items by stock status",
             component: (
-                <ChartContainer config={statusChartConfig} className="h-full">
-                    <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
-                        <Pie
-                            data={statusData}
-                            dataKey="value"
-                            nameKey="name"
-                            cx="50%"
-                            cy="50%"
-                            outerRadius={isMobile ? 60 : 80}
-                            label={({ name, percent }) =>
-                                isMobile && percent < 0.1
-                                    ? ''
-                                    : `${getStatusLabel(name)}: ${(percent * 100).toFixed(0)}%`
-                            }
-                        >
-                            {statusData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={entry.color} />
-                            ))}
-                        </Pie>
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                        <ChartLegend content={<ChartLegendContent />} />
-                    </PieChart>
+                <ChartContainer config={statusChartConfig} className="h-full w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                            <Pie
+                                data={statusData}
+                                dataKey="value"
+                                nameKey="name"
+                                cx="50%"
+                                cy="50%"
+                                // Use percentage for radius instead of fixed pixels
+                                outerRadius={getResponsivePieRadius()}
+                                label={({ name, percent }) =>
+                                    isMobile && percent < 0.1
+                                        ? ''
+                                        : `${getStatusLabel(name)}: ${(percent * 100).toFixed(0)}%`
+                                }
+                            >
+                                {statusData.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                ))}
+                            </Pie>
+                            <ChartTooltip content={<ChartTooltipContent />} />
+                            <ChartLegend content={<ChartLegendContent />} />
+                        </PieChart>
+                    </ResponsiveContainer>
                 </ChartContainer>
             )
         },
@@ -309,32 +318,41 @@ export default function StatsDashboard() {
             title: "Monthly Donations",
             description: "Donation amount by month",
             component: (
-                <ChartContainer config={donationChartConfig} className="h-full">
-                    <BarChart
-                        data={monthlyDonations}
-                        accessibilityLayer
-                        margin={isMobile ? { top: 5, right: 10, bottom: 5, left: 0 } : {}}
-                    >
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                        <XAxis
-                            dataKey="name"
-                            tick={{ fontSize: isMobile ? 10 : 12 }}
-                            interval={isMobile ? 1 : 0}
-                        />
-                        <YAxis
-                            tickFormatter={(value) => isMobile ? `₱${Math.round(value)}` : `₱${value}`}
-                            tick={{ fontSize: isMobile ? 10 : 12 }}
-                        />
-                        <Bar
-                            dataKey="amount"
-                            fill="var(--color-amount)"
-                            radius={[4, 4, 0, 0]}
-                        />
-                        <ChartTooltip
-                            cursor={false}
-                            content={<ChartTooltipContent />}
-                        />
-                    </BarChart>
+                <ChartContainer config={donationChartConfig} className="h-full w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                            data={monthlyDonations}
+                            accessibilityLayer
+                            margin={{ top: 10, right: 10, bottom: 10, left: 10 }}
+                            barCategoryGap={isMobile ? "10%" : "30%"}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                            <XAxis
+                                dataKey="name"
+                                tick={{ fontSize: isMobile ? 9 : 12 }}
+                                interval={isMobile ? 1 : 0}
+                                tickLine={false}
+                                axisLine={false}
+                                tickMargin={8}
+                            />
+                            <YAxis
+                                tickFormatter={(value) => isMobile ? `₱${Math.round(value)}` : `₱${value}`}
+                                tick={{ fontSize: isMobile ? 9 : 12 }}
+                                tickLine={false}
+                                axisLine={false}
+                                width={isMobile ? 40 : undefined}
+                            />
+                            <Bar
+                                dataKey="amount"
+                                fill="var(--color-amount)"
+                                radius={[4, 4, 0, 0]}
+                            />
+                            <ChartTooltip
+                                cursor={false}
+                                content={<ChartTooltipContent />}
+                            />
+                        </BarChart>
+                    </ResponsiveContainer>
                 </ChartContainer>
             )
         },
@@ -342,38 +360,44 @@ export default function StatsDashboard() {
             title: "Inventory Categories",
             description: "Distribution of items by category",
             component: (
-                <ChartContainer config={categoryChartConfig} className="h-full">
-                    <BarChart
-                        data={categoryData}
-                        layout="vertical"
-                        accessibilityLayer
-                        margin={isMobile ? { top: 5, right: 5, bottom: 5, left: 0 } : {}}
-                    >
-                        <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
-                        <XAxis
-                            type="number"
-                            tick={{ fontSize: isMobile ? 10 : 12 }}
-                        />
-                        <YAxis
-                            dataKey="name"
-                            type="category"
-                            tickFormatter={(value) => getCategoryLabel(value)}
-                            width={isMobile ? 70 : 100}
-                            tick={{ fontSize: isMobile ? 10 : 12 }}
-                        />
-                        <Bar
-                            dataKey="value"
-                            radius={[0, 4, 4, 0]}
+                <ChartContainer config={categoryChartConfig} className="h-full w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                            data={categoryData}
+                            layout="vertical"
+                            accessibilityLayer
+                            margin={isMobile ? { top: 5, right: 5, bottom: 5, left: 0 } : {}}
                         >
-                            {categoryData.map((entry, index) => (
-                                <Cell
-                                    key={`cell-${index}`}
-                                    fill={categoryColors[entry.name] || '#999'}
-                                />
-                            ))}
-                        </Bar>
-                        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-                    </BarChart>
+                            <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
+                            <XAxis
+                                type="number"
+                                tick={{ fontSize: isMobile ? 9 : 12 }}
+                                tickLine={false}
+                                axisLine={false}
+                            />
+                            <YAxis
+                                dataKey="name"
+                                type="category"
+                                tickFormatter={(value) => getCategoryLabel(value)}
+                                width={isMobile ? 60 : 100}
+                                tick={{ fontSize: isMobile ? 9 : 12 }}
+                                tickLine={false}
+                                axisLine={false}
+                            />
+                            <Bar
+                                dataKey="value"
+                                radius={[0, 4, 4, 0]}
+                            >
+                                {categoryData.map((entry, index) => (
+                                    <Cell
+                                        key={`cell-${index}`}
+                                        fill={categoryColors[entry.name] || '#999'}
+                                    />
+                                ))}
+                            </Bar>
+                            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+                        </BarChart>
+                    </ResponsiveContainer>
                 </ChartContainer>
             )
         },
@@ -381,28 +405,31 @@ export default function StatsDashboard() {
             title: "Donation Purposes",
             description: "How donations are allocated",
             component: (
-                <ChartContainer config={purposeChartConfig} className="h-full">
-                    <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
-                        <Pie
-                            data={purposeData}
-                            dataKey="value"
-                            nameKey="name"
-                            cx="50%"
-                            cy="50%"
-                            outerRadius={isMobile ? 60 : 80}
-                            label={({ name, percent }) =>
-                                isMobile && percent < 0.1
-                                    ? ''
-                                    : `${getPurposeLabel(name)}: ${(percent * 100).toFixed(0)}%`
-                            }
-                        >
-                            {purposeData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={entry.color} />
-                            ))}
-                        </Pie>
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                        <ChartLegend content={<ChartLegendContent />} />
-                    </PieChart>
+                <ChartContainer config={purposeChartConfig} className="h-full w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                            <Pie
+                                data={purposeData}
+                                dataKey="value"
+                                nameKey="name"
+                                cx="50%"
+                                cy="50%"
+                                // Use percentage for radius instead of fixed pixels
+                                outerRadius={getResponsivePieRadius()}
+                                label={({ name, percent }) =>
+                                    isMobile && percent < 0.1
+                                        ? ''
+                                        : `${getPurposeLabel(name)}: ${(percent * 100).toFixed(0)}%`
+                                }
+                            >
+                                {purposeData.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                ))}
+                            </Pie>
+                            <ChartTooltip content={<ChartTooltipContent />} />
+                            <ChartLegend content={<ChartLegendContent />} />
+                        </PieChart>
+                    </ResponsiveContainer>
                 </ChartContainer>
             )
         }
@@ -506,7 +533,6 @@ export default function StatsDashboard() {
                     </Card>
                 </div>
 
-                {/* Swipeable Charts */}
                 <div className="mt-6">
                     <div className="flex justify-between items-center mb-2">
                         <div>
@@ -518,9 +544,13 @@ export default function StatsDashboard() {
                         </div>
                     </div>
 
-                    {/* Swipeable chart area */}
+                    {/* Simplified chart container following shadcn/ui pattern */}
                     <Card>
-                        <CardContent className="p-2 h-[300px]" {...swipeHandlers}>
+                        <CardContent
+                            className="p-2 h-[300px]"
+                            {...swipeHandlers}
+                        >
+                            {/* Chart uses full available space */}
                             {chartSections[activeChartIndex].component}
                         </CardContent>
                     </Card>
@@ -620,7 +650,7 @@ export default function StatsDashboard() {
                                     nameKey="name"
                                     cx="50%"
                                     cy="50%"
-                                    outerRadius={80}
+                                    outerRadius={getResponsivePieRadius()}
                                     label={({ name, percent }) => `${getStatusLabel(name)}: ${(percent * 100).toFixed(0)}%`}
                                 >
                                     {statusData.map((entry, index) => (
@@ -669,30 +699,33 @@ export default function StatsDashboard() {
                         <CardDescription>Distribution of items by category</CardDescription>
                     </CardHeader>
                     <CardContent className="h-80">
-                        <ChartContainer config={categoryChartConfig} className="h-full">
-                            <BarChart
-                                data={categoryData}
-                                layout="vertical"
-                                accessibilityLayer
-                            >
-                                <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
-                                <XAxis type="number" />
-                                <YAxis
-                                    dataKey="name"
-                                    type="category"
-                                    tickFormatter={(value) => getCategoryLabel(value)}
-                                    width={100}
-                                />
-                                <Bar dataKey="value" radius={[0, 4, 4, 0]}>
-                                    {categoryData.map((entry, index) => (
-                                        <Cell
-                                            key={`cell-${index}`}
-                                            fill={categoryColors[entry.name] || '#999'}
-                                        />
-                                    ))}
-                                </Bar>
-                                <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-                            </BarChart>
+                        <ChartContainer config={categoryChartConfig} className="h-full w-full">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart
+                                    data={categoryData}
+                                    layout="vertical"
+                                    accessibilityLayer
+                                    margin={isMobile ? { top: 5, right: 5, bottom: 5, left: 70 } : {}}
+                                >
+                                    <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
+                                    <XAxis type="number" />
+                                    <YAxis
+                                        dataKey="name"
+                                        type="category"
+                                        tickFormatter={(value) => getCategoryLabel(value)}
+                                        width={100}
+                                    />
+                                    <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                                        {categoryData.map((entry, index) => (
+                                            <Cell
+                                                key={`cell-${index}`}
+                                                fill={categoryColors[entry.name] || '#999'}
+                                            />
+                                        ))}
+                                    </Bar>
+                                    <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+                                </BarChart>
+                            </ResponsiveContainer>
                         </ChartContainer>
                     </CardContent>
                 </Card>
