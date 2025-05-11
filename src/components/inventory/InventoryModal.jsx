@@ -62,9 +62,30 @@ export default function InventoryModal({ isOpen, onClose, onSave, item, title, c
         setIsSubmitting(true);
 
         try {
+            // Format data properly for the API
+            let dataToSave = { ...formData };
+            
+            // Handle expiry date formatting properly
+            if (dataToSave.expiryDate) {
+                // Ensure proper date format for backend
+                dataToSave.expiryDate = new Date(dataToSave.expiryDate).toISOString();
+            } else {
+                // If empty string, set to null to avoid validation errors
+                dataToSave.expiryDate = null;
+            }
+            
+            // Ensure numbers are properly typed
+            dataToSave.quantity = Number(dataToSave.quantity);
+            dataToSave.minimumStockLevel = Number(dataToSave.minimumStockLevel);
+            dataToSave.cost = Number(dataToSave.cost);
+            
             // If editing, include the original item ID
-            const dataToSave = item ? { ...formData, _id: item._id } : formData;
+            if (item && item._id) {
+                dataToSave._id = item._id;
+            }
 
+            console.log('Saving item with data:', dataToSave);
+            
             await onSave(dataToSave);
         } catch (error) {
             console.error('Error saving item:', error);

@@ -58,10 +58,30 @@ export async function PUT(request, { params }) {
 
             const previousQuantity = existingItem.quantity;
 
+            // Calculate the status based on quantity and minimumStockLevel
+            let calculatedStatus;
+            const quantity = Number(data.quantity);
+            const minimumStockLevel = Number(data.minimumStockLevel || existingItem.minimumStockLevel);
+
+            if (quantity <= 0) {
+                calculatedStatus = 'out_of_stock';
+            } else if (quantity <= minimumStockLevel) {
+                calculatedStatus = 'low_stock';
+            } else {
+                calculatedStatus = 'in_stock';
+            }
+
+            // Add the calculated status to data
+            const updatedData = {
+                ...data,
+                status: calculatedStatus,
+                organization: decoded.userId
+            };
+
             // Update the item
             const updatedItem = await Inventory.findByIdAndUpdate(
                 id,
-                { ...data, organization: decoded.userId },
+                updatedData,
                 { new: true, runValidators: true }
             );
 

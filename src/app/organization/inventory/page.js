@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import InventoryModal from '../../../components/inventory/InventoryModal';
 import DeleteConfirmationModal from '../../../components/inventory/DeleteConfirmationModal';
 import CashDonationComponent from '../../../components/donations/CashDonationComponent';
+import StatsDashboard from '../../../components/dashboard/StatsDashboard';
 
 export default function InventoryManagementPage() {
     const { user, loading, isAuthenticated, isOrganization } = useAuth();
@@ -35,6 +36,9 @@ export default function InventoryManagementPage() {
 
     // State for active tab
     const [activeTab, setActiveTab] = useState('inventory');
+
+    // State for refresh button
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     // Categories for filter dropdown
     const categories = [
@@ -91,6 +95,32 @@ export default function InventoryManagementPage() {
         }
     };
 
+    // Refresh inventory data
+    const handleRefresh = async () => {
+        try {
+            setIsRefreshing(true);
+            await fetchInventory();
+            setNotification({
+                show: true,
+                type: 'success',
+                message: 'Inventory data refreshed!'
+            });
+
+            setTimeout(() => {
+                setNotification({ show: false, type: '', message: '' });
+            }, 3000);
+        } catch (error) {
+            console.error('Error refreshing inventory:', error);
+            setNotification({
+                show: true,
+                type: 'error',
+                message: 'Failed to refresh inventory data'
+            });
+        } finally {
+            setIsRefreshing(false);
+        }
+    };
+
     // Filter items based on search term and category
     const filteredItems = items.filter(item => {
         const matchesSearch = searchTerm === '' ||
@@ -140,25 +170,32 @@ export default function InventoryManagementPage() {
     };
 
     // Handle update item
-    const handleUpdateItem = async (updatedItem) => {
+    const handleUpdateItem = async (updatedItemData) => {
         try {
-            const response = await axios.put(`/api/inventory/${updatedItem._id}`, updatedItem);
+            console.log('Updating item with data:', updatedItemData);
+
+            const response = await axios.put(`/api/inventory/${updatedItemData._id}`, updatedItemData);
 
             if (response.data.success) {
-                setItems(items.map(item =>
-                    item._id === updatedItem._id ? response.data.item : item
-                ));
+                // Create a new array with the updated item
+                const updatedItems = items.map(item =>
+                    item._id === updatedItemData._id ? response.data.item : item
+                );
+
+                // Update state with new array to trigger re-render
+                setItems(updatedItems);
+
+                // Force a re-fetch to ensure data consistency
+                fetchInventory();
+
                 setNotification({
                     show: true,
                     type: 'success',
                     message: 'Item updated successfully!'
                 });
+
                 setIsEditModalOpen(false);
                 setCurrentItem(null);
-
-                setTimeout(() => {
-                    setNotification({ show: false, type: '', message: '' });
-                }, 3000);
             } else {
                 setNotification({
                     show: true,
@@ -167,7 +204,7 @@ export default function InventoryManagementPage() {
                 });
             }
         } catch (error) {
-            console.error('Error updating inventory item:', error);
+            console.error('Error updating item:', error);
             setNotification({
                 show: true,
                 type: 'error',
@@ -227,7 +264,7 @@ export default function InventoryManagementPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
             {/* Header with navigation */}
             <div className="flex items-center justify-between mb-6">
-                <div className="flex  items-center">
+                <div className="flex items-center">
                     <Link href="/organization" className="text-blue-600 hover:text-blue-800 flex items-center mr-4">
                         <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -235,6 +272,28 @@ export default function InventoryManagementPage() {
                         Back
                     </Link>
                     <h1 className="text-2xl sm:text-3xl font-bold">Inventory Management</h1>
+                    {/* Add refresh button */}
+                    <button
+                        onClick={handleRefresh}
+                        disabled={isRefreshing}
+                        className="ml-3 p-2 rounded-full hover:bg-amber-100 text-amber-600 hover:text-amber-800 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors"
+                        aria-label="Refresh inventory data"
+                        title="Refresh inventory data"
+                    >
+                        <svg
+                            className={`h-5 w-5 ${isRefreshing ? 'animate-spin' : ''}`}
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                            />
+                        </svg>
+                    </button>
                 </div>
 
                 <button
@@ -540,14 +599,7 @@ export default function InventoryManagementPage() {
             )}
 
             {activeTab === 'dashboard' && (
-                <Link href="/organization/inventory/dashboard" className="inline-block">
-                    <div className="bg-blue-50 p-4 rounded-md flex items-center text-blue-700">
-                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
-                        View Detailed Dashboard
-                    </div>
-                </Link>
+                <StatsDashboard />
             )}
         </div>
     );
