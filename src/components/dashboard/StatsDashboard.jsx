@@ -27,15 +27,45 @@ import {
     XAxis,
     YAxis,
     CartesianGrid,
-    ResponsiveContainer
+    ResponsiveContainer,
 } from 'recharts';
 
 export default function StatsDashboard() {
     const { user } = useAuth();
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    // Detect mobile screens
     const [isMobile, setIsMobile] = useState(false);
-    const [activeChartIndex, setActiveChartIndex] = useState(0);
+
+    // Check for mobile screen on mount and resize
+    useEffect(() => {
+        const checkIfMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+
+        checkIfMobile();
+        window.addEventListener('resize', checkIfMobile);
+
+        return () => {
+            window.removeEventListener('resize', checkIfMobile);
+        };
+    }, []);
+
+    // Function to determine interval for X-axis ticks
+    const getXAxisInterval = () => {
+        const width = window.innerWidth;
+        if (width < 400) return 2;  // Show every third label
+        if (width < 768) return 1;  // Show every other label
+        return 0;  // Show all labels
+    };
+
+    const getChartHeight = () => {
+        if (window.innerWidth < 400) return 250;
+        if (window.innerWidth < 768) return 280;
+        return 300;
+    };
+
 
     // Stats states
     const [inventoryStats, setInventoryStats] = useState({
@@ -82,19 +112,7 @@ export default function StatsDashboard() {
         other: '#607D8B'
     };
 
-    // Detect mobile screens
-    useEffect(() => {
-        const checkIfMobile = () => {
-            setIsMobile(window.innerWidth < 768);
-        };
-
-        checkIfMobile();
-        window.addEventListener('resize', checkIfMobile);
-
-        return () => {
-            window.removeEventListener('resize', checkIfMobile);
-        };
-    }, []);
+    const [activeChartIndex, setActiveChartIndex] = useState(0);
 
     // Fetch dashboard data
     useEffect(() => {
@@ -111,19 +129,19 @@ export default function StatsDashboard() {
                     const { summary, categoryDistribution, statusDistribution } = inventoryResponse.data;
 
                     setInventoryStats({
-                        totalItems: summary?.totalItems || 0,
-                        totalValue: summary?.totalValue || 0,
-                        lowStockCount: summary?.lowStockCount || 0,
-                        outOfStockCount: summary?.outOfStockCount || 0
+                        totalItems: summary.totalItems || 0,
+                        totalValue: summary.totalValue || 0,
+                        lowStockCount: summary.lowStockCount || 0,
+                        outOfStockCount: summary.outOfStockCount || 0
                     });
 
-                    setCategoryData((categoryDistribution || []).map(item => ({
+                    setCategoryData(categoryDistribution.map(item => ({
                         name: item.category,
                         value: item.count,
                         label: getCategoryLabel(item.category)
                     })));
 
-                    setStatusData((statusDistribution || []).map(item => ({
+                    setStatusData(statusDistribution.map(item => ({
                         name: item.status,
                         value: item.count,
                         label: getStatusLabel(item.status),
@@ -137,17 +155,17 @@ export default function StatsDashboard() {
                     const { summary, monthlyData, purposeDistribution } = donationResponse.data;
 
                     setDonationStats({
-                        count: summary?.count || 0,
-                        totalAmount: summary?.totalAmount || 0,
-                        averageAmount: summary?.averageAmount || 0
+                        count: summary.count || 0,
+                        totalAmount: summary.totalAmount || 0,
+                        averageAmount: summary.averageAmount || 0
                     });
 
-                    setMonthlyDonations((monthlyData || []).map(item => ({
+                    setMonthlyDonations(monthlyData.map(item => ({
                         name: formatMonthYear(item.month),
                         amount: item.amount
                     })));
 
-                    setPurposeData((purposeDistribution || []).map(item => ({
+                    setPurposeData(purposeDistribution.map(item => ({
                         name: item.purpose,
                         value: item.amount,
                         label: getPurposeLabel(item.purpose),
@@ -171,30 +189,13 @@ export default function StatsDashboard() {
             pet_food: 'Pet Food',
             medical_supply: 'Medical Supplies',
             medication: 'Medication',
-            cleaning_supply: 'Cleaning',
-            shelter_equipment: 'Shelter Equip',
+            cleaning_supply: 'Cleaning Supplies',
+            shelter_equipment: 'Shelter Equipment',
             pet_accessory: 'Pet Accessories',
             office_supply: 'Office Supplies',
             donation_item: 'Donated Items',
             other: 'Other'
         };
-
-        // On mobile, use shorter names
-        if (isMobile) {
-            const shortLabels = {
-                pet_food: 'Pet Food',
-                medical_supply: 'Med Supplies',
-                medication: 'Meds',
-                cleaning_supply: 'Cleaning',
-                shelter_equipment: 'Equipment',
-                pet_accessory: 'Accessories',
-                office_supply: 'Office',
-                donation_item: 'Donations',
-                other: 'Other'
-            };
-            return shortLabels[category] || category;
-        }
-
         return labels[category] || category;
     }
 
@@ -216,20 +217,6 @@ export default function StatsDashboard() {
             rescue: 'Rescue Operations',
             other: 'Other'
         };
-
-        // On mobile, use shorter names
-        if (isMobile) {
-            const shortLabels = {
-                general: 'General',
-                medical: 'Medical',
-                food: 'Food',
-                shelter: 'Shelter',
-                rescue: 'Rescue',
-                other: 'Other'
-            };
-            return shortLabels[purpose] || purpose;
-        }
-
         return labels[purpose] || purpose;
     }
 
@@ -242,11 +229,7 @@ export default function StatsDashboard() {
         }
     }
 
-    // Function to calculate responsive pie chart radius based on container width
-    const getResponsivePieRadius = () => {
-        // Use a percentage-based approach for the pie chart radius
-        return isMobile ? '40%' : '60%';
-    };
+
 
     // Config objects for charts
     const categoryChartConfig = categoryData.reduce((config, item) => {
@@ -280,14 +263,13 @@ export default function StatsDashboard() {
         }
     };
 
-    // Define charts for swipeable mobile view
     const chartSections = [
         {
             title: "Inventory Status",
             description: "Distribution of items by stock status",
             component: (
                 <ChartContainer config={statusChartConfig} className="h-full w-full">
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer width="99%" height="99%">
                         <PieChart>
                             <Pie
                                 data={statusData}
@@ -295,20 +277,27 @@ export default function StatsDashboard() {
                                 nameKey="name"
                                 cx="50%"
                                 cy="50%"
-                                // Use percentage for radius instead of fixed pixels
-                                outerRadius={getResponsivePieRadius()}
+                                outerRadius="50%"
                                 label={({ name, percent }) =>
                                     isMobile && percent < 0.1
                                         ? ''
-                                        : `${getStatusLabel(name)}: ${(percent * 100).toFixed(0)}%`
+                                        : isMobile
+                                            ? `${(percent * 100).toFixed(0)}%`
+                                            : `${getPurposeLabel(name)}: ${(percent * 100).toFixed(0)}%`
                                 }
+                                labelLine={false}
                             >
                                 {statusData.map((entry, index) => (
                                     <Cell key={`cell-${index}`} fill={entry.color} />
                                 ))}
                             </Pie>
                             <ChartTooltip content={<ChartTooltipContent />} />
-                            <ChartLegend content={<ChartLegendContent />} />
+                            <ChartLegend
+                                verticalAlign="bottom"
+                                align="center"
+                                layout="horizontal"
+                                content={<ChartLegendContent />}
+                            />
                         </PieChart>
                     </ResponsiveContainer>
                 </ChartContainer>
@@ -319,38 +308,42 @@ export default function StatsDashboard() {
             description: "Donation amount by month",
             component: (
                 <ChartContainer config={donationChartConfig} className="h-full w-full">
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer width="99%" height="99%">
                         <BarChart
                             data={monthlyDonations}
                             accessibilityLayer
-                            margin={{ top: 10, right: 10, bottom: 10, left: 10 }}
-                            barCategoryGap={isMobile ? "10%" : "30%"}
+                            margin={{ top: 10, right: 15, bottom: 10, left: 0 }}
+                            barCategoryGap="10%"
                         >
                             <CartesianGrid strokeDasharray="3 3" vertical={false} />
                             <XAxis
                                 dataKey="name"
-                                tick={{ fontSize: isMobile ? 9 : 12 }}
-                                interval={isMobile ? 1 : 0}
+                                tick={{ fontSize: 9 }}
                                 tickLine={false}
                                 axisLine={false}
-                                tickMargin={8}
+                                interval={1} // Show every other tick on mobile
                             />
                             <YAxis
-                                tickFormatter={(value) => isMobile ? `₱${Math.round(value)}` : `₱${value}`}
-                                tick={{ fontSize: isMobile ? 9 : 12 }}
+                                width={45}
+                                tickFormatter={(value) => {
+                                    if (value >= 1000000) {
+                                        return `₱${(value / 1000000).toFixed(0)}M`;
+                                    } else if (value >= 1000) {
+                                        return `₱${(value / 1000).toFixed(0)}k`;
+                                    }
+                                    return `₱${value}`;
+                                }}
+                                tick={{ fontSize: 9 }}
                                 tickLine={false}
                                 axisLine={false}
-                                width={isMobile ? 40 : undefined}
+                                tickCount={4}
                             />
                             <Bar
                                 dataKey="amount"
                                 fill="var(--color-amount)"
                                 radius={[4, 4, 0, 0]}
                             />
-                            <ChartTooltip
-                                cursor={false}
-                                content={<ChartTooltipContent />}
-                            />
+                            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
                         </BarChart>
                     </ResponsiveContainer>
                 </ChartContainer>
@@ -361,38 +354,28 @@ export default function StatsDashboard() {
             description: "Distribution of items by category",
             component: (
                 <ChartContainer config={categoryChartConfig} className="h-full w-full">
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer width="99%" height="99%">
                         <BarChart
                             data={categoryData}
                             layout="vertical"
                             accessibilityLayer
-                            margin={isMobile ? { top: 5, right: 5, bottom: 5, left: 0 } : {}}
+                            margin={{ top: 10, right: 15, bottom: 10, left: 0 }}
+                            barCategoryGap="10%"
                         >
                             <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
-                            <XAxis
-                                type="number"
-                                tick={{ fontSize: isMobile ? 9 : 12 }}
-                                tickLine={false}
-                                axisLine={false}
-                            />
+                            <XAxis type="number" />
                             <YAxis
                                 dataKey="name"
                                 type="category"
                                 tickFormatter={(value) => getCategoryLabel(value)}
-                                width={isMobile ? 60 : 100}
-                                tick={{ fontSize: isMobile ? 9 : 12 }}
+                                width={70}
+                                tick={{ fontSize: 9 }}
                                 tickLine={false}
                                 axisLine={false}
                             />
-                            <Bar
-                                dataKey="value"
-                                radius={[0, 4, 4, 0]}
-                            >
+                            <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                                 {categoryData.map((entry, index) => (
-                                    <Cell
-                                        key={`cell-${index}`}
-                                        fill={categoryColors[entry.name] || '#999'}
-                                    />
+                                    <Cell key={`cell-${index}`} fill={categoryColors[entry.name] || '#999'} />
                                 ))}
                             </Bar>
                             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
@@ -406,7 +389,7 @@ export default function StatsDashboard() {
             description: "How donations are allocated",
             component: (
                 <ChartContainer config={purposeChartConfig} className="h-full w-full">
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer width="99%" height="99%">
                         <PieChart>
                             <Pie
                                 data={purposeData}
@@ -414,20 +397,27 @@ export default function StatsDashboard() {
                                 nameKey="name"
                                 cx="50%"
                                 cy="50%"
-                                // Use percentage for radius instead of fixed pixels
-                                outerRadius={getResponsivePieRadius()}
+                                outerRadius="50%"
                                 label={({ name, percent }) =>
                                     isMobile && percent < 0.1
                                         ? ''
-                                        : `${getPurposeLabel(name)}: ${(percent * 100).toFixed(0)}%`
+                                        : isMobile
+                                            ? `${(percent * 100).toFixed(0)}%`
+                                            : `${getPurposeLabel(name)}: ${(percent * 100).toFixed(0)}%`
                                 }
+                                labelLine={false}
                             >
                                 {purposeData.map((entry, index) => (
                                     <Cell key={`cell-${index}`} fill={entry.color} />
                                 ))}
                             </Pie>
                             <ChartTooltip content={<ChartTooltipContent />} />
-                            <ChartLegend content={<ChartLegendContent />} />
+                            <ChartLegend
+                                verticalAlign="bottom"
+                                align="center"
+                                layout="horizontal"
+                                content={<ChartLegendContent />}
+                            />
                         </PieChart>
                     </ResponsiveContainer>
                 </ChartContainer>
@@ -435,7 +425,6 @@ export default function StatsDashboard() {
         }
     ];
 
-    // Set up swipe handlers
     const swipeHandlers = useSwipeable({
         onSwipedLeft: () => {
             if (activeChartIndex < chartSections.length - 1) {
@@ -454,10 +443,10 @@ export default function StatsDashboard() {
     // Loading state
     if (isLoading) {
         return (
-            <div className="flex justify-center items-center min-h-[30vh] sm:min-h-[60vh]">
-                <div className="flex flex-col items-center px-4 text-center">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-                    <p className="mt-4 text-sm sm:text-base text-gray-600">Loading statistics...</p>
+            <div className="flex justify-center items-center min-h-[60vh]">
+                <div className="flex flex-col items-center">
+                    <div className="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+                    <p className="mt-4 text-gray-600">Loading statistics...</p>
                 </div>
             </div>
         );
@@ -489,8 +478,8 @@ export default function StatsDashboard() {
                         </CardHeader>
                         <CardContent className="px-3">
                             <div className="text-xl font-bold">{inventoryStats.totalItems}</div>
-                            <p className="text-xs text-muted-foreground mt-1 flex flex-wrap gap-1">
-                                <span className="inline-block px-1 py-0.5 rounded-full bg-amber-100 text-amber-700">
+                            <p className="text-xs text-muted-foreground mt-1">
+                                <span className="inline-block px-1 py-0.5 rounded-full bg-amber-100 text-amber-700 mr-1">
                                     {inventoryStats.lowStockCount} Low
                                 </span>
                                 <span className="inline-block px-1 py-0.5 rounded-full bg-red-100 text-red-700">
@@ -505,18 +494,18 @@ export default function StatsDashboard() {
                             <CardTitle className="text-base">Inventory Value</CardTitle>
                         </CardHeader>
                         <CardContent className="px-3">
-                            <div className="text-xl font-bold">₱{inventoryStats.totalValue.toLocaleString()}</div>
+                            <div className="text-xl font-bold">₱{(inventoryStats.totalValue / 1000).toFixed(1)}k</div>
                             <p className="text-xs text-muted-foreground mt-1">Total value</p>
                         </CardContent>
                     </Card>
 
                     <Card className="py-3">
                         <CardHeader className="pb-1 px-3">
-                            <CardTitle className="text-base">Total Donations</CardTitle>
+                            <CardTitle className="text-base">Donations</CardTitle>
                         </CardHeader>
                         <CardContent className="px-3">
                             <div className="text-xl font-bold">{donationStats.count}</div>
-                            <p className="text-xs text-muted-foreground mt-1">Donations received</p>
+                            <p className="text-xs text-muted-foreground mt-1">Total received</p>
                         </CardContent>
                     </Card>
 
@@ -525,10 +514,8 @@ export default function StatsDashboard() {
                             <CardTitle className="text-base">Total Amount</CardTitle>
                         </CardHeader>
                         <CardContent className="px-3">
-                            <div className="text-xl font-bold">₱{donationStats.totalAmount.toLocaleString()}</div>
-                            <p className="text-xs text-muted-foreground mt-1">
-                                Avg: ₱{donationStats.averageAmount.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                            </p>
+                            <div className="text-xl font-bold">₱{(donationStats.totalAmount / 1000).toFixed(1)}k</div>
+                            <p className="text-xs text-muted-foreground mt-1">Avg: ₱{(donationStats.averageAmount / 1000).toFixed(1)}k</p>
                         </CardContent>
                     </Card>
                 </div>
@@ -544,7 +531,7 @@ export default function StatsDashboard() {
                         </div>
                     </div>
 
-                    {/* Simplified chart container following shadcn/ui pattern */}
+                    {/* Simplified chart container */}
                     <Card>
                         <CardContent
                             className="p-2 h-[300px]"
@@ -578,7 +565,7 @@ export default function StatsDashboard() {
         );
     }
 
-    // Desktop view
+    // Desktop view stays the same
     return (
         <div className="space-y-6">
             {/* Summary Cards */}
@@ -641,25 +628,31 @@ export default function StatsDashboard() {
                         <CardTitle>Inventory Status</CardTitle>
                         <CardDescription>Distribution of items by stock status</CardDescription>
                     </CardHeader>
-                    <CardContent className="h-80">
-                        <ChartContainer config={statusChartConfig} className="h-full">
-                            <PieChart>
-                                <Pie
-                                    data={statusData}
-                                    dataKey="value"
-                                    nameKey="name"
-                                    cx="50%"
-                                    cy="50%"
-                                    outerRadius={getResponsivePieRadius()}
-                                    label={({ name, percent }) => `${getStatusLabel(name)}: ${(percent * 100).toFixed(0)}%`}
-                                >
-                                    {statusData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={entry.color} />
-                                    ))}
-                                </Pie>
-                                <ChartTooltip content={<ChartTooltipContent />} />
-                                <ChartLegend content={<ChartLegendContent />} />
-                            </PieChart>
+                    <CardContent className={`h-[${getChartHeight()}px]`}>
+                        <ChartContainer config={statusChartConfig} className={`w-full h-full`}>
+                            <ResponsiveContainer width="99%" height="99%">
+                                <PieChart >
+                                    <Pie
+                                        data={statusData}
+                                        dataKey="value"
+                                        nameKey="name"
+                                        cx="50%"
+                                        cy="50%"
+                                        outerRadius="50%"
+                                        label={({ name, percent }) => `${getStatusLabel(name)}: ${(percent * 100).toFixed(0)}%`}
+                                        labelLine={true}
+                                    >
+                                        {statusData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={entry.color} />
+                                        ))}
+                                    </Pie>
+                                    <ChartTooltip content={<ChartTooltipContent />} />
+                                    <ChartLegend
+                                        verticalAlign="bottom"
+                                        content={<ChartLegendContent />}
+                                    />
+                                </PieChart>
+                            </ResponsiveContainer>
                         </ChartContainer>
                     </CardContent>
                 </Card>
@@ -670,22 +663,40 @@ export default function StatsDashboard() {
                         <CardTitle>Monthly Donations</CardTitle>
                         <CardDescription>Donation amount by month</CardDescription>
                     </CardHeader>
-                    <CardContent className="h-80">
-                        <ChartContainer config={donationChartConfig} className="h-full">
-                            <BarChart data={monthlyDonations} accessibilityLayer>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                                <XAxis dataKey="name" />
-                                <YAxis tickFormatter={(value) => `₱${value}`} />
-                                <Bar
-                                    dataKey="amount"
-                                    fill="var(--color-amount)"
-                                    radius={[4, 4, 0, 0]}
-                                />
-                                <ChartTooltip
-                                    cursor={false}
-                                    content={<ChartTooltipContent />}
-                                />
-                            </BarChart>
+                    <CardContent className={`h-[${getChartHeight()}px]`}>
+                        <ChartContainer config={donationChartConfig} className="w-full h-full">
+                            <ResponsiveContainer width="99%" height="99%">
+                                <BarChart
+                                    data={monthlyDonations}
+                                    margin={{ top: 10, right: 30, left: 0, bottom: 10 }}
+                                    barCategoryGap="10%"
+                                >
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                    <XAxis
+                                        dataKey="name"
+                                        tick={{ fontSize: 11 }}
+                                        interval={getXAxisInterval()}
+
+                                    />
+                                    <YAxis
+                                        width={60}
+                                        tickFormatter={(value) => {
+                                            if (value >= 1000000) return `₱${(value / 1000000).toFixed(1)}M`;
+                                            if (value >= 1000) return `₱${(value / 1000).toFixed(0)}k`;
+                                            return `₱${value}`;
+                                        }}
+                                        tick={{ fontSize: 11 }}
+                                        tickCount={5}
+
+                                    />
+                                    <Bar
+                                        dataKey="amount"
+                                        fill="var(--color-amount)"
+                                        radius={[4, 4, 0, 0]}
+                                    />
+                                    <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+                                </BarChart>
+                            </ResponsiveContainer>
                         </ChartContainer>
                     </CardContent>
                 </Card>
@@ -698,29 +709,49 @@ export default function StatsDashboard() {
                         <CardTitle>Inventory Categories</CardTitle>
                         <CardDescription>Distribution of items by category</CardDescription>
                     </CardHeader>
-                    <CardContent className="h-80">
-                        <ChartContainer config={categoryChartConfig} className="h-full w-full">
-                            <ResponsiveContainer width="100%" height="100%">
+                    <CardContent className={`h-[${getChartHeight()}px]`}>
+                        <ChartContainer config={categoryChartConfig} className="w-full h-full">
+                            <ResponsiveContainer width="99%" height="99%">
                                 <BarChart
                                     data={categoryData}
                                     layout="vertical"
-                                    accessibilityLayer
-                                    margin={isMobile ? { top: 5, right: 5, bottom: 5, left: 70 } : {}}
+                                    margin={{ top: 10, right: 30, left: 0, bottom: 10 }}
+                                    barCategoryGap="30%"
                                 >
                                     <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
-                                    <XAxis type="number" />
+                                    <XAxis
+                                        type="number"
+                                        tickLine={false}
+                                        tickFormatter={(value) => value >= 1000 ? `${value / 1000}k` : value}
+                                    />
                                     <YAxis
                                         dataKey="name"
                                         type="category"
-                                        tickFormatter={(value) => getCategoryLabel(value)}
-                                        width={100}
+                                        tickFormatter={(value) => {
+                                            if (window.innerWidth < 992) {
+                                                const shortLabels = {
+                                                    pet_food: 'Pet Food',
+                                                    medical_supply: 'Med Supplies',
+                                                    medication: 'Medication',
+                                                    cleaning_supply: 'Cleaning',
+                                                    shelter_equipment: 'Shelter Eq',
+                                                    pet_accessory: 'Pet Acc',
+                                                    office_supply: 'Office',
+                                                    donation_item: 'Donations',
+                                                    other: 'Other'
+                                                };
+                                                return shortLabels[value] || getCategoryLabel(value);
+                                            }
+                                            return getCategoryLabel(value);
+                                        }}
+                                        width={90}  // Fixed width instead of complex calculation
+                                        tick={{ fontSize: 11 }}
+                                        tickLine={false}
+                                        axisLine={false}
                                     />
                                     <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                                         {categoryData.map((entry, index) => (
-                                            <Cell
-                                                key={`cell-${index}`}
-                                                fill={categoryColors[entry.name] || '#999'}
-                                            />
+                                            <Cell key={`cell-${index}`} fill={categoryColors[entry.name] || '#999'} />
                                         ))}
                                     </Bar>
                                     <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
@@ -736,25 +767,32 @@ export default function StatsDashboard() {
                         <CardTitle>Donation Purposes</CardTitle>
                         <CardDescription>How donations are allocated</CardDescription>
                     </CardHeader>
-                    <CardContent className="h-80">
-                        <ChartContainer config={purposeChartConfig} className="h-full">
-                            <PieChart>
-                                <Pie
-                                    data={purposeData}
-                                    dataKey="value"
-                                    nameKey="name"
-                                    cx="50%"
-                                    cy="50%"
-                                    outerRadius={80}
-                                    label={({ name, percent }) => `${getPurposeLabel(name)}: ${(percent * 100).toFixed(0)}%`}
-                                >
-                                    {purposeData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={entry.color} />
-                                    ))}
-                                </Pie>
-                                <ChartTooltip content={<ChartTooltipContent />} />
-                                <ChartLegend content={<ChartLegendContent />} />
-                            </PieChart>
+                    <CardContent className={`h-[${getChartHeight()}px]`}>
+                        <ChartContainer config={purposeChartConfig} className="h-full w-full">
+                            <ResponsiveContainer width="99%" height="99%">
+                                <PieChart margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
+                                    <Pie
+                                        data={purposeData}
+                                        dataKey="value"
+                                        nameKey="name"
+                                        cx="50%"
+                                        cy="50%"
+                                        outerRadius="50%"
+                                        label={({ name, percent }) => `${getStatusLabel(name)}: ${(percent * 100).toFixed(0)}%`}
+                                        labelLine={true}
+                                    >
+                                        {purposeData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={entry.color} />
+                                        ))}
+                                    </Pie>
+                                    <ChartTooltip content={<ChartTooltipContent />} />
+                                    <ChartLegend
+                                        verticalAlign="bottom"
+
+                                        content={<ChartLegendContent />}
+                                    />
+                                </PieChart>
+                            </ResponsiveContainer>
                         </ChartContainer>
                     </CardContent>
                 </Card>
