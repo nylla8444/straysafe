@@ -7,7 +7,7 @@ import Link from 'next/link';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import InventoryModal from '../../../components/inventory/InventoryModal';
-import DeleteConfirmationModal from '../../../components/inventory/DeleteConfirmationModal';
+import DeleteConfirmationModal from '../../../components/shared/DeleteConfirmationModal';
 import CashDonationComponent from '../../../components/donations/CashDonationComponent';
 import StatsDashboard from '../../../components/dashboard/StatsDashboard';
 
@@ -717,7 +717,8 @@ export default function InventoryManagementPage() {
                                 setCurrentItem(null);
                             }}
                             onDelete={() => handleDeleteItem(currentItem._id)}
-                            itemName={currentItem.name}
+                            title="Delete Inventory Item" // New prop
+                            message={`Are you sure you want to delete "${currentItem.name}"? This action cannot be undone. This item will be permanently removed from your inventory.`} // Full message instead of just itemName
                         />
                     )}
                 </div>
