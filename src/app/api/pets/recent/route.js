@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import Pet from '../../../../../models/Pet';
+import '../../../../../models/User';
 import connectionToDB from '../../../../../lib/mongoose';
 
 export async function GET() {
