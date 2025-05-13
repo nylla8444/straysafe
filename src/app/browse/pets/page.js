@@ -10,9 +10,10 @@ import SearchBar from '../../../components/SearchBar';
 import PetCardSkeleton from '../../../components/PetCardSkeleton';
 import PetCard from '../../../components/pets/PetCard';
 import { useAuth } from '../../../../context/AuthContext';
+import { Suspense } from 'react';
 
-export default function PetsPage() {
-
+// Create a separate component that uses search params
+function PetsPageContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -148,7 +149,6 @@ export default function PetsPage() {
         console.log('Favorite toggled for pet:', pet.name);
     };
 
-    // Rest of your component remains the same...
     return (
         <div>
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
@@ -208,5 +208,24 @@ export default function PetsPage() {
                 </div>
             )}
         </div>
+    );
+}
+
+// Main page component with Suspense boundary
+export default function PetsPage() {
+    return (
+        <Suspense fallback={
+            <div className="p-4">
+                <div className="h-8 bg-gray-200 rounded w-48 mb-6 animate-pulse"></div>
+                <div className="h-4 bg-gray-200 rounded w-64 mb-8 animate-pulse"></div>
+                <div className="flex flex-wrap gap-6 justify-center sm:justify-start">
+                    {Array(12).fill().map((_, index) => (
+                        <PetCardSkeleton key={index} />
+                    ))}
+                </div>
+            </div>
+        }>
+            <PetsPageContent />
+        </Suspense>
     );
 }
