@@ -9,6 +9,17 @@ import axios from 'axios';
 import Link from 'next/link';
 import AdopterApplicationsList from '../../components/adopter/ApplicationsList';
 import PaymentsSection from '../../components/payments/PaymentsSection';
+import { motion } from 'framer-motion';
+
+// Add these helper functions at the top of your component
+const safeGetFirstChar = (str) => {
+    if (!str) return '?';
+    return str.charAt(0).toUpperCase();
+};
+
+const safeGetName = (obj, fallback = 'Unknown') => {
+    return obj?.organizationName || fallback;
+};
 
 export default function ProfilePage() {
     const { user, loading, isAuthenticated, isAdopter, refreshUser } = useAuth();
@@ -19,6 +30,11 @@ export default function ProfilePage() {
     const [applications, setApplications] = useState([]);
     const [loadingApplications, setLoadingApplications] = useState(true);
     const [applicationsError, setApplicationsError] = useState('');
+
+    const [favorites, setFavorites] = useState([]);
+    const [loadingFavorites, setLoadingFavorites] = useState(false);
+    const [favoritesError, setFavoritesError] = useState('');
+
     const [activeTab, setActiveTab] = useState('applications');
 
     useEffect(() => {
@@ -75,6 +91,36 @@ export default function ProfilePage() {
         }
     }, [user, isAuthenticated, isAdopter]);
 
+    useEffect(() => {
+        const fetchFavorites = async () => {
+            if (!isAuthenticated || !user || !isAdopter()) return;
+            if (activeTab !== 'favorites') return;
+
+            try {
+                setLoadingFavorites(true);
+                setFavoritesError('');
+
+                const response = await axios.get('/api/favorites');
+
+                if (response.data.success) {
+                    console.log("Favorites fetched:", response.data.favorites);
+                    setFavorites(response.data.favorites || []);
+                } else {
+                    setFavoritesError('Could not load your favorite pets');
+                }
+            } catch (error) {
+                console.error('Error fetching favorites:', error);
+                setFavoritesError('Failed to fetch favorites. Please try again later.');
+            } finally {
+                setLoadingFavorites(false);
+            }
+        };
+
+        if (user && isAuthenticated && activeTab === 'favorites') {
+            fetchFavorites();
+        }
+    }, [user, isAuthenticated, isAdopter, activeTab]);
+
     const handleOpenEditModal = () => {
         setIsEditModalOpen(true);
     };
@@ -87,6 +133,26 @@ export default function ProfilePage() {
         console.log("Profile updated, refreshing data...");
         await refreshUser();
         setIsEditModalOpen(false);
+    };
+
+    const handleRemoveFavorite = async (petId) => {
+        try {
+            const response = await axios.post('/api/favorites', {
+                petId,
+                action: 'remove'
+            });
+
+            if (response.data.success) {
+                // Remove the pet from the favorites array
+                setFavorites(prevFavorites => prevFavorites.filter(pet => pet._id !== petId));
+
+                // Show a toast or notification (you could add a toast component here)
+                alert(`Pet removed from favorites`);
+            }
+        } catch (error) {
+            console.error('Error removing favorite:', error);
+            alert('Failed to remove pet from favorites');
+        }
     };
 
     if (loading) {
@@ -147,7 +213,7 @@ export default function ProfilePage() {
                             />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center text-3xl text-gray-600">
-                                {user.firstName ? user.firstName.charAt(0).toUpperCase() : '?'}
+                                {safeGetFirstChar(user.firstName)}
                             </div>
                         )}
                     </div>
@@ -157,28 +223,30 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                <div className="border-t pt-4">
-                    <h3 className="font-semibold mb-2">Contact Information</h3>
-                    <p><span className="text-gray-600">Email:</span> {user.email}</p>
-                    <p><span className="text-gray-600">Phone:</span> {user.contactNumber || 'Not provided'}</p>
-                    <p><span className="text-gray-600">Location:</span> {user.location || 'Not provided'}</p>
+                <div className="flex flex-col sm:flex-row space-between w-full">
+                    <div className="border-t t-4">
+                        <h3 className="font-semibold mb-2">Contact Information</h3>
+                        <p><span className="text-gray-600">Email:</span> {user.email}</p>
+                        <p><span className="text-gray-600">Phone:</span> {user.contactNumber || 'Not provided'}</p>
+                        <p><span className="text-gray-600">Location:</span> {user.location || 'Not provided'}</p>
 
-                    {(!user.contactNumber || !user.location) && (
-                        <p className="text-red-500 text-sm mt-2">
-                            Some of your contact information is missing. Please update your profile.
-                        </p>
-                    )}
-                </div>
+                        {(!user.contactNumber || !user.location) && (
+                            <p className="text-red-500 text-sm mt-2">
+                                Some of your contact information is missing. Please update your profile.
+                            </p>
+                        )}
+                    </div>
 
-                <div className="mt-6 flex">
-                    <button
-                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                        onClick={handleOpenEditModal}
-                    >
-                        Edit Profile
-                    </button>
-                </div>
-            </div>
+                    <div className="flex mt-6 sm:mt-0 sm:ml-auto">
+                        <button
+                            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 h-fit"
+                            onClick={handleOpenEditModal}
+                        >
+                            Edit Profile
+                        </button>
+                    </div>
+                </div >
+            </div >
 
 
             <div className="mt-8">
@@ -193,6 +261,7 @@ export default function ProfilePage() {
                         >
                             Adoption Applications
                         </button>
+
                         <button
                             onClick={() => setActiveTab('payments')}
                             className={`py-2 px-1 border-b-2 font-medium text-md ${activeTab === 'payments'
@@ -202,13 +271,21 @@ export default function ProfilePage() {
                         >
                             Payments
                         </button>
+                        <button
+                            onClick={() => setActiveTab('favorites')}
+                            className={`py-2 px-1 border-b-2 font-medium text-md ${activeTab === 'favorites'
+                                ? 'border-blue-500 text-blue-600'
+                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                }`}
+                        >
+                            Favorites
+                        </button>
                     </nav>
                 </div>
 
                 {/* Content based on active tab */}
                 <div className="bg-white shadow rounded-lg sm:p-3 md:p-4 lg:p-6">
                     {activeTab === 'applications' ? (
-                        // Applications tab content
                         loadingApplications ? (
                             <div className="flex justify-center py-4">
                                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
@@ -227,8 +304,224 @@ export default function ProfilePage() {
                                 </div>
                             </div>
                         )
+                    ) : activeTab === 'favorites' ? (
+                        <div className="py-2">
+                            <div className="flex justify-between items-center mb-6">
+                                <h2 className="text-xl font-semibold text-gray-800">Your Favorite Pets</h2>
+                                <Link href="/browse/pets" className="text-blue-600 hover:text-blue-800 text-sm flex items-center">
+                                    <span>Browse more pets</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                                    </svg>
+                                </Link>
+                            </div>
+
+                            {loadingFavorites ? (
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-6 animate-pulse">
+                                    {[1, 2, 3, 4, 5, 6].map(i => (
+                                        <div key={i} className="bg-gray-100 rounded-lg overflow-hidden">
+                                            <div className="h-48 bg-gray-200"></div>
+                                            <div className="p-4">
+                                                <div className="h-4 bg-gray-200 rounded w-3/4 mb-3"></div>
+                                                <div className="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
+                                                <div className="h-8 bg-gray-200 rounded mt-4"></div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : favoritesError ? (
+                                <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                                    <div className="flex">
+                                        <div className="flex-shrink-0">
+                                            <svg className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zm-1 9a1 1 0 01-1-1v-4a1 1 0 112 0v4a1 1 0 01-1 1z" clipRule="evenodd" />
+                                            </svg>
+                                        </div>
+                                        <div className="ml-3">
+                                            <p className="text-sm text-red-700">{favoritesError}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : favorites.length > 0 ? (
+                                <motion.div
+                                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ duration: 0.3 }}
+                                >
+                                    {favorites.map((pet, index) => (
+                                        <motion.div
+                                            key={pet._id}
+                                            className="bg-white border rounded-xl overflow-hidden shadow hover:shadow-md transition-shadow relative group"
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.3, delay: index * 0.05 }}
+                                        >
+                                            <div className={`absolute top-0 left-0 w-full h-1 
+                                                ${pet.status === 'available' ? 'bg-green-500' :
+                                                    pet.status === 'rehabilitating' ? 'bg-amber-500' :
+                                                        'bg-blue-500'}`}
+                                            ></div>
+
+                                            <div className="relative h-48">
+                                                <Image
+                                                    src={pet.img_arr?.[0] || '/images/pet-placeholder.jpg'}
+                                                    alt={pet.name}
+                                                    fill
+                                                    className="object-cover"
+                                                />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
+                                                <div className="absolute top-3 right-3">
+                                                    <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium 
+                                                        ${pet.status === 'available' ? 'bg-green-100 text-green-800' :
+                                                            pet.status === 'rehabilitating' ? 'bg-amber-100 text-amber-800' :
+                                                                'bg-blue-100 text-blue-800'}`}>
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse"></span>
+                                                        {pet.status.charAt(0).toUpperCase() + pet.status.slice(1)}
+                                                    </span>
+                                                </div>
+
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        handleRemoveFavorite(pet._id);
+                                                    }}
+                                                    className="absolute top-3 left-3 p-1.5 rounded-full bg-white/80 backdrop-blur-sm text-rose-500 hover:bg-white transition-colors opacity-0 group-hover:opacity-100"
+                                                    aria-label="Remove from favorites"
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                                                    </svg>
+                                                </button>
+
+                                                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <p className="text-lg font-bold">{pet.name}</p>
+                                                    <div className="flex items-center text-xs space-x-2 mt-1">
+                                                        <span>{pet.breed}</span>
+                                                        <span>•</span>
+                                                        <span>{pet.gender?.charAt(0).toUpperCase() + pet.gender?.slice(1)}</span>
+                                                        {pet.age && (
+                                                            <>
+                                                                <span>•</span>
+                                                                <span>{pet.age}</span>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="p-4">
+                                                <div className="flex justify-between items-start">
+                                                    <div>
+                                                        <h3 className="font-bold text-lg text-gray-800">{pet.name}</h3>
+                                                        <p className="text-sm text-gray-600 truncate max-w-[15ch]">{pet.breed} {pet.specie?.charAt(0).toUpperCase() + pet.specie?.slice(1)}</p>
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <span className={`font-medium ${pet.adoptionFee > 0 ? 'text-emerald-600' : 'text-blue-600'}`}>
+                                                            {pet.adoptionFee > 0 ? `₱${pet.adoptionFee}` : 'Free'}
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                {pet.tags && pet.tags.length > 0 && (
+                                                    <div className="flex flex-wrap gap-1.5 mt-3">
+                                                        {/* Show the first tag */}
+                                                        <span
+                                                            key={pet.tags[0]}
+                                                            className="bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded-full font-medium"
+                                                        >
+                                                            {pet.tags[0].split('-').map(word =>
+                                                                word ? word.charAt(0).toUpperCase() + word.slice(1) : ''
+                                                            ).join(' ')}
+                                                        </span>
+
+                                                        {/* Show second tag if it exists */}
+                                                        {pet.tags.length >= 2 && (
+                                                            <span
+                                                                key={pet.tags[1]}
+                                                                className="bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded-full font-medium"
+                                                            >
+                                                                {pet.tags[1].split('-').map(word =>
+                                                                    word ? word.charAt(0).toUpperCase() + word.slice(1) : ''
+                                                                ).join(' ')}
+                                                            </span>
+                                                        )}
+
+                                                        {/* Show +n only if there are 3 or more total tags */}
+                                                        {pet.tags.length > 2 && (
+                                                            <span className="bg-gray-50 text-gray-600 text-xs px-2 py-0.5 rounded-full font-medium">
+                                                                +{pet.tags.length - 2}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                )}
+
+                                                {pet.organization && (
+                                                    <div className="mt-3 pt-3 border-t border-gray-100">
+                                                        <div className="flex items-center">
+                                                            <div className="w-5 h-5 rounded-full bg-gray-200 mr-2 flex items-center justify-center overflow-hidden">
+                                                                {pet.organization?.profileImage ? (
+                                                                    <Image
+                                                                        src={pet.organization.profileImage}
+                                                                        alt=""
+                                                                        width={20}
+                                                                        height={20}
+                                                                        className="object-cover"
+                                                                    />
+                                                                ) : (
+                                                                    <span className="text-xs font-bold">
+                                                                        {safeGetFirstChar(pet.organization?.organizationName)}
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                            <span className="text-xs text-gray-600 truncate max-w-[25ch]">
+                                                                {safeGetName(pet.organization, 'Unknown Organization')}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                <div className="mt-4 flex space-x-2">
+                                                    <Link
+                                                        href={`/browse/pets/${pet._id}`}
+                                                        className="flex-1 text-center py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
+                                                    >
+                                                        View Details
+                                                    </Link>
+                                                    {pet.status === 'available' && (
+                                                        <Link
+                                                            href={`/adopt/${pet._id}`}
+                                                            className="flex-1 text-center py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors"
+                                                        >
+                                                            Adopt
+                                                        </Link>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </motion.div>
+                                    ))}
+                                </motion.div>
+                            ) : (
+                                <div className="text-center py-12">
+                                    <div className="w-24 h-24 bg-gray-100 rounded-full mx-auto mb-6 flex items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                        </svg>
+                                    </div>
+                                    <h3 className="text-xl font-medium text-gray-900 mb-2">No favorites yet</h3>
+                                    <p className="text-gray-600 mb-6">Start exploring pets that need a loving home</p>
+                                    <Link
+                                        href="/browse/pets"
+                                        className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
+                                    >
+                                        Browse Pets
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
                     ) : (
-                        // Payments tab content
                         <PaymentsSection userId={user._id} userType={user.userType} />
                     )}
                 </div>
@@ -240,6 +533,6 @@ export default function ProfilePage() {
                 onClose={handleCloseEditModal}
                 onUpdate={handleProfileUpdate}
             />
-        </div>
+        </div >
     );
 }
