@@ -31,6 +31,7 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <AdminAuthProvider>
             <Navbar />
+            <div className="h-24 bg-amber-50"></div>
             {children}
             <SpeedInsights />
           </AdminAuthProvider>
