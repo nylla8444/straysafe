@@ -7,6 +7,7 @@ import { useAdminAuth } from '../../context/AdminAuthContext';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export default function Navbar() {
     const router = useRouter();
@@ -125,10 +126,10 @@ export default function Navbar() {
     };
 
     return (
-        <nav className="bg-blue-600 text-white p-4 relative z-60">
-            {/* Only render suspension banner on client and when conditions are met */}
+        <nav className="fixed top-4 left-0 right-0 mx-auto w-[95%] max-w-7xl bg-white/70 backdrop-blur-md text-gray-800 py-4 px-6 rounded-xl shadow-lg border border-white/30 z-60">
+            {/* Suspension banner - updated for glassmorphism */}
             {clientReady && user?.userType === 'adopter' && user?.status === 'suspended' && suspensionBannerVisible && (
-                <div className="w-full bg-red-600 text-white py-2 px-4 text-center mb-4 relative">
+                <div className="w-full bg-red-500/90 backdrop-blur-sm text-white py-2 px-4 text-center mb-4 relative rounded-lg shadow-sm">
                     <div className="container mx-auto flex items-center justify-center">
                         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -148,17 +149,32 @@ export default function Navbar() {
                 </div>
             )}
 
-            <div className="max-w-7xl mx-auto flex justify-between items-center">
+            <div className="container mx-auto flex justify-between items-center">
                 <div className="flex items-center">
-                    <Link href="/" className="text-xl font-bold">
-                        StraySpot
+                    <Link href="/" className="flex items-center space-x-2">
+                        {/* Logo with proper size */}
+                        <div className="relative h-10 w-10">
+                            <Image
+                                src="/logo.svg"
+                                fill
+                                className="object-contain"
+                                alt="StraySpot Logo"
+                                priority
+                            />
+                        </div>
+
+                        {/* Site name next to logo */}
+                        <div className="text-xl font-bold">
+                            <span className="text-orange-500">Stray</span>
+                            <span className="text-teal-500">Spot</span>
+                        </div>
                     </Link>
                 </div>
 
                 <div className="md:hidden">
                     <button
                         onClick={toggleMenu}
-                        className="text-white focus:outline-none relative z-50"
+                        className="text-gray-800 focus:outline-none relative z-50"
                         aria-label="Toggle menu"
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -172,23 +188,23 @@ export default function Navbar() {
                 </div>
 
                 {/* Desktop menu items */}
-                <div className="hidden md:flex space-x-6">
-                    <Link href="/" className="hover:text-blue-100">Home</Link>
-                    <Link href="/about" className="hover:text-blue-100">About</Link>
-                    <Link href="/browse" className="hover:text-blue-100">Browse</Link>
+                <div className="hidden md:flex items-center space-x-6">
+                    <Link href="/" className="text-gray-800 hover:text-orange-500 transition-colors">Home</Link>
+                    <Link href="/about" className="text-gray-800 hover:text-orange-500 transition-colors">About</Link>
+                    <Link href="/browse" className="text-gray-800 hover:text-orange-500 transition-colors">Browse</Link>
 
                     {/* Always render the links/buttons, but use client-side logic for visibility */}
                     {!clientReady ? (
                         // During SSR and initial hydration, show login/register by default
                         <>
-                            <Link href="/login" className="hover:text-blue-100">Login</Link>
-                            <Link href="/register" className="hover:text-blue-100">Register</Link>
+                            <Link href="/login" className="bg-orange-500 text-white hover:bg-orange-600 px-4 py-2 rounded-lg font-medium transition-colors">Login</Link>
+                            <Link href="/register" className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">Register</Link>
                         </>
                     ) : (
                         // After hydration, show appropriate content based on auth state
                         <>
                             {isAdminAuthenticated && (
-                                <Link href="/admin/dashboard" className="hover:text-blue-100">Admin Dashboard</Link>
+                                <Link href="/admin/dashboard" className="text-gray-800 hover:text-orange-500 transition-colors">Admin Dashboard</Link>
                             )}
 
                             {isAuthenticated && !isAdminAuthenticated && (
@@ -196,19 +212,21 @@ export default function Navbar() {
                                     {user?.userType === 'adopter' && (
                                         <Link
                                             href="/profile"
-                                            className="hover:text-blue-100 flex items-center"
+                                            className="text-gray-800 hover:text-orange-500 transition-colors flex items-center"
                                             onClick={() => console.log("Profile link clicked by user:", user)}
                                         >
-                                            My Profile
-                                            {user.status === 'suspended' && (
-                                                <span className="ml-1 bg-red-500 rounded-full w-2 h-2"></span>
-                                            )}
+                                            <div className="flex items-center">
+                                                <span>My Profile</span>
+                                                {user.status === 'suspended' && (
+                                                    <span className="ml-1 bg-red-500 rounded-full w-2 h-2"></span>
+                                                )}
+                                            </div>
                                         </Link>
                                     )}
                                     {user?.userType === 'organization' && (
                                         <Link
                                             href="/organization"
-                                            className="hover:text-blue-100"
+                                            className="text-gray-800 hover:text-orange-500 transition-colors"
                                             onClick={() => console.log("Organization link clicked by user:", user)}
                                         >
                                             Organization Dashboard
@@ -220,14 +238,14 @@ export default function Navbar() {
                             {isAuthenticated || isAdminAuthenticated ? (
                                 <button
                                     onClick={isAdminAuthenticated ? handleAdminLogout : handleLogout}
-                                    className="hover:text-blue-100 hover:cursor-pointer"
+                                    className="bg-orange-500/90 hover:bg-orange-600/90 text-white px-4 py-2 rounded-lg font-medium transition-colors"
                                 >
                                     {isAdminAuthenticated ? 'Admin Logout' : 'Logout'}
                                 </button>
                             ) : (
                                 <>
-                                    <Link href="/login" className="hover:text-blue-100">Login</Link>
-                                    <Link href="/register" className="hover:text-blue-100">Register</Link>
+                                    <Link href="/login" className="bg-orange-500 text-white hover:bg-orange-600 px-4 py-2 rounded-lg font-medium transition-colors">Login</Link>
+                                    <Link href="/register" className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">Register</Link>
                                 </>
                             )}
                         </>
@@ -235,21 +253,21 @@ export default function Navbar() {
                 </div>
             </div>
 
-            {/* Mobile menu overlay with animations */}
             <AnimatePresence>
                 {menuOpen && (
                     <>
                         <motion.div
-                            className="fixed inset-0 bg-black/50 z-40"
+                            className="fixed inset-0 bg-black/30 backdrop-blur-md z-40"
                             initial="hidden"
                             animate="visible"
                             exit="hidden"
                             variants={backdropVariants}
+                            onClick={() => setMenuOpen(false)}
                         />
 
                         <motion.div
                             ref={menuRef}
-                            className="fixed top-0 right-0 h-full w-45 bg-blue-700 shadow-lg z-50 p-6 pt-16 md:hidden"
+                            className="fixed top-0 right-0 h-screen w-3/4 sm:w-1/2 md:w-2/5 bg-amber-50 shadow-lg z-50 p-6 pt-16 rounded-l-2xl border-l border-y border-white/50"
                             initial="hidden"
                             animate="visible"
                             exit="exit"
@@ -257,7 +275,7 @@ export default function Navbar() {
                         >
                             <button
                                 onClick={() => setMenuOpen(false)}
-                                className="absolute top-4 right-4 text-white hover:text-blue-200 transition-colors duration-200"
+                                className="absolute top-4 right-4 text-gray-800 hover:text-orange-500 transition-colors"
                                 aria-label="Close menu"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -265,21 +283,38 @@ export default function Navbar() {
                                 </svg>
                             </button>
 
-                            <div className="flex flex-col space-y-4">
-                                <Link href="/" className="text-white hover:text-blue-100 text-lg">Home</Link>
-                                <Link href="/about" className="text-white hover:text-blue-100 text-lg">About</Link>
-                                <Link href="/browse" className="text-white hover:text-blue-100 text-lg">Browse</Link>
+                            {/* Logo in mobile menu */}
+                            <div className="flex items-center mb-8 space-x-2">
+                                <div className="relative h-8 w-8">
+                                    <Image
+                                        src="/logo.svg"
+                                        fill
+                                        className="object-contain"
+                                        alt="StraySpot Logo"
+                                    />
+                                </div>
+                                <div className="text-lg font-bold">
+                                    <span className="text-orange-500">Stray</span>
+                                    <span className="text-teal-500">Spot</span>
+                                </div>
+                            </div>
 
-                                {/* Same approach for mobile menu */}
+                            {/* Mobile menu links */}
+                            <div className="flex flex-col space-y-6">
+                                <Link href="/" className="text-gray-800 hover:text-orange-500 text-lg transition-colors">Home</Link>
+                                <Link href="/about" className="text-gray-800 hover:text-orange-500 text-lg transition-colors">About</Link>
+                                <Link href="/browse" className="text-gray-800 hover:text-orange-500 text-lg transition-colors">Browse</Link>
+
+                                {/* Conditional auth links similar to desktop but adapted for mobile */}
                                 {!clientReady ? (
                                     <>
-                                        <Link href="/login" className="text-white hover:text-blue-100 text-lg">Login</Link>
-                                        <Link href="/register" className="text-white hover:text-blue-100 text-lg">Register</Link>
+                                        <Link href="/login" className="bg-orange-500 text-white hover:bg-orange-600 px-4 py-3 rounded-lg font-medium transition-colors text-center mt-4">Login</Link>
+                                        <Link href="/register" className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-3 rounded-lg font-medium transition-colors text-center">Register</Link>
                                     </>
                                 ) : (
                                     <>
                                         {isAdminAuthenticated && (
-                                            <Link href="/admin/dashboard" className="text-white hover:text-blue-100 text-lg">Admin Dashboard</Link>
+                                            <Link href="/admin/dashboard" className="text-gray-800 hover:text-orange-500 text-lg transition-colors">Admin Dashboard</Link>
                                         )}
 
                                         {isAuthenticated && !isAdminAuthenticated && (
@@ -287,20 +322,20 @@ export default function Navbar() {
                                                 {user?.userType === 'adopter' && (
                                                     <Link
                                                         href="/profile"
-                                                        className="text-white hover:text-blue-100 text-lg flex items-center"
-                                                        onClick={() => console.log("Profile link clicked by user:", user)}
+                                                        className="text-gray-800 hover:text-orange-500 text-lg transition-colors flex items-center"
                                                     >
-                                                        My Profile
-                                                        {user.status === 'suspended' && (
-                                                            <span className="ml-1 bg-red-500 rounded-full w-2 h-2"></span>
-                                                        )}
+                                                        <div className="flex items-center">
+                                                            <span>My Profile</span>
+                                                            {user.status === 'suspended' && (
+                                                                <span className="ml-1 bg-red-500 rounded-full w-2 h-2"></span>
+                                                            )}
+                                                        </div>
                                                     </Link>
                                                 )}
                                                 {user?.userType === 'organization' && (
                                                     <Link
                                                         href="/organization"
-                                                        className="text-white hover:text-blue-100 text-lg"
-                                                        onClick={() => console.log("Organization link clicked by user:", user)}
+                                                        className="text-gray-800 hover:text-orange-500 text-lg transition-colors"
                                                     >
                                                         Organization Dashboard
                                                     </Link>
@@ -311,23 +346,32 @@ export default function Navbar() {
                                         {isAuthenticated || isAdminAuthenticated ? (
                                             <button
                                                 onClick={isAdminAuthenticated ? handleAdminLogout : handleLogout}
-                                                className="text-white hover:text-blue-100 text-lg text-left"
+                                                className="bg-orange-500/90 hover:bg-orange-600/90 text-white px-4 py-3 mt-4 rounded-lg font-medium transition-colors text-center"
                                             >
                                                 {isAdminAuthenticated ? 'Admin Logout' : 'Logout'}
                                             </button>
                                         ) : (
                                             <>
-                                                <Link href="/login" className="text-white hover:text-blue-100 text-lg">Login</Link>
-                                                <Link href="/register" className="text-white hover:text-blue-100 text-lg">Register</Link>
+                                                <Link href="/login" className="bg-orange-500 text-white hover:bg-orange-600 px-4 py-3 rounded-lg font-medium transition-colors text-center mt-4">Login</Link>
+                                                <Link href="/register" className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-3 rounded-lg font-medium transition-colors text-center">Register</Link>
                                             </>
                                         )}
                                     </>
                                 )}
                             </div>
+
+                            {/* Decorative paw prints */}
+                            <div className="absolute bottom-8 right-6 opacity-20 pointer-events-none">
+                                <div className="w-6 h-6 rounded-full bg-orange-300 mb-2 ml-4"></div>
+                                <div className="w-4 h-4 rounded-full bg-teal-300 ml-1"></div>
+                                <div className="w-4 h-4 rounded-full bg-pink-300 ml-6"></div>
+                                <div className="w-4 h-4 rounded-full bg-amber-300"></div>
+                            </div>
                         </motion.div>
                     </>
                 )}
             </AnimatePresence>
+
         </nav>
     );
 }
