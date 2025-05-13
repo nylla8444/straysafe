@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 
+// Maximum file size: 5MB in bytes
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
 export default function PetImageUploader({ images, onChange, maxImages = 5 }) {
     const [dragActive, setDragActive] = useState(false);
+    const [error, setError] = useState(null);
 
     const handleDrag = (e) => {
         e.preventDefault();
@@ -31,9 +35,24 @@ export default function PetImageUploader({ images, onChange, maxImages = 5 }) {
         }
     };
 
+    // Convert bytes to MB for readable error messages
+    const formatFileSize = (bytes) => {
+        return (bytes / (1024 * 1024)).toFixed(2);
+    };
+
     const handleFiles = (files) => {
+        setError(null);
+
         if (images.length >= maxImages) {
-            alert(`Maximum ${maxImages} images allowed`);
+            setError(`Maximum ${maxImages} images allowed`);
+            return;
+        }
+
+        // Check for file size before processing
+        const oversizedFiles = Array.from(files).filter(file => file.size > MAX_FILE_SIZE);
+        if (oversizedFiles.length > 0) {
+            const fileNames = oversizedFiles.map(f => `${f.name} (${formatFileSize(f.size)}MB)`).join(', ');
+            setError(`The following files exceed the 5MB limit: ${fileNames}`);
             return;
         }
 
@@ -58,12 +77,16 @@ export default function PetImageUploader({ images, onChange, maxImages = 5 }) {
         const newImages = [...images];
         newImages.splice(index, 1);
         onChange(newImages);
+        // Clear error when user removes images
+        setError(null);
     };
 
     return (
         <div className="space-y-4">
             <div
-                className={`border-2 border-dashed p-6 rounded-md text-center ${dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"
+                className={`border-2 border-dashed p-6 rounded-md text-center ${error ? "border-red-500 bg-red-50" :
+                    dragActive ? "border-blue-500 bg-blue-50" :
+                        "border-gray-300"
                     }`}
                 onDragEnter={handleDrag}
                 onDragOver={handleDrag}
@@ -80,14 +103,20 @@ export default function PetImageUploader({ images, onChange, maxImages = 5 }) {
                 />
                 <label htmlFor="pet-image-upload" className="cursor-pointer">
                     <div className="flex flex-col items-center justify-center">
-                        <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <svg className={`w-10 h-10 ${error ? "text-red-400" : "text-gray-400"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                         <p className="mt-2 text-sm text-gray-600">Drag and drop images here or click to browse</p>
-                        <p className="text-xs text-gray-500 mt-1">Upload at least 1 image</p>
+                        <p className="text-xs text-gray-500 mt-1">Upload at least 1 image (max 5MB each)</p>
                         <p className="text-xs text-gray-500">
                             {images.length} of {maxImages} images added
                         </p>
+
+                        {error && (
+                            <div className="mt-2 text-sm text-red-600 bg-red-50 p-2 rounded-md">
+                                {error}
+                            </div>
+                        )}
                     </div>
                 </label>
             </div>
