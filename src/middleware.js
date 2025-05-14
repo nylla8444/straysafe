@@ -14,18 +14,33 @@ export async function middleware(request) {
         return NextResponse.next();
     }
 
+    // NEW FIX: Handle all admin API routes with admin token
+    if (path.startsWith('/api/admin/')) {
+        console.log('Processing admin API request:', path);
+        const adminToken = request.cookies.get('adminToken')?.value;
+
+        // If no admin token exists, return 401
+        if (!adminToken) {
+            console.log('Admin API access denied: No admin token');
+            return new NextResponse(
+                JSON.stringify({ error: 'Admin authentication required' }),
+                { status: 401, headers: { 'Content-Type': 'application/json' } }
+            );
+        }
+
+        // Allow the request to proceed to the actual API handler
+        // The API handler should perform detailed token validation
+        console.log('Admin token found, allowing API request');
+        return NextResponse.next();
+    }
+
     // Skip API routes in development for easier debugging
     if (process.env.NODE_ENV === 'development' && path.startsWith('/api/')) {
         return NextResponse.next();
     }
 
-    // Admin route protection
+    // Admin route protection for non-API routes
     if (path.startsWith('/admin')) {
-        // Always allow access to API routes in this block
-        if (path.startsWith('/api/admin')) {
-            return NextResponse.next();
-        }
-
         const adminToken = request.cookies.get('adminToken')?.value;
 
         // If there's no token at all, redirect to login
@@ -61,7 +76,6 @@ export async function middleware(request) {
             // Handle organization users
             if (path.startsWith('/profile') && userType === 'organization') {
                 console.log("Access denied: Organization user trying to access adopter profile");
-                // Use 307 to ensure POST requests are preserved
                 return NextResponse.redirect(
                     new URL('/organization?source=middleware&redirect=unauthorized', request.url),
                     { status: 307 }
@@ -71,7 +85,6 @@ export async function middleware(request) {
             // Handle adopter users
             if (path.startsWith('/organization') && userType === 'adopter') {
                 console.log("Access denied: Adopter user trying to access organization dashboard");
-                // Use 307 to ensure POST requests are preserved
                 return NextResponse.redirect(
                     new URL('/profile?source=middleware&redirect=unauthorized', request.url),
                     { status: 307 }
@@ -92,8 +105,8 @@ export async function middleware(request) {
         }
     }
 
-    // Also protect specific API routes by user type
-    if (path.startsWith('/api/')) {
+    // Handle regular API routes (non-admin)
+    if (path.startsWith('/api/') && !path.startsWith('/api/admin/')) {
         // Check if this is a public donation settings request
         if (path === '/api/organization/donation-settings') {
             const url = new URL(request.url);
