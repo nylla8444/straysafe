@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Shield, BarChart, Users, MessageCircle, Clock } from 'lucide-react';
+import Footer from '../../components/Footer';
 
 export default function AboutPage() {
     return (
@@ -352,6 +353,7 @@ export default function AboutPage() {
                     </div>
                 </div>
             </section>
+            <Footer />
         </>
     )
 }
