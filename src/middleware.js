@@ -157,6 +157,5 @@ export const config = {
         '/api/organization/donation-settings',
         '/api/pets/manage/:path*',
         '/api/adoptions/:path*',
-        '/((?!api/admin/login|api/auth).*)',
     ],
 };
