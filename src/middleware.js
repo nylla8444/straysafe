@@ -153,12 +153,7 @@ export async function middleware(request) {
 export const config = {
     matcher: [
         '/admin/:path*',
-        {
-            source: '/api/admin/:path*',
-            not: [
-                { source: '/api/admin/login' } // Exclude the login endpoint
-            ]
-        },
+        '/api/admin/:path*',
         '/ask/:path*',
         '/profile/:path*',
         '/profile',
