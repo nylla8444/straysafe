@@ -8,6 +8,12 @@ export async function middleware(request) {
     // For debugging: Log all requests going through middleware
     console.log(`Middleware processing: ${path}`);
 
+    // CRITICAL FIX: Skip middleware completely for admin login path
+    if (path === '/api/admin/login') {
+        console.log('Bypassing middleware for admin login API');
+        return NextResponse.next();
+    }
+
     // Skip API routes in development for easier debugging
     if (process.env.NODE_ENV === 'development' && path.startsWith('/api/')) {
         return NextResponse.next();
@@ -147,7 +153,12 @@ export async function middleware(request) {
 export const config = {
     matcher: [
         '/admin/:path*',
-        '/api/admin/:path*',
+        {
+            source: '/api/admin/:path*',
+            not: [
+                { source: '/api/admin/login' } // Exclude the login endpoint
+            ]
+        },
         '/ask/:path*',
         '/profile/:path*',
         '/profile',

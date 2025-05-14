@@ -6,6 +6,16 @@ import connectionToDB from '../../../../../lib/mongoose';
 export async function POST(request) {
     try {
         console.log('Admin login request received in production');
+
+        // Check if JWT_SECRET is available
+        if (!process.env.JWT_SECRET) {
+            console.error('CRITICAL: JWT_SECRET not found in environment variables');
+            return NextResponse.json(
+                { error: 'Server configuration error' },
+                { status: 500 }
+            );
+        }
+
         const { admin_id, password, adminCode } = await request.json();
         console.log('Admin ID received:', admin_id);
 
@@ -56,7 +66,7 @@ export async function POST(request) {
         const token = jwt.sign(
             { adminId: admin._id },
             process.env.JWT_SECRET,
-            { expiresIn: '7d' } // Increase from 1d to 7d
+            { expiresIn: '7d' }
         );
 
         // Set cookie with proper settings
@@ -69,13 +79,13 @@ export async function POST(request) {
             token
         });
 
-        // Important: Update these cookie settings
+        // Update cookie settings for better compatibility
         response.cookies.set({
             name: 'adminToken',
             value: token,
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', // Only true in production
-            sameSite: 'lax', // Changed from 'strict' to 'lax' for better compatibility
+            secure: true, // Always use secure in production
+            sameSite: 'lax',
             path: '/',
             maxAge: 60 * 60 * 24 * 7 // 7 days in seconds
         });
