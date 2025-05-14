@@ -4,8 +4,7 @@ const FavoritesSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true,
-        index: true // For faster queries by user ID
+        required: true
     },
     pets: [{
         type: mongoose.Schema.Types.ObjectId,
