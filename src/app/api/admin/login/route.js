@@ -5,7 +5,9 @@ import connectionToDB from '../../../../../lib/mongoose';
 
 export async function POST(request) {
     try {
+        console.log('Admin login request received in production');
         const { admin_id, password, adminCode } = await request.json();
+        console.log('Admin ID received:', admin_id);
 
         if (!admin_id || !password || !adminCode) {
             return NextResponse.json(
@@ -15,12 +17,15 @@ export async function POST(request) {
         }
 
         await connectionToDB();
+        console.log('Database connection established');
 
         // Initialize default admin if none exists
         await Admin.initializeDefaultAdmin();
+        console.log('Default admin initialization completed');
 
         // Find admin by ID
         const admin = await Admin.findOne({ admin_id });
+        console.log('Admin found in database:', !!admin);
 
         if (!admin) {
             return NextResponse.json(
@@ -78,9 +83,9 @@ export async function POST(request) {
         return response;
 
     } catch (error) {
-        console.log('Admin login error:', error);
+        console.error('Admin login detailed error:', error);
         return NextResponse.json(
-            { error: 'Login failed' },
+            { error: 'Login failed', details: error.message },
             { status: 500 }
         );
     }
