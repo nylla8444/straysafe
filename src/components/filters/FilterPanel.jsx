@@ -66,8 +66,8 @@ export default function FilterPanel({
             <button
                 onClick={toggleFilters}
                 className={`px-3 sm:px-4 py-2 rounded-md flex items-center justify-center transition-all duration-200 ${showFilters
-                    ? 'bg-blue-700 text-white shadow-lg'
-                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                    ? 'bg-orange-700 text-white shadow-lg'
+                    : 'bg-orange-600 text-white hover:bg-orange-700'
                     }`}
                 aria-expanded={showFilters}
                 aria-controls="filter-panel"
@@ -87,7 +87,7 @@ export default function FilterPanel({
 
                 {/* Badge showing active filters */}
                 {appliedFiltersCount > 0 && (
-                    <span className="ml-2 bg-white text-blue-800 text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                    <span className="ml-2 bg-white text-orange-800 text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
                         {appliedFiltersCount}
                     </span>
                 )}
@@ -132,7 +132,7 @@ export default function FilterPanel({
                                     <select
                                         value={filters.species}
                                         onChange={(e) => handleFilterChange('species', e.target.value)}
-                                        className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
+                                        className="w-full p-2 border rounded focus:ring-orange-500 focus:border-orange-500"
                                     >
                                         <option value="">Any Species</option>
                                         {speciesOptions.map(option => (
@@ -149,7 +149,7 @@ export default function FilterPanel({
                                     <select
                                         value={filters.gender}
                                         onChange={(e) => handleFilterChange('gender', e.target.value)}
-                                        className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
+                                        className="w-full p-2 border rounded focus:ring-orange-500 focus:border-orange-500"
                                     >
                                         <option value="">Any Gender</option>
                                         {genderOptions.map(option => (
@@ -166,7 +166,7 @@ export default function FilterPanel({
                                     <select
                                         value={filters.status}
                                         onChange={(e) => handleFilterChange('status', e.target.value)}
-                                        className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
+                                        className="w-full p-2 border rounded focus:ring-orange-500 focus:border-orange-500"
                                     >
                                         <option value="">Any Status</option>
                                         {statusOptions.map(option => (
@@ -187,7 +187,7 @@ export default function FilterPanel({
                                         placeholder="Min"
                                         value={filters.priceRange.min}
                                         onChange={(e) => handleFilterChange('priceMin', e.target.value)}
-                                        className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
+                                        className="w-full p-2 border rounded focus:ring-orange-500 focus:border-orange-500"
                                     />
                                     <span className="text-gray-500">to</span>
                                     <input
@@ -195,7 +195,7 @@ export default function FilterPanel({
                                         placeholder="Max"
                                         value={filters.priceRange.max}
                                         onChange={(e) => handleFilterChange('priceMax', e.target.value)}
-                                        className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
+                                        className="w-full p-2 border rounded focus:ring-orange-500 focus:border-orange-500"
                                     />
                                 </div>
                             </div>
@@ -210,7 +210,7 @@ export default function FilterPanel({
                                                 type="checkbox"
                                                 checked={filters.tags.includes(tag)}
                                                 onChange={() => handleFilterChange('tags', tag)}
-                                                className="rounded text-blue-600 focus:ring-blue-500 h-4 w-4"
+                                                className="rounded text-orange-600 focus:ring-orange-500 h-4 w-4"
                                             />
                                             <span className="ml-2 text-sm text-gray-700">
                                                 {tag.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
@@ -237,7 +237,7 @@ export default function FilterPanel({
                                     </button>
                                     <button
                                         onClick={() => setShowFilters(false)}
-                                        className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700"
+                                        className="px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded hover:bg-orange-700"
                                     >
                                         Apply
                                     </button>

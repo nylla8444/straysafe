@@ -135,7 +135,7 @@ export default function LoginPage() {
 
         // If field is empty, use neutral styling
         if (!value) {
-            return `${baseClasses} border-gray-300 focus:ring-blue-500 focus:border-blue-500`;
+            return `${baseClasses} border-gray-300 focus:ring-teal-500 focus:border-teal-500`;
         }
 
         // If there's a validation error, use red styling, otherwise green
@@ -145,13 +145,14 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-blue-50 to-gray-100 flex flex-col items-center justify-center px-4 py-12">
+        // -mt-24 because of h-24 amber-50 in layout.js
+        <div className="-mt-24 min-h-screen bg-gradient-to-b from-teal-50 to-gray-100 flex flex-col items-center justify-center px-4 py-12">
             <div className="w-full max-w-md">
                 {/* Logo and branding */}
                 <div className="text-center mb-8">
                     <div className="mb-4 flex justify-center">
                         {/* Replace with your actual logo */}
-                        <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center">
+                        <div className="w-16 h-16 bg-teal-600 rounded-full flex items-center justify-center">
                             <span className="text-white text-2xl font-bold">SS</span>
                         </div>
                     </div>
@@ -216,7 +217,7 @@ export default function LoginPage() {
                                     Password
                                 </label>
                                 <div className="text-sm">
-                                    <Link href="/forgot-password" className="font-medium text-blue-600 hover:text-blue-500">
+                                    <Link href="/forgot-password" className="font-medium text-teal-600 hover:text-teal-500">
                                         Forgot your password?
                                     </Link>
                                 </div>
@@ -262,9 +263,9 @@ export default function LoginPage() {
                                 disabled={isSubmitting || validationErrors.email || validationErrors.password}
                                 className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white 
                                     ${isSubmitting || validationErrors.email || validationErrors.password
-                                        ? 'bg-blue-400 cursor-not-allowed'
-                                        : 'bg-blue-600 hover:bg-blue-700'
-                                    } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200`}
+                                        ? 'bg-teal-400 cursor-not-allowed'
+                                        : 'bg-teal-600 hover:bg-teal-700'
+                                    } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-colors duration-200`}
                             >
                                 {isSubmitting ? (
                                     <>
@@ -286,7 +287,7 @@ export default function LoginPage() {
                 <div className="mt-6 text-center">
                     <p className="text-sm text-gray-600">
                         Don&apos;t have an account?{' '}
-                        <Link href="/register" className="font-medium text-blue-600 hover:text-blue-500">
+                        <Link href="/register" className="font-medium text-teal-600 hover:text-teal-500">
                             Register now
                         </Link>
                     </p>

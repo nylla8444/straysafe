@@ -211,7 +211,7 @@ export default function ShelterDetailPage({ params }) {
         return (
             <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
                 <p className="text-red-700">{error || "Shelter not found"}</p>
-                <Link href="/browse/shelters" className="text-blue-600 mt-4 inline-block">
+                <Link href="/browse/shelters" className="text-teal-600 mt-4 inline-block">
                     ← Back to Shelters
                 </Link>
             </div>
@@ -223,7 +223,7 @@ export default function ShelterDetailPage({ params }) {
             <div className="mb-8">
                 <Link
                     href="/browse/shelters"
-                    className="group inline-flex items-center text-gray-600 hover:text-blue-600 transition-all duration-300"
+                    className="group inline-flex items-center text-gray-600 hover:text-teal-600 transition-all duration-300"
                 >
                     <div className="mr-2 w-8 h-8 flex items-center justify-center rounded-full bg-white border border-gray-200 shadow-sm group-hover:border-blue-200 group-hover:-translate-x-1 transition-all duration-300">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -235,7 +235,7 @@ export default function ShelterDetailPage({ params }) {
             </div>
 
             <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8">
-                <div className="h-40 bg-gradient-to-r from-blue-600 to-indigo-700 relative">
+                <div className="h-40 bg-gradient-to-r from-teal-500 to-emerald-400 relative">
                     <div className="absolute inset-0 opacity-20">
                         <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
                             <path d="M0,0 L100,0 L100,25 C75,40 50,30 25,20 C10,15 0,10 0,5 Z" fill="white" />
@@ -245,7 +245,7 @@ export default function ShelterDetailPage({ params }) {
                     {shelter.isVerified && (
                         <div className="absolute top-4 right-4 bg-white bg-opacity-90 rounded-full p-2 shadow-sm">
                             <div className="flex items-center">
-                                <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                <svg className="w-5 h-5 text-teal-500" fill="currentColor" viewBox="0 0 20 20">
                                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                 </svg>
                                 <span className="ml-1 text-sm font-medium text-gray-800">Verified</span>
@@ -266,7 +266,7 @@ export default function ShelterDetailPage({ params }) {
                                         style={{ objectFit: 'cover' }}
                                     />
                                 ) : (
-                                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 text-blue-600 text-4xl font-bold">
+                                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-teal-50 to-teal-100 text-teal-600 text-4xl font-bold">
                                         {shelter.organizationName?.charAt(0).toUpperCase() || 'O'}
                                     </div>
                                 )}
@@ -382,7 +382,7 @@ export default function ShelterDetailPage({ params }) {
                         {pets.length > 0 && (
                             <button
                                 onClick={resetFilters}
-                                className="mt-4 px-4 py-2 text-sm font-medium text-blue-600 border border-blue-600 rounded hover:bg-blue-50"
+                                className="mt-4 px-4 py-2 text-sm font-medium text-teal-600 border border-teal-600 rounded hover:bg-teal-50"
                             >
                                 Clear All Filters
                             </button>
@@ -435,7 +435,7 @@ export default function ShelterDetailPage({ params }) {
                                     <div className="flex justify-between items-center mt-3">
                                         <Link
                                             href={`/browse/pets/${pet._id}`}
-                                            className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                                            className="text-teal-600 hover:text-teal-800 text-sm font-medium"
                                         >
                                             View Details
                                         </Link>

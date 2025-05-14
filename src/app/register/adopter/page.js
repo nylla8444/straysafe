@@ -428,7 +428,7 @@ export default function AdopterRegistrationPage() {
                     <button
                         type="submit"
                         disabled={isSubmitting || !isFormValid}
-                        className="w-full bg-blue-500 text-white p-3 rounded hover:bg-blue-600 disabled:bg-blue-300"
+                        className="w-full bg-teal-500 text-white p-3 rounded hover:bg-teal-600 disabled:bg-teal-200 disabled:cursor-not-allowed"
                     >
                         {isSubmitting ? 'Creating Account...' : 'Create Account'}
                     </button>
@@ -436,11 +436,11 @@ export default function AdopterRegistrationPage() {
             </form>
 
             <div className="text-center mt-4">
-                <Link href="/register" className="text-blue-500 hover:underline">
+                <Link href="/register" className="text-teal-500 hover:underline">
                     ← Back to account type selection
                 </Link>
                 <p className="mt-2">
-                    Already have an account? <Link href="/login" className="text-blue-500 hover:underline">Login</Link>
+                    Already have an account? <Link href="/login" className="text-teal-500 hover:underline">Login</Link>
                 </p>
             </div>
         </div>

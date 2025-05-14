@@ -2,7 +2,14 @@
 
 import { useState, useEffect, useRef } from 'react';
 
-export default function SearchBar({ placeholder = "Search...", onSearch, initialValue = "", className = "" }) {
+export default function SearchBar({
+    placeholder = "Search...",
+    onSearch,
+    initialValue = "",
+    className = "",
+    onClear = null, // New prop to expose clear functionality
+    ref = null // Optional ref forwarding
+}) {
     const [searchTerm, setSearchTerm] = useState(initialValue);
     const searchInputRef = useRef(null);
 
@@ -33,13 +40,31 @@ export default function SearchBar({ placeholder = "Search...", onSearch, initial
         return () => document.removeEventListener('keydown', handleKeyDown);
     }, []);
 
+    // Expose this function to parent components through ref if provided
     const handleClear = () => {
         setSearchTerm("");
         if (onSearch) {
             onSearch("");
         }
         searchInputRef.current?.focus();
+
+        // Call the onClear prop if provided
+        if (onClear) {
+            onClear();
+        }
     };
+
+    // Expose methods via ref if provided
+    useEffect(() => {
+        if (ref) {
+            ref.current = {
+                clear: handleClear,
+                focus: () => searchInputRef.current?.focus(),
+                getValue: () => searchTerm,
+                setValue: (value) => setSearchTerm(value)
+            };
+        }
+    }, [ref, searchTerm]);
 
     return (
         <div className={`relative ${className}`}>

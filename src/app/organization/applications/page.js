@@ -32,7 +32,7 @@ export default function OrganizationApplicationsPage() {
     return (
         <div className="max-w-7xl mx-auto p-4 sm:p-6">
             <div className="mb-6">
-                <Link href="/organization" className="text-blue-600 hover:underline flex items-center">
+                <Link href="/organization" className="text-teal-600 hover:underline flex items-center">
                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
                     </svg>

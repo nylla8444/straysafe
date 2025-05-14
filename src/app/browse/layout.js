@@ -99,7 +99,7 @@ export default function BrowseLayout({ children }) {
                                     <Link
                                         href="/browse/pets"
                                         className={`flex items-center px-2 py-4 md:p-4 ${pathname === '/browse' || pathname.includes('/browse/pets')
-                                            ? 'bg-blue-100 text-blue-600'
+                                            ? 'bg-orange-100 text-orange-600'
                                             : 'text-gray-700 hover:bg-gray-100'
                                             }`}
                                     >
@@ -112,7 +112,7 @@ export default function BrowseLayout({ children }) {
                                 <li>
                                     <Link
                                         href="/browse/shelters"
-                                        className={`flex items-center px-2 py-4 md:p-4 ${pathname.includes('/browse/shelters') ? 'bg-blue-100 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                                        className={`flex items-center px-2 py-4 md:p-4 ${pathname.includes('/browse/shelters') ? 'bg-orange-100 text-orange-600' : 'text-gray-700 hover:bg-gray-100'
                                             }`}
                                     >
                                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -128,7 +128,7 @@ export default function BrowseLayout({ children }) {
             )}
 
             {/* Main content - adjust padding based on sidebar visibility */}
-            <div className={`flex-1 p-4 sm:p-6 bg-gray-50 ${isSpecificPetPage ? 'w-full' : ''}`}>
+            <div className={`flex-1 p-4 sm:p-6 bg-amber-50 ${isSpecificPetPage ? 'w-full' : ''}`}>
                 {children}
             </div>
 
@@ -142,7 +142,7 @@ export default function BrowseLayout({ children }) {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
-                                className="fixed inset-0 bg-blue-500/30 z-30"
+                                className="fixed inset-0 bg-orange-500/30 z-30"
                                 onClick={() => setFloatingMenuOpen(false)}
                             >
                                 {/* Menu items in compact layout for mobile */}
@@ -163,8 +163,8 @@ export default function BrowseLayout({ children }) {
                                             }}
                                             className={`flex flex-col items-center justify-center w-20 h-20 rounded-xl shadow-md cursor-pointer
                                                 ${pathname === '/browse' || pathname.includes('/browse/pets')
-                                                    ? 'bg-blue-500 text-white'
-                                                    : 'bg-white text-blue-600'
+                                                    ? 'bg-orange-500 text-white'
+                                                    : 'bg-white text-orange-600'
                                                 }`}
                                         >
                                             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -184,8 +184,8 @@ export default function BrowseLayout({ children }) {
                                             }}
                                             className={`flex flex-col items-center justify-center w-20 h-20 rounded-xl shadow-md cursor-pointer
                                                 ${pathname.includes('/browse/shelters')
-                                                    ? 'bg-blue-500 text-white'
-                                                    : 'bg-white text-blue-600'
+                                                    ? 'bg-orange-500 text-white'
+                                                    : 'bg-white text-orange-600'
                                                 }`}
                                         >
                                             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -205,7 +205,7 @@ export default function BrowseLayout({ children }) {
                         initial="closed"
                         animate={floatingMenuOpen ? "open" : "closed"}
                         onClick={() => setFloatingMenuOpen(!floatingMenuOpen)}
-                        className="fixed bottom-6 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-blue-500 text-white shadow-lg flex items-center justify-center z-50"
+                        className="fixed bottom-6 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-orange-500 text-white shadow-lg flex items-center justify-center z-50"
                     >
                         <div className="relative w-7 h-7">
                             {/* Hamburger icon */}

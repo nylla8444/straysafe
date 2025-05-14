@@ -239,7 +239,7 @@ export default function ProfilePage() {
 
                     <div className="flex mt-6 sm:mt-0 sm:ml-auto">
                         <button
-                            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 h-fit"
+                            className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 h-fit"
                             onClick={handleOpenEditModal}
                         >
                             Edit Profile
@@ -255,7 +255,7 @@ export default function ProfilePage() {
                         <button
                             onClick={() => setActiveTab('applications')}
                             className={`py-2 px-1 border-b-2 font-medium text-md ${activeTab === 'applications'
-                                ? 'border-blue-500 text-blue-600'
+                                ? 'border-teal-500 text-teal-600'
                                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                                 }`}
                         >
@@ -265,7 +265,7 @@ export default function ProfilePage() {
                         <button
                             onClick={() => setActiveTab('payments')}
                             className={`py-2 px-1 border-b-2 font-medium text-md ${activeTab === 'payments'
-                                ? 'border-blue-500 text-blue-600'
+                                ? 'border-teal-500 text-teal-600'
                                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                                 }`}
                         >
@@ -274,7 +274,7 @@ export default function ProfilePage() {
                         <button
                             onClick={() => setActiveTab('favorites')}
                             className={`py-2 px-1 border-b-2 font-medium text-md ${activeTab === 'favorites'
-                                ? 'border-blue-500 text-blue-600'
+                                ? 'border-teal-500 text-teal-600'
                                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                                 }`}
                         >
@@ -288,7 +288,7 @@ export default function ProfilePage() {
                     {activeTab === 'applications' ? (
                         loadingApplications ? (
                             <div className="flex justify-center py-4">
-                                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+                                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-teal-500"></div>
                             </div>
                         ) : applicationsError ? (
                             <div className="text-red-500">{applicationsError}</div>
@@ -308,7 +308,7 @@ export default function ProfilePage() {
                         <div className="py-2">
                             <div className="flex justify-between items-center mb-6">
                                 <h2 className="text-xl font-semibold text-gray-800">Your Favorite Pets</h2>
-                                <Link href="/browse/pets" className="text-blue-600 hover:text-blue-800 text-sm flex items-center">
+                                <Link href="/browse/pets" className="text-teal-600 hover:text-teal-800 text-sm flex items-center">
                                     <span>Browse more pets</span>
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
                                         <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -360,7 +360,7 @@ export default function ProfilePage() {
                                             <div className={`absolute top-0 left-0 w-full h-1 
                                                 ${pet.status === 'available' ? 'bg-green-500' :
                                                     pet.status === 'rehabilitating' ? 'bg-amber-500' :
-                                                        'bg-blue-500'}`}
+                                                        'bg-teal-500'}`}
                                             ></div>
 
                                             <div className="relative h-48">
@@ -376,7 +376,7 @@ export default function ProfilePage() {
                                                     <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium 
                                                         ${pet.status === 'available' ? 'bg-green-100 text-green-800' :
                                                             pet.status === 'rehabilitating' ? 'bg-amber-100 text-amber-800' :
-                                                                'bg-blue-100 text-blue-800'}`}>
+                                                                'bg-teal-100 text-teal-800'}`}>
                                                         <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse"></span>
                                                         {pet.status.charAt(0).toUpperCase() + pet.status.slice(1)}
                                                     </span>
@@ -419,7 +419,7 @@ export default function ProfilePage() {
                                                         <p className="text-sm text-gray-600 truncate max-w-[15ch]">{pet.breed} {pet.specie?.charAt(0).toUpperCase() + pet.specie?.slice(1)}</p>
                                                     </div>
                                                     <div className="text-right">
-                                                        <span className={`font-medium ${pet.adoptionFee > 0 ? 'text-emerald-600' : 'text-blue-600'}`}>
+                                                        <span className={`font-medium ${pet.adoptionFee > 0 ? 'text-emerald-600' : 'text-teal-600'}`}>
                                                             {pet.adoptionFee > 0 ? `₱${pet.adoptionFee}` : 'Free'}
                                                         </span>
                                                     </div>
@@ -430,7 +430,7 @@ export default function ProfilePage() {
                                                         {/* Show the first tag */}
                                                         <span
                                                             key={pet.tags[0]}
-                                                            className="bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded-full font-medium"
+                                                            className="bg-teal-50 text-teal-700 text-xs px-2 py-0.5 rounded-full font-medium"
                                                         >
                                                             {pet.tags[0].split('-').map(word =>
                                                                 word ? word.charAt(0).toUpperCase() + word.slice(1) : ''
@@ -441,7 +441,7 @@ export default function ProfilePage() {
                                                         {pet.tags.length >= 2 && (
                                                             <span
                                                                 key={pet.tags[1]}
-                                                                className="bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded-full font-medium"
+                                                                className="bg-teal-50 text-teal-700 text-xs px-2 py-0.5 rounded-full font-medium"
                                                             >
                                                                 {pet.tags[1].split('-').map(word =>
                                                                     word ? word.charAt(0).toUpperCase() + word.slice(1) : ''
@@ -486,7 +486,7 @@ export default function ProfilePage() {
                                                 <div className="mt-4 flex space-x-2">
                                                     <Link
                                                         href={`/browse/pets/${pet._id}`}
-                                                        className="flex-1 text-center py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
+                                                        className="flex-1 text-center py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-sm font-medium transition-colors"
                                                     >
                                                         View Details
                                                     </Link>
@@ -514,7 +514,7 @@ export default function ProfilePage() {
                                     <p className="text-gray-600 mb-6">Start exploring pets that need a loving home</p>
                                     <Link
                                         href="/browse/pets"
-                                        className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
+                                        className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-teal-600 hover:bg-teal-700"
                                     >
                                         Browse Pets
                                     </Link>

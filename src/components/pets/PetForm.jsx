@@ -175,7 +175,7 @@ export default function PetForm({ pet, onSubmit, onCancel }) {
                                         value={option}
                                         checked={formData.gender === option}
                                         onChange={handleChange}
-                                        className="h-4 w-4 border-gray-300 text-blue-600"
+                                        className="h-4 w-4 border-gray-300 text-teal-600"
                                     />
                                     <span className="ml-2 text-sm text-gray-700">
                                         {option.charAt(0).toUpperCase() + option.slice(1)}
@@ -225,7 +225,7 @@ export default function PetForm({ pet, onSubmit, onCancel }) {
                                     key={tag}
                                     onClick={() => handleTagToggle(tag)}
                                     className={`px-3 py-1 text-sm rounded-full ${formData.tags.includes(tag)
-                                        ? 'bg-blue-600 text-white'
+                                        ? 'bg-teal-600 text-white'
                                         : 'bg-gray-200 text-gray-700'
                                         }`}
                                 >
@@ -272,7 +272,7 @@ export default function PetForm({ pet, onSubmit, onCancel }) {
                 )}
                 <button
                     type="submit"
-                    className={`px-4 py-2 rounded-md text-white ${isSubmitting ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+                    className={`px-4 py-2 rounded-md text-white ${isSubmitting ? 'bg-teal-400 cursor-not-allowed' : 'bg-teal-600 hover:bg-teal-700'
                         }`}
                     disabled={isSubmitting}
                 >

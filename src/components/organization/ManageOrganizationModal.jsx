@@ -287,7 +287,7 @@ export default function ManageOrganizationModal({ organization, isOpen, onClose,
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-70 p-4">
             <div ref={modalRef} className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
                 <div className="p-6">
                     <div className="flex justify-between items-center mb-4">
@@ -359,7 +359,7 @@ export default function ManageOrganizationModal({ organization, isOpen, onClose,
                             <label className="block mb-2 font-medium">
                                 Organization Name
                                 {organization?.isVerified && (
-                                    <span className="ml-2 text-xs text-blue-600 font-normal">
+                                    <span className="ml-2 text-xs text-teal-600 font-normal">
                                         (Verified organizations cannot change their name)
                                     </span>
                                 )}
@@ -443,8 +443,8 @@ export default function ManageOrganizationModal({ organization, isOpen, onClose,
                                 type="submit"
                                 disabled={isSubmitting || Object.values(validationErrors).some(error => error !== '')}
                                 className={`px-4 py-2 text-white rounded ${isSubmitting || Object.values(validationErrors).some(error => error !== '')
-                                    ? 'bg-blue-400 cursor-not-allowed'
-                                    : 'bg-blue-600 hover:bg-blue-700'
+                                    ? 'bg-teal-400 cursor-not-allowed'
+                                    : 'bg-teal-600 hover:bg-teal-700'
                                     }`}
                             >
                                 {isSubmitting ? 'Saving...' : 'Save Changes'}

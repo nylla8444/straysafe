@@ -67,7 +67,7 @@ export default function AdminLoginPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gradient-to-b from-amber-50 to-amber-100 flex items-center justify-center p-4">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -77,7 +77,7 @@ export default function AdminLoginPage() {
                 {loggingIn ? (
                     <div className="bg-white rounded-xl shadow-xl p-8 text-center">
                         <div className="flex justify-center mb-6">
-                            <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                            <div className="w-16 h-16 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
                         </div>
                         <h2 className="text-2xl font-bold text-gray-800 mb-2">Logging in...</h2>
                         <p className="text-gray-600">Please wait while we verify your credentials</p>
@@ -85,7 +85,7 @@ export default function AdminLoginPage() {
                 ) : (
                     <>
                         <div className="text-center mb-6">
-                            <div className="inline-block p-4 bg-blue-600 rounded-full mb-4">
+                            <div className="inline-block p-4 bg-amber-600 rounded-full mb-4">
                                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                 </svg>
@@ -119,7 +119,7 @@ export default function AdminLoginPage() {
                                         id="adminId"
                                         value={adminId}
                                         onChange={(e) => setAdminId(e.target.value)}
-                                        className="shadow-sm appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                        className="shadow-sm appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors"
                                         required
                                         placeholder="Enter your admin ID"
                                     />
@@ -134,7 +134,7 @@ export default function AdminLoginPage() {
                                         id="password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="shadow-sm appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                        className="shadow-sm appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors"
                                         required
                                         placeholder="Enter your password"
                                     />
@@ -149,7 +149,7 @@ export default function AdminLoginPage() {
                                         id="adminCode"
                                         value={adminCode}
                                         onChange={(e) => setAdminCode(e.target.value)}
-                                        className="shadow-sm appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                        className="shadow-sm appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors"
                                         required
                                         placeholder="Enter your admin code"
                                     />
@@ -159,7 +159,7 @@ export default function AdminLoginPage() {
                                     <button
                                         type="submit"
                                         disabled={isSubmitting}
-                                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition-colors duration-200 flex items-center justify-center"
+                                        className="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition-colors duration-200 flex items-center justify-center"
                                     >
                                         {isSubmitting ? (
                                             <>
@@ -175,7 +175,7 @@ export default function AdminLoginPage() {
                             </form>
 
                             <div className="mt-6 text-center">
-                                <Link href="/" className="text-blue-600 hover:text-blue-800 text-sm">
+                                <Link href="/" className="text-amber-600 hover:text-amber-800 text-sm">
                                     Return to main site
                                 </Link>
                             </div>

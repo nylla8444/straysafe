@@ -79,7 +79,7 @@ export default function OrganizationPaymentDetailPage() {
                 date: payment.submissionDate,
                 status: 'Submitted',
                 description: 'Adopter submitted proof of payment',
-                color: 'blue'
+                color: 'teal'
             });
         }
 
@@ -105,7 +105,7 @@ export default function OrganizationPaymentDetailPage() {
         return (
             <div className="max-w-5xl mx-auto p-4 min-h-[60vh] flex items-center justify-center">
                 <div className="flex flex-col items-center">
-                    <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+                    <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-teal-500"></div>
                     <p className="mt-3 text-sm text-gray-500">Loading payment details...</p>
                 </div>
             </div>
@@ -118,7 +118,7 @@ export default function OrganizationPaymentDetailPage() {
                 <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
                     <p className="text-red-700">{error || 'Payment not found.'}</p>
                 </div>
-                <Link href="/organization/payments" className="text-blue-600 hover:underline inline-flex items-center">
+                <Link href="/organization/payments" className="text-teal-600 hover:underline inline-flex items-center">
                     <svg className="w-5 h-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
                     </svg>
@@ -132,7 +132,7 @@ export default function OrganizationPaymentDetailPage() {
         <div className="max-w-5xl mx-auto px-4 py-6 sm:px-6">
             {/* Back link */}
             <div className="mb-4 sm:mb-6">
-                <Link href="/organization/payments" className="inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline font-medium">
+                <Link href="/organization/payments" className="inline-flex items-center text-teal-600 hover:text-teal-800 hover:underline font-medium">
                     <svg className="w-5 h-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
                     </svg>
@@ -145,7 +145,7 @@ export default function OrganizationPaymentDetailPage() {
                 {payment.status === 'submitted' && (
                     <button
                         onClick={() => setActiveTab('verify')}
-                        className="w-full bg-blue-600 text-white px-4 py-3 rounded-md hover:bg-blue-700 active:bg-blue-800 transition flex items-center justify-center font-medium"
+                        className="w-full bg-teal-600 text-white px-4 py-3 rounded-md hover:bg-teal-700 active:bg-teal-800 transition flex items-center justify-center font-medium"
                     >
                         <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -155,7 +155,7 @@ export default function OrganizationPaymentDetailPage() {
                 )}
 
                 {(payment.status === 'verified' || payment.status === 'rejected') && (
-                    <div className="w-full bg-blue-50 text-blue-600 px-4 py-3 rounded-md flex items-center justify-center">
+                    <div className="w-full bg-teal-50 text-teal-600 px-4 py-3 rounded-md flex items-center justify-center">
                         <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             {payment.status === 'verified' ? (
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -198,7 +198,7 @@ export default function OrganizationPaymentDetailPage() {
                         <button
                             onClick={() => setActiveTab('details')}
                             className={`py-3 sm:py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === 'details'
-                                ? 'border-blue-500 text-blue-600'
+                                ? 'border-teal-500 text-teal-600'
                                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                                 }`}
                         >
@@ -207,7 +207,7 @@ export default function OrganizationPaymentDetailPage() {
                         <button
                             onClick={() => setActiveTab('timeline')}
                             className={`py-3 sm:py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === 'timeline'
-                                ? 'border-blue-500 text-blue-600'
+                                ? 'border-teal-500 text-teal-600'
                                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                                 }`}
                         >
@@ -217,7 +217,7 @@ export default function OrganizationPaymentDetailPage() {
                             <button
                                 onClick={() => setActiveTab('verify')}
                                 className={`py-3 sm:py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === 'verify'
-                                    ? 'border-blue-500 text-blue-600'
+                                    ? 'border-teal-500 text-teal-600'
                                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                                     }`}
                             >
@@ -260,7 +260,7 @@ export default function OrganizationPaymentDetailPage() {
                                                     {payment.petId.breed} • {payment.petId.gender}
                                                 </p>
                                                 {payment.petId.specie && (
-                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mt-1">
+                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-100 text-teal-800 mt-1">
                                                         {payment.petId.specie}
                                                     </span>
                                                 )}
@@ -312,7 +312,7 @@ export default function OrganizationPaymentDetailPage() {
                                 <h2 className="text-lg font-medium mb-3">Adopter Details</h2>
                                 <div className="bg-gray-50 p-4 rounded-lg">
                                     <div className="flex items-center border-b border-gray-200 pb-4 mb-4">
-                                        <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center mr-4 text-blue-600 flex-shrink-0">
+                                        <div className="h-12 w-12 rounded-full bg-teal-100 flex items-center justify-center mr-4 text-teal-600 flex-shrink-0">
                                             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                             </svg>
@@ -535,7 +535,7 @@ export default function OrganizationPaymentDetailPage() {
                 {payment.status === 'submitted' && (
                     <button
                         onClick={() => setActiveTab('verify')}
-                        className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition flex items-center justify-center"
+                        className="bg-teal-500 text-white px-6 py-2 rounded-md hover:bg-teal-700 transition flex items-center justify-center"
                     >
                         <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -545,7 +545,7 @@ export default function OrganizationPaymentDetailPage() {
                 )}
 
                 {(payment.status === 'verified' || payment.status === 'rejected') && (
-                    <div className="bg-blue-50 text-blue-600 px-6 py-2 rounded-md flex items-center justify-center">
+                    <div className="bg-teal-50 text-teal-600 px-6 py-2 rounded-md flex items-center justify-center">
                         <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             {payment.status === 'verified' ? (
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />

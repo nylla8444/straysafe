@@ -95,8 +95,8 @@ export default function AnimatedSection() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                         <AnimatedPetOption href="/browse/pets?specie=dog" emoji="🐕" label="Dogs" delay={1} />
                         <AnimatedPetOption href="/browse/pets?specie=cat" emoji="🐈" label="Cats" delay={2} />
-                        <AnimatedPetOption href="/browse/shelters" emoji="🏠" label="Shelters" delay={3} />
-                        <AnimatedPetOption href="/browse/pets" emoji="🔍" label="All Pets" delay={4} />
+                        <AnimatedPetOption href="/browse/pets" emoji="🔍" label="All Pets" delay={3} />
+                        <AnimatedPetOption href="/browse/shelters" emoji="🏠" label="Shelters" delay={4} />
                     </div>
                 </motion.div>
             </div>

@@ -26,12 +26,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${readexPro.variable} ${fredoka.variable} antialiased`}
+        className={`${readexPro.variable} ${fredoka.variable} antialiased bg-amber-50`}
       >
         <AuthProvider>
           <AdminAuthProvider>
             <Navbar />
-            <div className="h-24 bg-amber-50"></div>
+            <div className="h-24 "></div>
             {children}
             <SpeedInsights />
           </AdminAuthProvider>

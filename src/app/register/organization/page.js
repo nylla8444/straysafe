@@ -135,14 +135,14 @@ export default function OrganizationRegistrationPage() {
             if (!verificationFile) return baseClasses;
             return validationErrors.verificationFile
                 ? `${baseClasses} border-red-500 focus:ring-red-500 focus:border-red-500`
-                : `${baseClasses} border-green-500 focus:ring-green-500 focus:border-green-500`;
+                : `${baseClasses} border-orange-500 focus:ring-orange-500 focus:border-orange-500`;
         }
 
         if (!formData[fieldName]) return baseClasses;
 
         return validationErrors[fieldName]
             ? `${baseClasses} border-red-500 focus:ring-red-500 focus:border-red-500`
-            : `${baseClasses} border-green-500 focus:ring-green-500 focus:border-green-500`;
+            : `${baseClasses} border-orange-500 focus:ring-orange-500 focus:border-orange-500`;
     };
 
     const handleChange = (e) => {
@@ -323,7 +323,7 @@ export default function OrganizationRegistrationPage() {
                             <p className="mt-1 text-sm text-red-600">{validationErrors.organizationName}</p>
                         )}
                         {formData.organizationName && !validationErrors.organizationName && (
-                            <p className="mt-1 text-sm text-green-600">Valid organization name</p>
+                            <p className="mt-1 text-sm text-orange-600">Valid organization name</p>
                         )}
                     </div>
 
@@ -342,7 +342,7 @@ export default function OrganizationRegistrationPage() {
                             <p className="mt-1 text-sm text-red-600">{validationErrors.email}</p>
                         )}
                         {formData.email && !validationErrors.email && (
-                            <p className="mt-1 text-sm text-green-600">Valid email format</p>
+                            <p className="mt-1 text-sm text-orange-600">Valid email format</p>
                         )}
                     </div>
 
@@ -361,7 +361,7 @@ export default function OrganizationRegistrationPage() {
                             <p className="mt-1 text-sm text-red-600">{validationErrors.contactNumber}</p>
                         )}
                         {formData.contactNumber && !validationErrors.contactNumber && (
-                            <p className="mt-1 text-sm text-green-600">Valid contact number format</p>
+                            <p className="mt-1 text-sm text-orange-600">Valid contact number format</p>
                         )}
                         <p className="text-xs text-gray-500 mt-1">
                             Must be 11 digits starting with 0 (e.g., 09123456789)
@@ -431,7 +431,7 @@ export default function OrganizationRegistrationPage() {
                             <p className="mt-1 text-sm text-red-600">{validationErrors.password}</p>
                         )}
                         {formData.password && !validationErrors.password && (
-                            <p className="mt-1 text-sm text-green-600">Password meets requirements</p>
+                            <p className="mt-1 text-sm text-orange-600">Password meets requirements</p>
                         )}
                     </div>
 
@@ -468,7 +468,7 @@ export default function OrganizationRegistrationPage() {
                             <p className="mt-1 text-sm text-red-600">{validationErrors.confirmPassword}</p>
                         )}
                         {formData.confirmPassword && !validationErrors.confirmPassword && (
-                            <p className="mt-1 text-sm text-green-600">Passwords match</p>
+                            <p className="mt-1 text-sm text-orange-600">Passwords match</p>
                         )}
                     </div>
 
@@ -487,7 +487,7 @@ export default function OrganizationRegistrationPage() {
                             <p className="mt-1 text-sm text-red-600">{validationErrors.verificationFile}</p>
                         )}
                         {verificationFile && !validationErrors.verificationFile && (
-                            <p className="mt-1 text-sm text-green-600">Valid document</p>
+                            <p className="mt-1 text-sm text-orange-600">Valid document</p>
                         )}
                         <p className="text-xs text-gray-500 mt-1">
                             Please upload a valid ID or document proving organization status (JPEG, PNG, or PDF, max 5MB)
@@ -499,7 +499,7 @@ export default function OrganizationRegistrationPage() {
                     <button
                         type="submit"
                         disabled={isSubmitting || !isFormValid}
-                        className="w-full bg-green-500 text-white p-3 rounded hover:bg-green-600 disabled:bg-green-300"
+                        className="w-full bg-orange-500 text-white p-3 rounded hover:bg-orange-600 disabled:bg-orange-300 disabled:cursor-not-allowed"
                     >
                         {isSubmitting ? 'Creating Account...' : 'Create Organization Account'}
                     </button>
@@ -507,11 +507,11 @@ export default function OrganizationRegistrationPage() {
             </form>
 
             <div className="text-center mt-4">
-                <Link href="/register" className="text-blue-500 hover:underline">
+                <Link href="/register" className="text-teal-500 hover:underline">
                     ← Back to account type selection
                 </Link>
                 <p className="mt-2">
-                    Already have an account? <Link href="/login" className="text-blue-500 hover:underline">Login</Link>
+                    Already have an account? <Link href="/login" className="text-teal-500 hover:underline">Login</Link>
                 </p>
             </div>
         </div>

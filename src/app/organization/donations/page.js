@@ -183,7 +183,7 @@ export default function DonationSettingsPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center">
-                    <Link href="/organization" className="text-blue-600 hover:text-blue-800 flex items-center mr-4">
+                    <Link href="/organization" className="text-teal-600 hover:text-teal-800 flex items-center mr-4">
                         <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>
@@ -197,7 +197,7 @@ export default function DonationSettingsPage() {
                     <button
                         type="button"
                         onClick={() => setIsEditMode(true)}
-                        className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                        className="flex items-center bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700"
                     >
                         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />

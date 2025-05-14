@@ -73,7 +73,7 @@ export default function OrganizationPage() {
                 <h1 className="text-2xl sm:text-3xl font-bold">Organization Dashboard</h1>
                 <button
                     onClick={handleOpenModal}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition w-full sm:w-auto text-center"
+                    className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition w-full sm:w-auto text-center"
                 >
                     Manage Organization
                 </button>

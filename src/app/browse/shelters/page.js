@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -13,6 +13,8 @@ export default function SheltersPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+
+    const searchBarRef = useRef(null);
 
     useEffect(() => {
         const fetchShelters = async () => {
@@ -37,6 +39,16 @@ export default function SheltersPage() {
     // Handle search functionality
     const handleSearch = (term) => {
         setSearchTerm(term);
+    };
+
+    // Handle clearing the search
+    const handleClearSearch = () => {
+        // Use the searchBarRef to clear the search input
+        if (searchBarRef.current) {
+            searchBarRef.current.clear();
+        }
+        // This is a fallback, but the SearchBar component should call handleSearch with empty string
+        setSearchTerm('');
     };
 
     // Filter shelters based on search term
@@ -74,9 +86,11 @@ export default function SheltersPage() {
             {/* Search bar */}
             <div className="mb-6">
                 <SearchBar
+                    ref={searchBarRef}
                     placeholder="Search shelters by name or location..."
                     onSearch={handleSearch}
                     className="max-w-2xl"
+                    onClear={() => console.log("Search cleared from SearchBar component")}
                 />
             </div>
 
@@ -94,8 +108,8 @@ export default function SheltersPage() {
                     </p>
                     {searchTerm && (
                         <button
-                            onClick={() => setSearchTerm('')}
-                            className="mt-4 px-4 py-2 text-sm font-medium text-blue-600 border border-blue-600 rounded hover:bg-blue-50"
+                            onClick={handleClearSearch}
+                            className="mt-4 px-4 py-2 text-sm font-medium text-teal-600 border border-teal-600 rounded hover:bg-teal-50"
                         >
                             Clear Search
                         </button>
@@ -107,7 +121,7 @@ export default function SheltersPage() {
                         <div key={shelter._id} className="bg-white rounded-lg shadow-md overflow-hidden transition-all hover:shadow-xl border border-gray-100">
                             <div>
                                 {/* Color banner with optional pattern */}
-                                <div className="h-12 bg-gradient-to-r from-blue-500 to-blue-600 relative overflow-hidden">
+                                <div className="h-12 bg-gradient-to-r from-teal-500 to-emerald-400  relative overflow-hidden">
                                     <div className="absolute inset-0 opacity-10">
                                         <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
                                             <path d="M0,0 L100,0 L100,5 C60,20 40,20 0,5 Z" fill="white" />
@@ -128,7 +142,7 @@ export default function SheltersPage() {
                                                         style={{ objectFit: 'cover' }}
                                                     />
                                                 ) : (
-                                                    <div className="w-full h-full flex items-center justify-center bg-blue-50 text-blue-600 text-2xl font-bold">
+                                                    <div className="w-full h-full flex items-center justify-center bg-teal-50 text-teal-600 text-2xl font-bold">
                                                         {shelter.organizationName?.charAt(0).toUpperCase() || 'O'}
                                                     </div>
                                                 )}
@@ -169,7 +183,7 @@ export default function SheltersPage() {
 
                                                 {shelter.isVerified && (
                                                     <span className="ml-2">
-                                                        <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                                                        <svg className="w-5 h-5 text-teal-500" fill="currentColor" viewBox="0 0 20 20">
                                                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                                         </svg>
                                                     </span>
@@ -190,7 +204,7 @@ export default function SheltersPage() {
                                                 </svg>
                                                 {shelter.establishedYear ? `Est. ${shelter.establishedYear}` : 'Animal Shelter'}
                                             </div>
-                                            <span className="text-blue-600 font-medium hover:text-blue-800 hover:underline">
+                                            <span className="text-teal-600 font-medium hover:text-teal-800 hover:underline">
                                                 <Link href={`/browse/shelters/${shelter._id}`}>
                                                     View Details
                                                 </Link>

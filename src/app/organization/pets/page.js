@@ -151,9 +151,9 @@ export default function ManagePetsPage() {
             case 'rehabilitating':
                 return { label: 'Rehabilitating', color: 'bg-yellow-600' };
             case 'adopted':
-                return { label: 'Adopted', color: 'bg-blue-600' };
+                return { label: 'Adopted', color: 'bg-teal-600' };
             default:
-                return { label: 'All Pets', color: 'bg-blue-600' };
+                return { label: 'All Pets', color: 'bg-teal-600' };
         }
     };
 
@@ -163,7 +163,7 @@ export default function ManagePetsPage() {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
                 <div className="flex flex-col items-center space-y-4">
-                    <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-10 h-10 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
                     <p className="text-gray-600">Loading your pets...</p>
                 </div>
             </div>
@@ -174,7 +174,7 @@ export default function ManagePetsPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
             {/* Back navigation - improved for touch */}
             <div className="mb-4">
-                <Link href="/organization" className="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm sm:text-base py-2">
+                <Link href="/organization" className="inline-flex items-center text-teal-600 hover:text-teal-800 text-sm sm:text-base py-2">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
                     </svg>
@@ -188,7 +188,7 @@ export default function ManagePetsPage() {
                 {!showForm && (
                     <button
                         onClick={handleAddPet}
-                        className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex justify-center items-center"
+                        className="w-full sm:w-auto px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 flex justify-center items-center"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
@@ -300,7 +300,7 @@ export default function ManagePetsPage() {
                                             className="w-full text-left px-4 py-3 flex justify-between items-center hover:bg-gray-50"
                                         >
                                             <span>Adopted</span>
-                                            <span className="bg-blue-100 text-blue-800 rounded-full px-2 py-0.5 text-xs">{petCounts.adopted}</span>
+                                            <span className="bg-teal-100 text-teal-800 rounded-full px-2 py-0.5 text-xs">{petCounts.adopted}</span>
                                         </button>
                                     </div>
                                 </>
@@ -312,13 +312,13 @@ export default function ManagePetsPage() {
                             <button
                                 onClick={() => setFilter('all')}
                                 className={`px-3 py-1.5 rounded-full text-sm flex items-center ${filter === 'all'
-                                    ? 'bg-blue-600 text-white'
+                                    ? 'bg-teal-600 text-white'
                                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                                     }`}
                             >
                                 <span>All Pets</span>
                                 {petCounts.all > 0 && (
-                                    <span className={`ml-1.5 px-1.5 py-0.5 rounded-full text-xs ${filter === 'all' ? 'bg-white text-blue-600' : 'bg-gray-600 text-white'
+                                    <span className={`ml-1.5 px-1.5 py-0.5 rounded-full text-xs ${filter === 'all' ? 'bg-white text-teal-600' : 'bg-gray-600 text-white'
                                         }`}>
                                         {petCounts.all}
                                     </span>
@@ -360,13 +360,13 @@ export default function ManagePetsPage() {
                             <button
                                 onClick={() => setFilter('adopted')}
                                 className={`px-3 py-1.5 rounded-full text-sm flex items-center ${filter === 'adopted'
-                                    ? 'bg-blue-600 text-white'
+                                    ? 'bg-orange-600 text-white'
                                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                                     }`}
                             >
                                 <span>Adopted</span>
                                 {petCounts.adopted > 0 && (
-                                    <span className={`ml-1.5 px-1.5 py-0.5 rounded-full text-xs ${filter === 'adopted' ? 'bg-white text-blue-600' : 'bg-gray-600 text-white'
+                                    <span className={`ml-1.5 px-1.5 py-0.5 rounded-full text-xs ${filter === 'adopted' ? 'bg-white text-orange-600' : 'bg-gray-600 text-white'
                                         }`}>
                                         {petCounts.adopted}
                                     </span>
@@ -377,7 +377,7 @@ export default function ManagePetsPage() {
 
                     {isLoading ? (
                         <div className="flex flex-col items-center justify-center py-8">
-                            <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                            <div className="w-10 h-10 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
                             <p className="mt-4 text-gray-600">Loading pets...</p>
                         </div>
                     ) : filteredPets.length === 0 ? (
@@ -394,7 +394,7 @@ export default function ManagePetsPage() {
                             </p>
                             <button
                                 onClick={handleAddPet}
-                                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 inline-flex items-center"
+                                className="mt-4 px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 inline-flex items-center"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                                     <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />

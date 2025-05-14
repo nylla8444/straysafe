@@ -245,7 +245,7 @@ export default function EditProfileModal({ user, isOpen, onClose, onUpdate }) {
 
         // If field is empty, use neutral styling
         if (!formData[fieldName]) {
-            return `${baseClasses} border-gray-300 focus:border-blue-500`;
+            return `${baseClasses} border-gray-300 focus:border-teal-500`;
         }
 
         // If there's a validation error, use red styling, otherwise green
@@ -263,7 +263,7 @@ export default function EditProfileModal({ user, isOpen, onClose, onUpdate }) {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-70 p-4">
             <div className="bg-white rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
                 <div className="p-6">
                     <div className="flex justify-between items-center mb-4">
@@ -447,8 +447,8 @@ export default function EditProfileModal({ user, isOpen, onClose, onUpdate }) {
                             <button
                                 type="submit"
                                 className={`px-4 py-2 rounded ${isSubmitting || hasValidationErrors()
-                                    ? 'bg-blue-400 cursor-not-allowed text-white'
-                                    : 'bg-blue-600 hover:bg-blue-700 text-white'
+                                    ? 'bg-teal-400 cursor-not-allowed text-white'
+                                    : 'bg-teal-600 hover:bg-teal-700 text-white'
                                     }`}
                                 disabled={isSubmitting || hasValidationErrors()}
                             >

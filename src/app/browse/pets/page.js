@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import Image from 'next/image';
@@ -17,6 +17,7 @@ function PetsPageContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
 
+    const searchBarRef = useRef(null);
     // Get user information from auth context
     const { user } = useAuth();
     const userRole = user?.userType || 'guest';
@@ -31,7 +32,7 @@ function PetsPageContent() {
     const [showFilters, setShowFilters] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
 
-    // Filter states - only keep species for simplicity
+    // Filter states - keep all filters
     const [filters, setFilters] = useState({
         species: initialSpecie,
         gender: '',
@@ -43,7 +44,7 @@ function PetsPageContent() {
         }
     });
 
-    // Fetch pets when species filter changes
+    // Fetch pets when species filter changes (only species is server-side filtered via API)
     useEffect(() => {
         const fetchPets = async () => {
             try {
@@ -61,7 +62,8 @@ function PetsPageContent() {
                         pet => pet.status !== 'adopted'
                     );
                     setPets(availablePets);
-                    setFilteredPets(availablePets);
+                    // Will be filtered further by the applyFilters function
+                    applyFilters(availablePets);
                 }
             } catch (err) {
                 console.error('Failed to fetch pets:', err);
@@ -72,27 +74,63 @@ function PetsPageContent() {
         };
 
         fetchPets();
-    }, [filters.species]); // Only depend on species filter
+    }, [filters.species]); // Only depend on species filter for API calls
 
-    // Apply client-side search filter
-    useEffect(() => {
+    // Apply all other filters client-side
+    const applyFilters = (petsToFilter = pets) => {
+        let result = [...petsToFilter];
+
+        // Apply search term filter
         if (searchTerm.trim()) {
             const searchLower = searchTerm.toLowerCase();
-            const filtered = pets.filter(pet =>
+            result = result.filter(pet =>
                 pet.name.toLowerCase().includes(searchLower) ||
                 pet.breed.toLowerCase().includes(searchLower) ||
                 (pet.tags && pet.tags.some(tag => tag.toLowerCase().includes(searchLower)))
             );
-            setFilteredPets(filtered);
-        } else {
-            setFilteredPets(pets);
         }
-    }, [searchTerm, pets]);
 
-    // Handle species filter change and update URL
+        // Apply gender filter
+        if (filters.gender) {
+            result = result.filter(pet => pet.gender === filters.gender);
+        }
+
+        // Apply status filter
+        if (filters.status) {
+            result = result.filter(pet => pet.status === filters.status);
+        }
+
+        // Apply tags filter (all selected tags must be present)
+        if (filters.tags.length > 0) {
+            result = result.filter(pet =>
+                filters.tags.every(tag => pet.tags && pet.tags.includes(tag))
+            );
+        }
+
+        // Apply price range filter
+        if (filters.priceRange.min !== '') {
+            result = result.filter(pet =>
+                pet.adoptionFee >= parseFloat(filters.priceRange.min)
+            );
+        }
+        if (filters.priceRange.max !== '') {
+            result = result.filter(pet =>
+                pet.adoptionFee <= parseFloat(filters.priceRange.max)
+            );
+        }
+
+        setFilteredPets(result);
+    };
+
+    // Re-apply filters when any filter or search term changes
+    useEffect(() => {
+        applyFilters();
+    }, [filters.gender, filters.status, filters.tags, filters.priceRange, searchTerm]);
+
+    // Handle filter changes for all filter types
     const handleFilterChange = (category, value) => {
+        // Special case for species - update URL
         if (category === 'species') {
-            // Update URL when species filter changes
             const params = new URLSearchParams(searchParams.toString());
 
             if (value) {
@@ -104,17 +142,53 @@ function PetsPageContent() {
             // Update URL without page refresh
             router.push(`/browse/pets?${params.toString()}`, { scroll: false });
 
-            // Update filter state
+            // Update the species filter
             setFilters(prev => ({
                 ...prev,
                 species: value
             }));
         }
-        // Ignore other filter changes for simplicity
+        // Handle other filter types without URL updates
+        else if (category === 'tags') {
+            // Toggle tag selection
+            const updatedTags = filters.tags.includes(value)
+                ? filters.tags.filter(tag => tag !== value)
+                : [...filters.tags, value];
+
+            setFilters(prev => ({
+                ...prev,
+                tags: updatedTags
+            }));
+        }
+        else if (category === 'priceMin') {
+            setFilters(prev => ({
+                ...prev,
+                priceRange: {
+                    ...prev.priceRange,
+                    min: value
+                }
+            }));
+        }
+        else if (category === 'priceMax') {
+            setFilters(prev => ({
+                ...prev,
+                priceRange: {
+                    ...prev.priceRange,
+                    max: value
+                }
+            }));
+        }
+        else {
+            // Handle gender and status filters
+            setFilters(prev => ({
+                ...prev,
+                [category]: value
+            }));
+        }
     };
 
     const resetFilters = () => {
-        // Clear all filters and reset URL
+        // Clear all filters
         setFilters({
             species: '',
             gender: '',
@@ -126,6 +200,9 @@ function PetsPageContent() {
             }
         });
 
+        // Clear search term
+        setSearchTerm('');
+
         // Remove specie parameter from URL
         router.push('/browse/pets', { scroll: false });
     };
@@ -134,16 +211,16 @@ function PetsPageContent() {
         setSearchTerm(term);
     };
 
-    // Helper function for organization display names
-    const getDisplayName = (name, threshold = 30) => {
-        const cleanName = name?.normalize("NFKD").replace(/[^\x00-\x7F]/g, "") || name;
-        if (!cleanName || cleanName.length <= threshold) return cleanName;
-        return cleanName
-            .split(/\s+/)
-            .map(word => word[0] || '')
-            .join('')
-            .toUpperCase();
+    const handleClearSearch = () => {
+        // Use the searchBarRef to clear the search input
+        if (searchBarRef.current) {
+            searchBarRef.current.clear();
+        }
+        // This is a fallback, but the SearchBar component should call handleSearch with empty string
+        setSearchTerm('');
     };
+
+
 
     const handleFavorite = (pet) => {
         console.log('Favorite toggled for pet:', pet.name);
@@ -160,9 +237,11 @@ function PetsPageContent() {
 
             <div className="mb-4 md:mb-6 lg:mb-8 flex flex-col sm:flex-row gap-4">
                 <SearchBar
+                    ref={searchBarRef}
                     placeholder="Search pets by name, breed, or tags..."
                     onSearch={handleSearch}
                     className="max-w-2xl w-full"
+                    onClear={() => console.log("Search cleared from SearchBar component")}
                 />
 
                 <div className="self-end sm:self-auto">
@@ -188,8 +267,8 @@ function PetsPageContent() {
                     <p className="text-gray-600">No pets match your filter criteria. Try adjusting your filters.</p>
                     {pets.length > 0 && (
                         <button
-                            onClick={resetFilters}
-                            className="mt-4 px-4 py-2 text-sm font-medium text-blue-600 border border-blue-600 rounded hover:bg-blue-50"
+                            onClick={handleClearSearch}
+                            className="mt-4 px-4 py-2 text-sm font-medium text-orange-600 border border-orange-600 rounded hover:bg-orange-50"
                         >
                             Clear All Filters
                         </button>
