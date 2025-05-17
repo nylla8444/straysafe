@@ -6,7 +6,7 @@ import Link from 'next/link';
 export default function WaysToHelpSection() {
     return (
         <section className="py-16 bg-gradient-to-b from-amber-50 to-white">
-            <div className='container mx-auto px-4 text-center'>
+            <div className='container mx-auto w-full max-w-7xl px-4 text-center'>
                 <motion.h2
                     className="text-3xl font-bold text-center mb-3 text-gray-800"
                     initial={{ opacity: 0, y: -20 }}

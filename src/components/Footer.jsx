@@ -51,7 +51,7 @@ export default function Footer() {
                 ))}
             </div>
 
-            <div className="container mx-auto px-4 relative z-10">
+            <div className="container mx-auto w-full max-w-7xl px-4 relative z-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
                     {/* Logo Section - Fixed spacing issue */}
                     <div className="lg:col-span-2">

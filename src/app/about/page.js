@@ -36,7 +36,7 @@ export default function AboutPage() {
                     ))}
                 </div>
 
-                <div className="container mx-auto px-4 relative z-10">
+                <div className="container mx-auto w-full max-w-7xl px-4 relative z-10">
                     <motion.div
                         className="text-center max-w-3xl mx-auto"
                         initial={{ opacity: 0, y: 20 }}
@@ -80,7 +80,7 @@ export default function AboutPage() {
 
             {/* Mission Section */}
             <section className="py-16 bg-white">
-                <div className="container mx-auto px-4">
+                <div className="container mx-auto w-full max-w-7xl px-4">
                     <div className="flex flex-col md:flex-row gap-12 items-center">
                         <motion.div
                             className="md:w-1/2"
@@ -128,7 +128,7 @@ export default function AboutPage() {
 
             {/* Why We Exist Section */}
             <section className="py-16 bg-amber-50">
-                <div className="container mx-auto px-4">
+                <div className="container mx-auto w-full max-w-7xl px-4">
                     <motion.div
                         className="text-center max-w-3xl mx-auto mb-12"
                         initial={{ opacity: 0, y: 20 }}
@@ -182,7 +182,7 @@ export default function AboutPage() {
 
             {/* Features Section */}
             <section className="py-16 bg-white">
-                <div className="container mx-auto px-4">
+                <div className="container mx-auto w-full max-w-7xl px-4">
                     <motion.div
                         className="text-center max-w-3xl mx-auto mb-12"
                         initial={{ opacity: 0, y: 20 }}
@@ -270,7 +270,7 @@ export default function AboutPage() {
 
             {/* Vision/Growth Section */}
             <section className="py-16 bg-gradient-to-b from-orange-500 to-amber-500 text-white">
-                <div className="container mx-auto px-4">
+                <div className="container mx-auto w-full max-w-7xl px-4">
                     <div className="max-w-3xl mx-auto text-center">
                         <motion.h2
                             className="text-3xl font-bold mb-6"
@@ -310,7 +310,7 @@ export default function AboutPage() {
 
             {/* Call to Action */}
             <section className="py-20 bg-white">
-                <div className="container mx-auto px-4">
+                <div className="container mx-auto w-full max-w-7xl px-4">
                     <div className="max-w-4xl mx-auto text-center">
                         <motion.h2
                             className="text-3xl md:text-4xl font-bold mb-6 text-gray-800"

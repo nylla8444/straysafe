@@ -52,7 +52,7 @@ export default function HeroSection() {
                     🐾
                 </motion.div>
 
-                <div className="container mx-auto px-4 py-12 relative z-10">
+                <div className="container mx-auto w-full max-w-7xl px-4 py-12 relative z-10">
                     <div className="flex flex-col md:flex-row items-center">
                         <div className="md:w-1/2 mb-8 md:mb-0">
                             <motion.div

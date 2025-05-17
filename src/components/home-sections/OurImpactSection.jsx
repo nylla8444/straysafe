@@ -65,7 +65,7 @@ export default function OurImpactSection() {
                     }}>
                 </div>
 
-                <div className="container mx-auto px-4 relative z-10">
+                <div className="container mx-auto w-full max-w-7xl px-4 relative z-10">
                     <motion.h2
                         className="text-3xl font-bold text-center mb-16 text-gray-800"
                         initial={{ opacity: 0, y: -20 }}
@@ -171,13 +171,13 @@ export default function OurImpactSection() {
                             }}
                             transition={{ duration: 0.7, delay: 0.7 }}
                         >
-                            <div className="text-4xl md:text-5xl font-bold text-blue-500 mb-2">
+                            <div className="text-4xl md:text-5xl font-bold text-teal-500 mb-2">
                                 <AnimatedCounter targetValue={5} suffix="K+" />
                             </div>
                             <p className="text-gray-600">Active Users</p>
 
                             <motion.div
-                                className="w-16 h-1 bg-blue-300 mx-auto mt-4"
+                                className="w-16 h-1 bg-teal-300 mx-auto mt-4"
                                 initial={{ width: 0 }}
                                 animate={controls}
                                 variants={{
