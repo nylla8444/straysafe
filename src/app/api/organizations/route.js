@@ -7,33 +7,67 @@ export async function GET(request) {
     return withCache(request, async (req) => {
         try {
             await connectionToDB();
+            
+            const { searchParams } = new URL(request.url);
+            const searchTerm = searchParams.get('search')?.trim();
+            
+            // Add pagination parameters
+            const page = parseInt(searchParams.get('page') || '1');
+            const limit = parseInt(searchParams.get('limit') || '20');
+            const skip = (page - 1) * limit;
+            
+            // Build filters object for MongoDB query
+            const filters = {
+                userType: 'organization',
+                isVerified: true,
+                verificationStatus: 'verified'
+            };
+            
+            // Add search functionality
+            if (searchTerm) {
+                filters.$or = [
+                    { organizationName: { $regex: searchTerm, $options: 'i' } },
+                    { location: { $regex: searchTerm, $options: 'i' } },
+                    { city: { $regex: searchTerm, $options: 'i' } },
+                    { province: { $regex: searchTerm, $options: 'i' } },
+                    { description: { $regex: searchTerm, $options: 'i' } }
+                ];
+            }
 
-            // You can't mix inclusion and exclusion in MongoDB projections
-            // Choose inclusion approach (safer) by explicitly listing fields to return
-            const organizations = await User.find(
-                {
-                    userType: 'organization',
-                    isVerified: true,
-                    verificationStatus: 'verified'
-                },
-                {
-                    // Explicitly include only the fields you need
-                    _id: 1,
-                    organizationName: 1,
-                    email: 1,
-                    contactNumber: 1,
-                    city: 1,
-                    province: 1,
-                    location: 1,
-                    profileImage: 1,
-                    establishedYear: 1,
-                    // password and verificationDocument will be automatically excluded
-                }
-            ).lean(); // Add lean() for better performance
+            // Execute count query and data query in parallel
+            const [organizations, totalCount] = await Promise.all([
+                User.find(
+                    filters,
+                    {
+                        _id: 1,
+                        organizationName: 1, 
+                        email: 1,
+                        contactNumber: 1,
+                        city: 1,
+                        province: 1,
+                        location: 1,
+                        profileImage: 1,
+                        establishedYear: 1,
+                        isVerified: 1
+                    }
+                )
+                .sort({ organizationName: 1 })
+                .skip(skip)
+                .limit(limit)
+                .lean(),
+                
+                User.countDocuments(filters)
+            ]);
 
             return NextResponse.json({
                 success: true,
-                organizations
+                organizations,
+                pagination: {
+                    total: totalCount,
+                    page,
+                    limit,
+                    pages: Math.ceil(totalCount / limit)
+                }
             });
         } catch (error) {
             console.error('Error fetching organizations:', error);
@@ -42,5 +76,8 @@ export async function GET(request) {
                 error: 'Failed to fetch organizations'
             }, { status: 500 });
         }
-    }, { duration: 60 * 1000 }); // Cache for 60 seconds
+    }, { 
+        duration: 5 * 60 * 1000, // 5 minutes cache
+        varyByQuery: ['search', 'page', 'limit'] 
+    });
 }

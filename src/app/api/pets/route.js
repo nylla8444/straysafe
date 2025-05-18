@@ -15,15 +15,32 @@ export async function GET(request) {
             const status = searchParams.get('status');
             const specie = searchParams.get('specie');
             const organizationId = searchParams.get('organization');
+            const searchTerm = searchParams.get('search')?.trim();
+            const gender = searchParams.get('gender');
+
             // Add pagination parameters
             const page = parseInt(searchParams.get('page') || '1');
             const limit = parseInt(searchParams.get('limit') || '20');
             const skip = (page - 1) * limit;
 
+            // Build filters object for MongoDB query
             const filters = {};
+
+            // Basic filters
             if (status) filters.status = status;
             if (specie) filters.specie = specie;
+            if (gender) filters.gender = gender;
             if (organizationId) filters.organization = organizationId;
+
+            // Text search functionality
+            if (searchTerm) {
+                // Use $or operator to search across multiple fields
+                filters.$or = [
+                    { name: { $regex: searchTerm, $options: 'i' } },
+                    { breed: { $regex: searchTerm, $options: 'i' } },
+                    { tags: { $in: [new RegExp(searchTerm, 'i')] } }
+                ];
+            }
 
             // Execute count query and data query in parallel
             const [pets, totalCount] = await Promise.all([
@@ -54,7 +71,9 @@ export async function GET(request) {
             }, { status: 500 });
         }
     }, {
-        duration: 30 * 1000
+        duration: 5 * 60 * 1000,
+        // Vary cache by query parameters
+        varyByQuery: ['search', 'status', 'specie', 'gender', 'organization', 'page', 'limit']
     });
 }
 

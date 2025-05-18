@@ -3,12 +3,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import axios from 'axios';
-import Image from 'next/image';
 import Link from 'next/link';
 import FilterPanel from '../../../components/filters/FilterPanel';
 import SearchBar from '../../../components/SearchBar';
 import PetCardSkeleton from '../../../components/PetCardSkeleton';
 import PetCard from '../../../components/pets/PetCard';
+import Pagination from '../../../components/Pagination';
 import { useAuth } from '../../../../context/AuthContext';
 import { Suspense } from 'react';
 
@@ -24,13 +24,24 @@ function PetsPageContent() {
 
     // Get initial specie from URL query parameter
     const initialSpecie = searchParams.get('specie') || '';
+    // Get initial page from URL query parameter or default to 1
+    const initialPage = parseInt(searchParams.get('page') || '1', 10);
+
+    // Get initial search term from URL query parameter
+    const initialSearchTerm = searchParams.get('search') || '';
 
     const [pets, setPets] = useState([]);
     const [filteredPets, setFilteredPets] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [showFilters, setShowFilters] = useState(false);
-    const [searchTerm, setSearchTerm] = useState('');
+    const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
+
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(initialPage);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalPets, setTotalPets] = useState(0);
+    const petsPerPage = 20; // Matches the API default
 
     // Filter states - keep all filters
     const [filters, setFilters] = useState({
@@ -44,26 +55,43 @@ function PetsPageContent() {
         }
     });
 
-    // Fetch pets when species filter changes (only species is server-side filtered via API)
+    // Add URL tracking ref to prevent infinite loops
+    const prevUrlRef = useRef('');
+
+    // Fetch pets when necessary filters or pagination changes
     useEffect(() => {
+        // Create current URL parameters for comparison
+        const queryParams = new URLSearchParams();
+        if (filters.species) queryParams.set('specie', filters.species);
+        if (filters.gender) queryParams.set('gender', filters.gender);
+        if (searchTerm) queryParams.set('search', searchTerm);
+        queryParams.set('page', currentPage.toString());
+        queryParams.set('limit', petsPerPage.toString());
+
+        const currentUrl = queryParams.toString();
+
+        // Only fetch if URL parameters have actually changed
+        if (prevUrlRef.current === currentUrl) {
+            return; // Skip fetch if URL hasn't changed
+        }
+
+        // Update the previous URL ref
+        prevUrlRef.current = currentUrl;
+
         const fetchPets = async () => {
             try {
                 setLoading(true);
-                // Create API endpoint with query parameter if species filter is set
-                const endpoint = filters.species
-                    ? `/api/pets?specie=${encodeURIComponent(filters.species)}`
-                    : '/api/pets';
-
+                const endpoint = `/api/pets?${currentUrl}`;
                 const response = await axios.get(endpoint);
 
                 if (response.data.success) {
-                    // Filter out adopted pets
                     const availablePets = response.data.pets.filter(
                         pet => pet.status !== 'adopted'
                     );
                     setPets(availablePets);
-                    // Will be filtered further by the applyFilters function
-                    applyFilters(availablePets);
+                    setFilteredPets(availablePets);
+                    setTotalPages(response.data.pagination.pages);
+                    setTotalPets(response.data.pagination.total);
                 }
             } catch (err) {
                 console.error('Failed to fetch pets:', err);
@@ -74,7 +102,7 @@ function PetsPageContent() {
         };
 
         fetchPets();
-    }, [filters.species]); // Only depend on species filter for API calls
+    }, [filters.species, filters.gender, searchTerm, currentPage, petsPerPage]);
 
     // Apply all other filters client-side
     const applyFilters = (petsToFilter = pets) => {
@@ -129,7 +157,7 @@ function PetsPageContent() {
 
     // Handle filter changes for all filter types
     const handleFilterChange = (category, value) => {
-        // Special case for species - update URL
+        // Special case for species - update URL and reset to page 1
         if (category === 'species') {
             const params = new URLSearchParams(searchParams.toString());
 
@@ -138,6 +166,10 @@ function PetsPageContent() {
             } else {
                 params.delete('specie');
             }
+
+            // Reset to page 1 when changing filters
+            params.set('page', '1');
+            setCurrentPage(1);
 
             // Update URL without page refresh
             router.push(`/browse/pets?${params.toString()}`, { scroll: false });
@@ -201,26 +233,84 @@ function PetsPageContent() {
         });
 
         // Clear search term
+        if (searchBarRef.current) {
+            searchBarRef.current.clear();
+        }
         setSearchTerm('');
 
-        // Remove specie parameter from URL
+        // Reset to page 1
+        setCurrentPage(1);
+
+        // Remove all parameters from URL
         router.push('/browse/pets', { scroll: false });
     };
 
+
     const handleSearch = (term) => {
+        // Don't update URL if the search term hasn't changed
+        if (term === searchTerm) return;
+
+        // Update search term state
         setSearchTerm(term);
+
+        // Reset to page 1 when searching
+        setCurrentPage(1);
+
+        // Update URL with search parameter
+        const params = new URLSearchParams(searchParams.toString());
+
+        if (term) {
+            params.set('search', term);
+        } else {
+            params.delete('search');
+        }
+
+        // Always reset to page 1 when searching
+        params.set('page', '1');
+
+        // Update URL without page refresh and prevent state update loops
+        const newUrl = `/browse/pets?${params.toString()}`;
+        if (window.location.pathname + window.location.search !== newUrl) {
+            router.push(newUrl, { scroll: false });
+        }
     };
+
 
     const handleClearSearch = () => {
         // Use the searchBarRef to clear the search input
         if (searchBarRef.current) {
             searchBarRef.current.clear();
         }
-        // This is a fallback, but the SearchBar component should call handleSearch with empty string
+
+        // Update search term state
         setSearchTerm('');
+
+        // Reset to page 1
+        setCurrentPage(1);
+
+        // Update URL to remove search parameter
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete('search');
+        params.set('page', '1');
+
+        // Update URL without page refresh
+        router.push(`/browse/pets?${params.toString()}`, { scroll: false });
     };
 
 
+    const handlePageChange = (newPage) => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('page', newPage.toString());
+
+        // Update URL
+        router.push(`/browse/pets?${params.toString()}`, { scroll: false });
+
+        // Update state
+        setCurrentPage(newPage);
+
+        // Scroll to top when changing pages
+        window.scrollTo(0, 0);
+    };
 
     const handleFavorite = (pet) => {
         console.log('Favorite toggled for pet:', pet.name);
@@ -275,16 +365,31 @@ function PetsPageContent() {
                     )}
                 </div>
             ) : (
-                <div className="flex flex-wrap gap-6 justify-center sm:justify-start">
-                    {filteredPets.map(pet => (
-                        <PetCard
-                            key={pet._id}
-                            pet={pet}
-                            onFavorite={handleFavorite}
-                            userRole={userRole}
+                <>
+                    <div className="flex flex-wrap gap-6 justify-center sm:justify-start">
+                        {filteredPets.map(pet => (
+                            <PetCard
+                                key={pet._id}
+                                pet={pet}
+                                onFavorite={handleFavorite}
+                                userRole={userRole}
+                            />
+                        ))}
+                    </div>
+
+                    {/* Pagination section */}
+                    <div className="mt-8 mb-20 sm:mb-0">
+                        <div className="text-center text-sm text-gray-600 mb-2">
+                            Showing page {currentPage} of {totalPages} ({totalPets} total pets)
+                        </div>
+
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
                         />
-                    ))}
-                </div>
+                    </div>
+                </>
             )}
         </div>
     );
