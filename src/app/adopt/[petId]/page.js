@@ -159,6 +159,28 @@ export default function AdoptionApplicationPage() {
 
         if (name.includes('.')) {
             const [parent, child] = name.split('.');
+
+            // Special handling for phone field - only allow numbers
+            if (child === 'phone') {
+                // Remove any non-digit characters
+                const numericValue = value.replace(/\D/g, '');
+
+                setFormData(prev => ({
+                    ...prev,
+                    [parent]: {
+                        ...prev[parent],
+                        [child]: numericValue
+                    }
+                }));
+
+                setValidationErrors(prev => ({
+                    ...prev,
+                    [name]: validatePhone(numericValue)
+                }));
+
+                return; // Exit early after handling phone
+            }
+
             setFormData(prev => ({
                 ...prev,
                 [parent]: {
@@ -171,11 +193,6 @@ export default function AdoptionApplicationPage() {
                 setValidationErrors(prev => ({
                     ...prev,
                     [name]: validateEmail(value)
-                }));
-            } else if (child === 'phone') {
-                setValidationErrors(prev => ({
-                    ...prev,
-                    [name]: validatePhone(value)
                 }));
             } else {
                 setValidationErrors(prev => ({
@@ -205,6 +222,14 @@ export default function AdoptionApplicationPage() {
                     [name]: validateText(value, name.replace(/([A-Z])/g, ' $1').toLowerCase())
                 }));
             }
+        }
+    };
+
+    const handlePhoneKeyPress = (e) => {
+        // Only allow numbers (0-9) 
+        if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' &&
+            e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' && e.key !== 'Tab') {
+            e.preventDefault();
         }
     };
 
@@ -574,9 +599,12 @@ export default function AdoptionApplicationPage() {
                                                 name="reference.phone"
                                                 value={formData.reference.phone}
                                                 onChange={handleChange}
+                                                onKeyPress={handlePhoneKeyPress}
                                                 className={`${getInputClassName('reference.phone')} h-11`}
                                                 required
                                                 placeholder="09XXXXXXXXX"
+                                                inputMode="numeric" // Tells mobile devices to show a numeric keyboard
+                                                pattern="[0-9]*" // Additional hint for browsers
                                             />
                                             {validationErrors['reference.phone'] && (
                                                 <p className="mt-1 text-sm text-red-600">{validationErrors['reference.phone']}</p>
