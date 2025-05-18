@@ -225,7 +225,7 @@ export default function ShelterDetailPage({ params }) {
                     href="/browse/shelters"
                     className="group inline-flex items-center text-gray-600 hover:text-teal-600 transition-all duration-300"
                 >
-                    <div className="mr-2 w-8 h-8 flex items-center justify-center rounded-full bg-white border border-gray-200 shadow-sm group-hover:border-blue-200 group-hover:-translate-x-1 transition-all duration-300">
+                    <div className="mr-2 w-8 h-8 flex items-center justify-center rounded-full bg-white border border-gray-200 shadow-sm group-hover:border-teal-200 group-hover:-translate-x-1 transition-all duration-300">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
                         </svg>
@@ -407,7 +407,7 @@ export default function ShelterDetailPage({ params }) {
                                             <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-1 rounded">Rehabilitating</span>
                                         )}
                                         {pet.status === 'adopted' && (
-                                            <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded">Adopted</span>
+                                            <span className="bg-teal-100 text-teal-800 text-xs font-medium px-2 py-1 rounded">Adopted</span>
                                         )}
                                     </div>
                                 </div>
@@ -476,16 +476,16 @@ export default function ShelterDetailPage({ params }) {
                             {shelter.contactNumber && (
                                 <a
                                     href={`tel:${shelter.contactNumber}`}
-                                    className="flex items-center p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                                    className="flex items-center p-4 bg-teal-50 hover:bg-teal-100 rounded-lg transition-colors"
                                 >
-                                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                                        <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center mr-4">
+                                        <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                         </svg>
                                     </div>
                                     <div>
                                         <div className="font-medium">Call Now</div>
-                                        <div className="text-sm text-blue-700">{shelter.contactNumber}</div>
+                                        <div className="text-sm text-teal-700">{shelter.contactNumber}</div>
                                     </div>
                                 </a>
                             )}
@@ -580,8 +580,8 @@ export default function ShelterDetailPage({ params }) {
                                             <p className="text-sm text-gray-600">Feed a rescued animal for a month</p>
                                         </div>
                                         <div className="flex items-center">
-                                            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
-                                                <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <div className="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center mr-3">
+                                                <svg className="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
                                                 </svg>
                                             </div>
@@ -717,8 +717,8 @@ export default function ShelterDetailPage({ params }) {
                                                 <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
                                                     <div className="p-5">
                                                         <div className="flex items-center mb-4">
-                                                            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                                                                <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center mr-3">
+                                                                <svg className="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
                                                                 </svg>
                                                             </div>
@@ -747,7 +747,7 @@ export default function ShelterDetailPage({ params }) {
                                                                                 navigator.clipboard.writeText(donationSettings.bankDetails.accountNumber);
                                                                                 alert('Account number copied to clipboard!');
                                                                             }}
-                                                                            className="ml-2 text-blue-500 hover:text-blue-700 focus:outline-none"
+                                                                            className="ml-2 text-teal-500 hover:text-teal-700 focus:outline-none"
                                                                             title="Copy account number"
                                                                         >
                                                                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">

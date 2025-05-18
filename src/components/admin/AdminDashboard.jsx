@@ -4,10 +4,10 @@ export default function AdminDashboard({ stats, isLoading }) {
     return (
         <div>
             <h2 className="text-2xl font-bold mb-6">Admin Dashboard</h2>
-            
+
             {isLoading ? (
                 <div className="flex justify-center my-12">
-                    <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-4 border-teal-500 border-t-transparent"></div>
                 </div>
             ) : (
                 <>
@@ -21,8 +21,8 @@ export default function AdminDashboard({ stats, isLoading }) {
                                         {stats.organizations || 0}
                                     </h3>
                                 </div>
-                                <div className="p-2 bg-blue-100 rounded-lg">
-                                    <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div className="p-2 bg-teal-100 rounded-lg">
+                                    <svg className="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                                     </svg>
                                 </div>
@@ -86,7 +86,7 @@ export default function AdminDashboard({ stats, isLoading }) {
                             <div>
                                 <h4 className="text-gray-600 font-medium">Total Users</h4>
                                 <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
-                                    <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: '100%' }}></div>
+                                    <div className="bg-teal-600 h-2.5 rounded-full" style={{ width: '100%' }}></div>
                                 </div>
                                 <p className="text-right text-sm text-gray-500 mt-1">{stats.totalUsers || 0} users</p>
                             </div>
@@ -95,12 +95,12 @@ export default function AdminDashboard({ stats, isLoading }) {
                                 <div className="flex-1">
                                     <h4 className="text-gray-600 font-medium">Adopters</h4>
                                     <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
-                                        <div className="bg-green-600 h-2.5 rounded-full" style={{ 
-                                            width: `${stats.totalUsers ? (stats.adopters / stats.totalUsers) * 100 : 0}%` 
+                                        <div className="bg-green-600 h-2.5 rounded-full" style={{
+                                            width: `${stats.totalUsers ? (stats.adopters / stats.totalUsers) * 100 : 0}%`
                                         }}></div>
                                     </div>
                                     <p className="text-right text-sm text-gray-500 mt-1">
-                                        {stats.adopters || 0} ({stats.totalUsers ? 
+                                        {stats.adopters || 0} ({stats.totalUsers ?
                                             Math.round((stats.adopters / stats.totalUsers) * 100) : 0}%)
                                     </p>
                                 </div>
@@ -108,12 +108,12 @@ export default function AdminDashboard({ stats, isLoading }) {
                                 <div className="flex-1">
                                     <h4 className="text-gray-600 font-medium">Organizations</h4>
                                     <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
-                                        <div className="bg-blue-600 h-2.5 rounded-full" style={{ 
-                                            width: `${stats.totalUsers ? (stats.organizations / stats.totalUsers) * 100 : 0}%` 
+                                        <div className="bg-teal-600 h-2.5 rounded-full" style={{
+                                            width: `${stats.totalUsers ? (stats.organizations / stats.totalUsers) * 100 : 0}%`
                                         }}></div>
                                     </div>
                                     <p className="text-right text-sm text-gray-500 mt-1">
-                                        {stats.organizations || 0} ({stats.totalUsers ? 
+                                        {stats.organizations || 0} ({stats.totalUsers ?
                                             Math.round((stats.organizations / stats.totalUsers) * 100) : 0}%)
                                     </p>
                                 </div>

@@ -61,7 +61,7 @@ export default function ApplicationDetailPage({ params }) {
             case 'pending':
                 return <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">Pending</span>;
             case 'reviewing':
-                return <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Reviewing</span>;
+                return <span className="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-0.5 rounded">Reviewing</span>;
             case 'approved':
                 return <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Approved</span>;
             case 'rejected':
@@ -77,7 +77,7 @@ export default function ApplicationDetailPage({ params }) {
         return (
             <div className="max-w-4xl mx-auto p-4 sm:p-6">
                 <div className="flex justify-center items-center min-h-[400px]">
-                    <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+                    <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-teal-500"></div>
                 </div>
             </div>
         );
@@ -87,7 +87,7 @@ export default function ApplicationDetailPage({ params }) {
         return (
             <div className="max-w-4xl mx-auto p-4 sm:p-6">
                 <div className="mb-6">
-                    <Link href="/profile/applications" className="text-blue-600 hover:underline flex items-center">
+                    <Link href="/profile/applications" className="text-teal-600 hover:underline flex items-center">
                         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
                         </svg>
@@ -115,7 +115,7 @@ export default function ApplicationDetailPage({ params }) {
         return (
             <div className="max-w-4xl mx-auto p-4 sm:p-6">
                 <div className="mb-6">
-                    <Link href="/profile/applications" className="text-blue-600 hover:underline flex items-center">
+                    <Link href="/profile/applications" className="text-teal-600 hover:underline flex items-center">
                         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
                         </svg>
@@ -133,7 +133,7 @@ export default function ApplicationDetailPage({ params }) {
     return (
         <div className="max-w-4xl mx-auto p-4 sm:p-6">
             <div className="mb-6">
-                <Link href="/profile/applications" className="text-blue-600 hover:underline flex items-center">
+                <Link href="/profile/applications" className="text-teal-600 hover:underline flex items-center">
                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
                     </svg>
@@ -173,7 +173,7 @@ export default function ApplicationDetailPage({ params }) {
                                     {application.petId.breed} • {application.petId.gender} • {application.petId.specie}
                                 </p>
                                 <p className="text-gray-600">
-                                    Status: <span className={application.petId.status === 'available' ? 'text-green-600' : 'text-blue-600'}>
+                                    Status: <span className={application.petId.status === 'available' ? 'text-green-600' : 'text-teal-600'}>
                                         {application.petId.status.charAt(0).toUpperCase() + application.petId.status.slice(1)}
                                     </span>
                                 </p>
@@ -243,23 +243,23 @@ export default function ApplicationDetailPage({ params }) {
                     {/* Organization Contact Section */}
                     <div className="mb-8">
                         <h2 className="font-semibold text-lg mb-3">Shelter Information</h2>
-                        <div className="bg-blue-50 p-4 rounded-lg">
+                        <div className="bg-teal-50 p-4 rounded-lg">
                             <h3 className="font-medium text-lg">{application.organizationId.organizationName}</h3>
 
                             <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {application.organizationId.contactNumber && (
                                     <a
                                         href={`tel:${application.organizationId.contactNumber}`}
-                                        className="flex items-center p-3 bg-white hover:bg-blue-50 rounded-lg transition-colors group"
+                                        className="flex items-center p-3 bg-white hover:bg-teal-50 rounded-lg transition-colors group"
                                     >
-                                        <div className="mr-3 w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
+                                        <div className="mr-3 w-10 h-10 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center">
                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                             </svg>
                                         </div>
                                         <div>
                                             <div className="text-sm font-medium text-gray-800">Phone</div>
-                                            <div className="text-blue-600">{application.organizationId.contactNumber}</div>
+                                            <div className="text-teal-600">{application.organizationId.contactNumber}</div>
                                         </div>
                                     </a>
                                 )}
@@ -267,16 +267,16 @@ export default function ApplicationDetailPage({ params }) {
                                 {application.organizationId.email && (
                                     <a
                                         href={`mailto:${application.organizationId.email}`}
-                                        className="flex items-center p-3 bg-white hover:bg-blue-50 rounded-lg transition-colors group"
+                                        className="flex items-center p-3 bg-white hover:bg-teal-50 rounded-lg transition-colors group"
                                     >
-                                        <div className="mr-3 w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
+                                        <div className="mr-3 w-10 h-10 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center">
                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                             </svg>
                                         </div>
                                         <div>
                                             <div className="text-sm font-medium text-gray-800">Email</div>
-                                            <div className="text-blue-600">{application.organizationId.email}</div>
+                                            <div className="text-teal-600">{application.organizationId.email}</div>
                                         </div>
                                     </a>
                                 )}

@@ -194,7 +194,7 @@ export default function UpdateAdminCredentials() {
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:bg-blue-400 text-sm sm:text-base"
+                        className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:bg-teal-400 text-sm sm:text-base"
                     >
                         {isSubmitting ? 'Updating...' : 'Update Credentials'}
                     </button>

@@ -135,8 +135,8 @@ export default function VerificationResubmitForm({ organization, onSubmit }) {
                 type="submit"
                 disabled={isSubmitting}
                 className={`w-full py-2 px-4 rounded ${isSubmitting
-                    ? 'bg-blue-300 cursor-not-allowed'
-                    : 'bg-blue-600 hover:bg-blue-700 text-white'
+                    ? 'bg-teal-300 cursor-not-allowed'
+                    : 'bg-teal-600 hover:bg-teal-700 text-white'
                     }`}
             >
                 {isSubmitting ? 'Submitting...' : 'Submit Additional Information'}

@@ -308,8 +308,8 @@ export default function CashDonationComponent() {
                             {/* Donor information - conditionally shown */}
                             {!isAnonymous && (
                                 <div className="col-span-full">
-                                    <div className="bg-blue-50 p-4 rounded-md border border-blue-100">
-                                        <h3 className="text-sm font-medium text-blue-800 mb-3">Donor Information</h3>
+                                    <div className="bg-teal-50 p-4 rounded-md border border-teal-100">
+                                        <h3 className="text-sm font-medium text-teal-800 mb-3">Donor Information</h3>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div>
                                                 <label htmlFor="donorName" className="block text-sm font-medium text-gray-700 mb-1">
@@ -386,16 +386,16 @@ export default function CashDonationComponent() {
             {/* Donation Summary - Improved cards */}
             {summary.count > 0 && (
                 <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div className="bg-blue-50 p-5 rounded-lg border border-blue-100 shadow-sm hover:shadow transition-shadow">
+                    <div className="bg-teal-50 p-5 rounded-lg border border-teal-100 shadow-sm hover:shadow transition-shadow">
                         <div className="flex items-center">
-                            <div className="bg-blue-100 rounded-full p-2 mr-3">
-                                <svg className="w-5 h-5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div className="bg-teal-100 rounded-full p-2 mr-3">
+                                <svg className="w-5 h-5 text-teal-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                                 </svg>
                             </div>
                             <div>
-                                <p className="text-blue-800 text-sm font-medium">Total Donations</p>
-                                <p className="text-2xl font-bold text-blue-900 mt-1">{summary.count}</p>
+                                <p className="text-teal-800 text-sm font-medium">Total Donations</p>
+                                <p className="text-2xl font-bold text-teal-900 mt-1">{summary.count}</p>
                             </div>
                         </div>
                     </div>
@@ -434,7 +434,7 @@ export default function CashDonationComponent() {
                     <h2 className="text-xl font-medium text-gray-900">Donation History</h2>
                     <button
                         onClick={fetchDonations}
-                        className="text-sm text-blue-600 hover:text-blue-800 flex items-center self-end sm:self-auto"
+                        className="text-sm text-teal-600 hover:text-teal-800 flex items-center self-end sm:self-auto"
                     >
                         <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -497,7 +497,7 @@ export default function CashDonationComponent() {
                                                 </td>
                                                 <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                                                     <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                        ${donation.purpose === 'medical' ? 'bg-blue-100 text-blue-800' :
+                                                        ${donation.purpose === 'medical' ? 'bg-teal-100 text-teal-800' :
                                                             donation.purpose === 'food' ? 'bg-green-100 text-green-800' :
                                                                 donation.purpose === 'shelter' ? 'bg-amber-100 text-amber-800' :
                                                                     donation.purpose === 'rescue' ? 'bg-purple-100 text-purple-800' :

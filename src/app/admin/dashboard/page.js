@@ -130,26 +130,26 @@ export default function AdminDashboardPage() {
     const circleButtonVariants = {
         open: {
             rotate: 45,
-            backgroundColor: "rgb(239 68 68)",
+            backgroundColor: "rgb(0, 212, 146)",
             boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
             transition: { duration: 0.2 }
         },
         closed: {
             rotate: 0,
-            backgroundColor: "rgb(59 130 246)",
+            backgroundColor: "rgb(0, 187, 167)",
             boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
             transition: { duration: 0.2 }
         }
     };
 
     return (
-        <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
+        <div className="flex flex-col md:flex-row min-h-screen bg-amber-50">
             {/* Mobile Header - Only visible on small screens */}
             {/* Simple mobile header - Only shows app name */}
-            <div className="md:hidden bg-gradient-to-r from-blue-800 to-blue-900 text-white p-4 flex justify-center shadow-lg">
+            <div className="md:hidden bg-gradient-to-r from-teal-800 to-teal-900 text-white p-4 flex justify-center shadow-lg">
                 <div className="flex items-center space-x-2">
                     <div className="h-8 w-8 bg-white rounded-lg flex items-center justify-center">
-                        <svg className="w-5 h-5 text-blue-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-teal-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                                 d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
@@ -174,13 +174,13 @@ export default function AdminDashboardPage() {
 
             {/* Sidebar */}
             <motion.div
-                className={`fixed md:static inset-y-0 left-0 w-64 bg-gradient-to-br from-blue-800 to-blue-900 text-white p-6 shadow-lg z-40 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out`}
+                className={`fixed md:static inset-y-0 left-0 w-64 bg-gradient-to-br from-teal-800 to-teal-900 text-white p-6 shadow-lg z-40 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out`}
             >
                 {/* Mobile close button */}
                 <div className="flex justify-between items-center mb-6 md:hidden">
                     <div className="flex items-center space-x-2">
                         <div className="h-8 w-8 bg-white rounded-lg flex items-center justify-center">
-                            <svg className="w-5 h-5 text-blue-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-5 h-5 text-teal-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                                     d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -189,7 +189,7 @@ export default function AdminDashboardPage() {
                     </div>
                     <button
                         onClick={() => setSidebarOpen(false)}
-                        className="p-1.5 rounded-full hover:bg-blue-700"
+                        className="p-1.5 rounded-full hover:bg-teal-700"
                         aria-label="Close menu"
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -201,14 +201,14 @@ export default function AdminDashboardPage() {
                 {/* Desktop logo and title */}
                 <div className="hidden md:flex items-center space-x-3 mb-10">
                     <div className="h-10 w-10 bg-white rounded-lg flex items-center justify-center">
-                        <svg className="w-6 h-6 text-blue-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-6 h-6 text-teal-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                                 d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
                     <div>
                         <h1 className="text-xl font-bold">Admin Panel</h1>
-                        <p className="text-xs text-blue-200">StraySpot Management</p>
+                        <p className="text-xs text-teal-200">StraySpot Management</p>
                     </div>
                 </div>
 
@@ -222,8 +222,8 @@ export default function AdminDashboardPage() {
                                 }}
                                 className={`w-full text-left p-3 rounded-lg flex items-center space-x-3 transition-all duration-200
                                     ${activeTab === 'dashboard'
-                                        ? 'bg-blue-700 text-white shadow-md'
-                                        : 'text-blue-100 hover:bg-blue-700/50'}`}
+                                        ? 'bg-teal-700 text-white shadow-md'
+                                        : 'text-teal-100 hover:bg-teal-700/50'}`}
                             >
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
@@ -240,8 +240,8 @@ export default function AdminDashboardPage() {
                                 }}
                                 className={`w-full text-left p-3 rounded-lg flex items-center space-x-3 transition-all duration-200
                                     ${activeTab === 'organizations'
-                                        ? 'bg-blue-700 text-white shadow-md'
-                                        : 'text-blue-100 hover:bg-blue-700/50'}`}
+                                        ? 'bg-teal-700 text-white shadow-md'
+                                        : 'text-teal-100 hover:bg-teal-700/50'}`}
                             >
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
@@ -258,8 +258,8 @@ export default function AdminDashboardPage() {
                                 }}
                                 className={`w-full text-left p-3 rounded-lg flex items-center space-x-3 transition-all duration-200
                                     ${activeTab === 'adopters'
-                                        ? 'bg-blue-700 text-white shadow-md'
-                                        : 'text-blue-100 hover:bg-blue-700/50'}`}
+                                        ? 'bg-teal-700 text-white shadow-md'
+                                        : 'text-teal-100 hover:bg-teal-700/50'}`}
                             >
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
@@ -276,8 +276,8 @@ export default function AdminDashboardPage() {
                                 }}
                                 className={`w-full text-left p-3 rounded-lg flex items-center space-x-3 transition-all duration-200
                                     ${activeTab === 'settings'
-                                        ? 'bg-blue-700 text-white shadow-md'
-                                        : 'text-blue-100 hover:bg-blue-700/50'}`}
+                                        ? 'bg-teal-700 text-white shadow-md'
+                                        : 'text-teal-100 hover:bg-teal-700/50'}`}
                             >
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
@@ -292,10 +292,10 @@ export default function AdminDashboardPage() {
                 </nav>
 
                 {/* Log out button */}
-                <div className="mt-10 pt-4 border-t border-blue-700">
+                <div className="mt-10 pt-4 border-t border-teal-700">
                     <button
                         onClick={adminLogout}
-                        className="w-full text-left p-3 rounded-lg flex items-center space-x-3 text-blue-100 hover:bg-blue-700/50 transition-all duration-200"
+                        className="w-full text-left p-3 rounded-lg flex items-center space-x-3 text-teal-100 hover:bg-teal-700/50 transition-all duration-200"
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -327,7 +327,7 @@ export default function AdminDashboardPage() {
 
                         {isLoading ? (
                             <div className="bg-white p-8 md:p-12 rounded-xl shadow-md text-center">
-                                <div className="inline-block w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                                <div className="inline-block w-10 h-10 border-4 border-teal-500 border-t-transparent rounded-full animate-spin mb-4"></div>
                                 <p className="text-gray-600">Loading statistics...</p>
                             </div>
                         ) : (
@@ -336,15 +336,15 @@ export default function AdminDashboardPage() {
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.1 }}
-                                    className="bg-white p-4 md:p-6 rounded-xl shadow-md border-l-4 border-blue-500"
+                                    className="bg-white p-4 md:p-6 rounded-xl shadow-md border-l-4 border-teal-500"
                                 >
                                     <div className="flex justify-between items-start">
                                         <div>
                                             <p className="text-xs md:text-sm font-medium text-gray-500">Total Users</p>
                                             <p className="text-xl md:text-3xl font-bold mt-1">{stats.totalUsers}</p>
                                         </div>
-                                        <div className="p-2 bg-blue-100 rounded-lg">
-                                            <svg className="w-5 h-5 md:w-6 md:h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div className="p-2 bg-teal-100 rounded-lg">
+                                            <svg className="w-5 h-5 md:w-6 md:h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                                             </svg>
                                         </div>
@@ -505,7 +505,7 @@ export default function AdminDashboardPage() {
                                 <div>
                                     <h4 className="text-gray-600 text-sm md:text-base font-medium mb-2">Total Users</h4>
                                     <div className="w-full bg-gray-200 rounded-full h-2.5">
-                                        <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: '100%' }}></div>
+                                        <div className="bg-teal-600 h-2.5 rounded-full" style={{ width: '100%' }}></div>
                                     </div>
                                     <p className="text-right text-xs md:text-sm text-gray-500 mt-1">{stats.totalUsers || 0} users</p>
                                 </div>
@@ -527,7 +527,7 @@ export default function AdminDashboardPage() {
                                     <div>
                                         <h4 className="text-gray-600 text-sm md:text-base font-medium mb-2">Organizations</h4>
                                         <div className="w-full bg-gray-200 rounded-full h-2.5">
-                                            <div className="bg-blue-600 h-2.5 rounded-full" style={{
+                                            <div className="bg-teal-600 h-2.5 rounded-full" style={{
                                                 width: `${stats.totalUsers ? (stats.organizations / stats.totalUsers) * 100 : 0}%`
                                             }}></div>
                                         </div>
@@ -569,7 +569,7 @@ export default function AdminDashboardPage() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="fixed inset-0 bg-blue-500/30 z-30"
+                            className="fixed inset-0 bg-teal-500/30 z-30"
                             onClick={() => setFloatingMenuOpen(false)}
                         >
                             {/* Menu items in box/grid formation */}
@@ -590,7 +590,7 @@ export default function AdminDashboardPage() {
                                             setFloatingMenuOpen(false);
                                         }}
                                         className={`flex items-center justify-center w-16 h-16 rounded-full shadow-md 
-                                            ${activeTab === 'dashboard' ? 'bg-blue-500 text-white' : 'bg-white text-blue-600'}`}
+                                            ${activeTab === 'dashboard' ? 'bg-teal-500 text-white' : 'bg-white text-teal-600'}`}
                                     >
                                         <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -607,7 +607,7 @@ export default function AdminDashboardPage() {
                                             setFloatingMenuOpen(false);
                                         }}
                                         className={`flex items-center justify-center w-16 h-16 rounded-full shadow-md
-                                            ${activeTab === 'adopters' ? 'bg-blue-500 text-white' : 'bg-white text-green-600'}`}
+                                            ${activeTab === 'adopters' ? 'bg-teal-500 text-white' : 'bg-white text-green-600'}`}
                                     >
                                         <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -624,7 +624,7 @@ export default function AdminDashboardPage() {
                                             setFloatingMenuOpen(false);
                                         }}
                                         className={`flex items-center justify-center w-16 h-16 rounded-full shadow-md
-                                            ${activeTab === 'organizations' ? 'bg-blue-500 text-white' : 'bg-white text-purple-600'}`}
+                                            ${activeTab === 'organizations' ? 'bg-teal-500 text-white' : 'bg-white text-purple-600'}`}
                                     >
                                         <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -640,7 +640,7 @@ export default function AdminDashboardPage() {
                                             refreshStats(true);
                                             setFloatingMenuOpen(false);
                                         }}
-                                        className="flex items-center justify-center w-16 h-16 rounded-full shadow-md bg-white text-blue-600"
+                                        className="flex items-center justify-center w-16 h-16 rounded-full shadow-md bg-white text-teal-600"
                                     >
                                         <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -657,7 +657,7 @@ export default function AdminDashboardPage() {
                                             setFloatingMenuOpen(false);
                                         }}
                                         className={`flex items-center justify-center w-16 h-16 rounded-full shadow-md
-                                            ${activeTab === 'settings' ? 'bg-blue-500 text-white' : 'bg-white text-gray-600'}`}
+                                            ${activeTab === 'settings' ? 'bg-teal-500 text-white' : 'bg-white text-gray-600'}`}
                                     >
                                         <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -680,7 +680,7 @@ export default function AdminDashboardPage() {
                     initial="closed"
                     animate={floatingMenuOpen ? "open" : "closed"}
                     onClick={() => setFloatingMenuOpen(!floatingMenuOpen)}
-                    className="fixed bottom-6 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full bg-blue-500 text-white shadow-lg flex items-center justify-center z-50"
+                    className="fixed bottom-6 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full bg-teal-500 text-white shadow-lg flex items-center justify-center z-50"
                 >
                     <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path

@@ -132,7 +132,7 @@ export default function PetCard({ pet, onFavorite, userRole = 'guest' }) {
         >
             <div className={`absolute top-0 left-0 w-full h-1 ${pet.status === 'available' ? 'bg-teal-500' :
                 pet.status === 'rehabilitating' ? 'bg-orange-500' :
-                    'bg-blue-500'
+                    'bg-teal-500'
                 }`}></div>
 
             <div className="relative h-56 overflow-hidden">
@@ -164,7 +164,7 @@ export default function PetCard({ pet, onFavorite, userRole = 'guest' }) {
                             ? 'bg-teal-500/85 text-white border border-teal-400/30'
                             : pet.status === 'rehabilitating'
                                 ? 'bg-orange-500/85 text-white border border-orange-400/30'
-                                : 'bg-blue-500/85 text-white border border-blue-400/30'
+                                : 'bg-teal-500/85 text-white border border-teal-400/30'
                         }
                     `}>
                         <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
@@ -288,7 +288,7 @@ export default function PetCard({ pet, onFavorite, userRole = 'guest' }) {
                         {pet.tags.slice(0, 2).map(tag => (
                             <span
                                 key={tag}
-                                className="bg-amber-50 text-orange-700 text-xs px-2.5 py-0.5 rounded-full font-medium border border-amber-100 hover:bg-amber-100 transition-colors duration-200"
+                                className="bg-teal-50 text-teal-700 text-xs px-2.5 py-0.5 rounded-full font-medium border border-emerald-100 hover:bg-emerald-100 transition-colors duration-200"
                             >
                                 {tag.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
                             </span>
@@ -313,7 +313,7 @@ export default function PetCard({ pet, onFavorite, userRole = 'guest' }) {
 
                     {pet.organization?.organizationName && (
                         <div className="flex items-center">
-                            <div className="mr-2 w-5 h-5 bg-amber-100 rounded-full flex items-center justify-center overflow-hidden">
+                            <div className="mr-2 w-5 h-5 bg-emerald-50 rounded-full flex items-center justify-center overflow-hidden">
                                 {pet.organization.profileImage ? (
                                     <Image
                                         src={pet.organization.profileImage}
@@ -323,7 +323,7 @@ export default function PetCard({ pet, onFavorite, userRole = 'guest' }) {
                                         className="object-cover"
                                     />
                                 ) : (
-                                    <span className="text-xs font-bold text-orange-500">
+                                    <span className="text-xs font-bold text-teal-500">
                                         {pet.organization.organizationName.charAt(0).toUpperCase()}
                                     </span>
                                 )}

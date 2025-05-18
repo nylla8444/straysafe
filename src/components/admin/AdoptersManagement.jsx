@@ -293,7 +293,7 @@ export default function AdoptersManagement({ onUpdateStats }) {
                 <div className="grid grid-cols-3 gap-1 sm:flex sm:space-x-2 w-full sm:w-auto">
                     <button
                         onClick={() => handleTabChange('all')}
-                        className={`px-3 sm:px-4 py-2 rounded text-sm sm:text-base ${filter === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+                        className={`px-3 sm:px-4 py-2 rounded text-sm sm:text-base ${filter === 'all' ? 'bg-teal-600 text-white' : 'bg-gray-200'}`}
                     >
                         All
                     </button>
@@ -319,7 +319,7 @@ export default function AdoptersManagement({ onUpdateStats }) {
             )}
 
             {statusChangeMessage && (
-                <div className={`${statusChangeMessage.type === 'success' ? 'bg-green-100 border-green-400 text-green-700' : 'bg-blue-100 border-blue-400 text-blue-700'} px-4 py-3 rounded mb-4 flex justify-between items-center`}>
+                <div className={`${statusChangeMessage.type === 'success' ? 'bg-green-100 border-green-400 text-green-700' : 'bg-teal-100 border-teal-400 text-teal-700'} px-4 py-3 rounded mb-4 flex justify-between items-center`}>
                     <div className="text-sm sm:text-base">{statusChangeMessage.text}</div>
                     <button onClick={() => setStatusChangeMessage(null)} className="text-xs sm:text-sm font-semibold">
                         Dismiss
@@ -332,7 +332,7 @@ export default function AdoptersManagement({ onUpdateStats }) {
                 {selectedAdopter && (
                     <button
                         onClick={() => setSelectedAdopter(null)}
-                        className="flex items-center text-blue-600 mb-2"
+                        className="flex items-center text-teal-600 mb-2"
                     >
                         <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
@@ -353,7 +353,7 @@ export default function AdoptersManagement({ onUpdateStats }) {
 
                         {loading ? (
                             <div className="flex justify-center items-center p-8">
-                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600"></div>
                             </div>
                         ) : adopters.length === 0 ? (
                             <div className="p-6 text-center text-gray-500">
@@ -364,7 +364,7 @@ export default function AdoptersManagement({ onUpdateStats }) {
                                 {adopters.map(adopter => (
                                     <li
                                         key={adopter._id}
-                                        className={`py-3 sm:py-4 px-3 sm:px-4 cursor-pointer hover:bg-gray-50 ${selectedAdopter?._id === adopter._id ? 'bg-blue-50' : ''}`}
+                                        className={`py-3 sm:py-4 px-3 sm:px-4 cursor-pointer hover:bg-gray-50 ${selectedAdopter?._id === adopter._id ? 'bg-teal-50' : ''}`}
                                         onClick={() => setSelectedAdopter(adopter)}
                                     >
                                         <div className="flex items-center">
@@ -505,7 +505,7 @@ export default function AdoptersManagement({ onUpdateStats }) {
                         <div className="p-3 sm:p-4">
                             {loadingHistory ? (
                                 <div className="flex justify-center py-6 sm:py-8">
-                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600"></div>
                                 </div>
                             ) : activityHistory.length === 0 ? (
                                 <p className="text-gray-500 text-center py-6 sm:py-8">No activity history found.</p>

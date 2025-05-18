@@ -106,7 +106,7 @@ export default function PetDetailPage({ params }) {
             case 'rehabilitating':
                 return <span className="bg-amber-100 text-amber-700 text-sm font-medium px-3 py-1 rounded-full">Rehabilitating</span>;
             case 'adopted':
-                return <span className="bg-blue-100 text-blue-700 text-sm font-medium px-3 py-1 rounded-full">Adopted</span>;
+                return <span className="bg-teal-100 text-teal-700 text-sm font-medium px-3 py-1 rounded-full">Adopted</span>;
             default:
                 return null;
         }
@@ -170,7 +170,7 @@ export default function PetDetailPage({ params }) {
             return (
                 <Link
                     href={`/adopt/${pet._id}`}
-                    className="w-full mb-6 px-6 py-3 bg-blue-600 text-white text-lg font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg flex items-center justify-center group"
+                    className="w-full mb-6 px-6 py-3 bg-teal-600 text-white text-lg font-medium rounded-lg hover:bg-teal-700 transition-colors shadow-md hover:shadow-lg flex items-center justify-center group"
                 >
                     <span>Request to Adopt</span>
                     <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -182,14 +182,14 @@ export default function PetDetailPage({ params }) {
             // User cannot adopt - show appropriate message
             return (
                 <div className="mb-6 space-y-3">
-                    <div className="px-6 py-4 bg-blue-50 border border-blue-100 rounded-lg text-center">
-                        <p className="text-blue-700">{getAdoptionButtonMessage()}</p>
+                    <div className="px-6 py-4 bg-orange-50 border border-orange-100 rounded-lg text-center">
+                        <p className="text-orange-700">{getAdoptionButtonMessage()}</p>
                     </div>
 
                     {!isAuthenticated && (
                         <Link
                             href={`/login?redirect=/browse/pets/${pet._id}`}
-                            className="w-full px-6 py-3 bg-blue-600 text-white text-lg font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg flex items-center justify-center"
+                            className="w-full px-6 py-3 bg-orange-600 text-white text-lg font-medium rounded-lg hover:bg-orange-700 transition-colors shadow-md hover:shadow-lg flex items-center justify-center"
                         >
                             Sign in to continue
                         </Link>
@@ -203,7 +203,7 @@ export default function PetDetailPage({ params }) {
         return (
             <div className="max-w-5xl mx-auto p-6">
                 <div className="animate-pulse flex flex-col items-center justify-center min-h-[60vh]">
-                    <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-16 h-16 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
                     <p className="mt-4 text-gray-600">Loading pet details...</p>
                 </div>
             </div>
@@ -214,7 +214,7 @@ export default function PetDetailPage({ params }) {
         return (
             <div className="max-w-5xl mx-auto p-6">
                 <div className="flex justify-start mb-6">
-                    <Link href="/browse/pets" className="flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+                    <Link href="/browse/pets" className="flex items-center text-teal-600 hover:text-teal-800 transition-colors">
                         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                         </svg>
@@ -237,7 +237,7 @@ export default function PetDetailPage({ params }) {
         return (
             <div className="max-w-5xl mx-auto p-6">
                 <div className="flex justify-start mb-6">
-                    <Link href="/browse/pets" className="flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+                    <Link href="/browse/pets" className="flex items-center text-teal-600 hover:text-teal-800 transition-colors">
                         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                         </svg>
@@ -257,9 +257,9 @@ export default function PetDetailPage({ params }) {
             <div className="mb-8">
                 <Link
                     href="/browse/pets"
-                    className="group inline-flex items-center text-gray-600 hover:text-blue-600 transition-all duration-300"
+                    className="group inline-flex items-center text-gray-600 hover:text-teal-600 transition-all duration-300"
                 >
-                    <div className="mr-2 w-8 h-8 flex items-center justify-center rounded-full bg-white border border-gray-200 shadow-sm group-hover:border-blue-200 group-hover:-translate-x-1 transition-all duration-300">
+                    <div className="mr-2 w-8 h-8 flex items-center justify-center rounded-full bg-white border border-gray-200 shadow-sm group-hover:border-teal-200 group-hover:-translate-x-1 transition-all duration-300">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
                         </svg>
@@ -270,9 +270,9 @@ export default function PetDetailPage({ params }) {
 
             <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
                 {/* Pet name banner for mobile view */}
-                <div className="md:hidden bg-gradient-to-r from-blue-600 to-blue-700 p-5">
+                <div className="md:hidden bg-gradient-to-r from-teal-600 to-teal-700 p-5">
                     <h1 className="text-2xl font-bold text-white">{pet.name}</h1>
-                    <p className="text-blue-100">
+                    <p className="text-teal-100">
                         {pet.breed} • {pet.gender.charAt(0).toUpperCase() + pet.gender.slice(1)} • {pet.specie.charAt(0).toUpperCase() + pet.specie.slice(1)}
                     </p>
                 </div>
@@ -290,7 +290,7 @@ export default function PetDetailPage({ params }) {
                                     ? 'bg-green-500/90 text-white border border-green-400/30'
                                     : pet.status === 'rehabilitating'
                                         ? 'bg-amber-500/90 text-white border border-amber-400/30'
-                                        : 'bg-blue-500/90 text-white border border-blue-400/30'
+                                        : 'bg-teal-500/90 text-white border border-teal-400/30'
                                 }
                             `}>
                                 <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
@@ -362,7 +362,7 @@ export default function PetDetailPage({ params }) {
                                             className={`
                                                 relative aspect-square rounded-lg overflow-hidden transition-all duration-300
                                                 ${index === activeImageIndex
-                                                    ? 'ring-2 ring-blue-500 ring-offset-2 shadow-md scale-105'
+                                                    ? 'ring-2 ring-teal-500 ring-offset-2 shadow-md scale-105'
                                                     : 'opacity-80 hover:opacity-100 hover:shadow-md border border-gray-200'
                                                 }
                                             `}
@@ -428,7 +428,7 @@ export default function PetDetailPage({ params }) {
                         <div className="mb-6 p-4 rounded-lg bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-100">
                             <div className="flex items-center justify-between">
                                 <p className="text-gray-600 font-medium">Adoption Fee</p>
-                                <div className={`text-xl font-bold ${pet.adoptionFee > 0 ? 'text-emerald-600' : 'text-blue-600'
+                                <div className={`text-xl font-bold ${pet.adoptionFee > 0 ? 'text-emerald-600' : 'text-teal-600'
                                     }`}>
                                     {pet.adoptionFee > 0 ? `₱${pet.adoptionFee}` : 'Free'}
                                 </div>
@@ -439,7 +439,7 @@ export default function PetDetailPage({ params }) {
                         {pet.tags && pet.tags.length > 0 && (
                             <div className="mb-8">
                                 <h2 className="flex items-center text-lg font-semibold text-gray-800 mb-3">
-                                    <svg className="w-5 h-5 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg className="w-5 h-5 mr-2 text-teal-600" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                     </svg>
                                     Characteristics
@@ -448,7 +448,7 @@ export default function PetDetailPage({ params }) {
                                     {pet.tags.map(tag => (
                                         <span
                                             key={tag}
-                                            className="inline-flex items-center bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full text-sm font-medium border border-blue-100"
+                                            className="inline-flex items-center bg-teal-50 text-teal-700 px-3 py-1.5 rounded-full text-sm font-medium border border-teal-100"
                                         >
                                             <svg className="w-3.5 h-3.5 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -464,12 +464,12 @@ export default function PetDetailPage({ params }) {
                         {/* Enhanced description section */}
                         <div className="mb-8">
                             <h2 className="flex items-center text-lg font-semibold text-gray-800 mb-3">
-                                <svg className="w-5 h-5 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                <svg className="w-5 h-5 mr-2 text-teal-600" fill="currentColor" viewBox="0 0 20 20">
                                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                                 </svg>
                                 About {pet.name}
                             </h2>
-                            <div className="prose prose-blue max-w-none text-gray-600 bg-gray-50 rounded-lg p-4 border border-gray-100">
+                            <div className="prose prose-teal max-w-none text-gray-600 bg-gray-50 rounded-lg p-4 border border-gray-100">
                                 <p className="whitespace-pre-wrap">{pet.info || `No additional information is available about ${pet.name}.`}</p>
                             </div>
                         </div>
@@ -481,10 +481,10 @@ export default function PetDetailPage({ params }) {
 
                 {/* Enhanced shelter information with card design */}
                 {pet.organization && (
-                    <div className="border-t border-gray-200 bg-gradient-to-br from-blue-50 to-white">
+                    <div className="border-t border-gray-200 bg-gradient-to-br from-teal-50 to-white">
                         <div className="p-6 md:p-8">
                             <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
-                                <svg className="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-6 h-6 mr-2 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                                 </svg>
                                 Adoption Information
@@ -495,7 +495,7 @@ export default function PetDetailPage({ params }) {
                                 <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
                                     <h3 className="font-semibold text-gray-800 mb-4">About the Shelter</h3>
                                     <div className="flex items-start">
-                                        <div className="w-16 h-16 bg-blue-100 rounded-xl flex-shrink-0 overflow-hidden relative mr-4 border-2 border-white shadow-sm">
+                                        <div className="w-16 h-16 bg-teal-100 rounded-xl flex-shrink-0 overflow-hidden relative mr-4 border-2 border-white shadow-sm">
                                             {pet.organization.profileImage ? (
                                                 <Image
                                                     src={pet.organization.profileImage}
@@ -505,7 +505,7 @@ export default function PetDetailPage({ params }) {
                                                     className="object-cover"
                                                 />
                                             ) : (
-                                                <div className="w-full h-full flex items-center justify-center text-blue-600 font-bold text-xl">
+                                                <div className="w-full h-full flex items-center justify-center text-teal-600 font-bold text-xl">
                                                     {pet.organization.organizationName?.charAt(0).toUpperCase() || 'O'}
                                                 </div>
                                             )}
@@ -520,7 +520,7 @@ export default function PetDetailPage({ params }) {
                                             </div>
                                             <Link
                                                 href={`/browse/shelters/${pet.organization._id}`}
-                                                className="text-blue-600 hover:text-blue-800 inline-flex items-center group"
+                                                className="text-teal-600 hover:text-teal-800 inline-flex items-center group"
                                             >
                                                 <span className="group-hover:underline">Visit shelter</span>
                                                 <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -542,16 +542,16 @@ export default function PetDetailPage({ params }) {
                                         {pet.organization.contactNumber && (
                                             <a
                                                 href={`tel:${pet.organization.contactNumber}`}
-                                                className="flex items-center p-3 bg-gray-50 hover:bg-blue-50 rounded-lg transition-colors group"
+                                                className="flex items-center p-3 bg-gray-50 hover:bg-teal-50 rounded-lg transition-colors group"
                                             >
-                                                <div className="mr-3 w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                                <div className="mr-3 w-10 h-10 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center group-hover:bg-teal-600 group-hover:text-white transition-colors">
                                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                                     </svg>
                                                 </div>
                                                 <div>
                                                     <div className="text-sm font-medium text-gray-800">Phone</div>
-                                                    <div className="text-blue-600 group-hover:text-blue-700 transition-colors">{pet.organization.contactNumber}</div>
+                                                    <div className="text-teal-600 group-hover:text-teal-700 transition-colors">{pet.organization.contactNumber}</div>
                                                 </div>
                                             </a>
                                         )}
@@ -559,16 +559,16 @@ export default function PetDetailPage({ params }) {
                                         {pet.organization.email && (
                                             <a
                                                 href={`mailto:${pet.organization.email}`}
-                                                className="flex items-center p-3 bg-gray-50 hover:bg-blue-50 rounded-lg transition-colors group"
+                                                className="flex items-center p-3 bg-gray-50 hover:bg-teal-50 rounded-lg transition-colors group"
                                             >
-                                                <div className="mr-3 w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                                <div className="mr-3 w-10 h-10 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center group-hover:bg-teal-600 group-hover:text-white transition-colors">
                                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                                     </svg>
                                                 </div>
                                                 <div>
                                                     <div className="text-sm font-medium text-gray-800">Email</div>
-                                                    <div className="text-blue-600 group-hover:text-blue-700 transition-colors">{pet.organization.email}</div>
+                                                    <div className="text-teal-600 group-hover:text-teal-700 transition-colors">{pet.organization.email}</div>
                                                 </div>
                                             </a>
                                         )}
@@ -586,7 +586,7 @@ export default function PetDetailPage({ params }) {
                 {showScrollButton && (
                     <motion.button
                         onClick={scrollToTop}
-                        className="md:hidden fixed right-4 bottom-20 bg-blue-600 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center z-50"
+                        className="md:hidden fixed right-4 bottom-20 bg-teal-600 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center z-50"
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{
                             opacity: 1,

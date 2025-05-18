@@ -60,11 +60,11 @@ export default function RescueStatsDashboard({ cases }) {
     };
 
     const animalTypeColors = {
-        dog: '#2196F3', // blue
+        dog: '#2196F3', // teal
         cat: '#FF5722', // deep orange
         bird: '#8BC34A', // light green
         wildlife: '#9C27B0', // purple
-        other: '#607D8B' // blue grey
+        other: '#607D8B' // teal grey
     };
 
     // Detect mobile screens

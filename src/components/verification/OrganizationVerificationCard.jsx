@@ -59,7 +59,7 @@ export default function OrganizationVerificationCard({ organization, onVerify, o
                         href={organization.verificationDocument}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline text-sm mt-1 inline-block"
+                        className="text-teal-600 hover:underline text-sm mt-1 inline-block"
                     >
                         View Document
                     </a>

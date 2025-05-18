@@ -19,17 +19,18 @@ export default function BrowseLayout({ children }) {
     const circleButtonVariants = {
         open: {
             rotate: 45,
-            backgroundColor: "rgb(239 68 68)",
+            backgroundColor: "rgb(0, 212, 146)",
             boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
             transition: { duration: 0.2 }
         },
         closed: {
             rotate: 0,
-            backgroundColor: "rgb(59, 93, 246)",
+            backgroundColor: "rgb(0, 187, 167)",
             boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
             transition: { duration: 0.2 }
         }
     };
+
 
     // Auto-open sidebar on larger screens
     useEffect(() => {
@@ -142,7 +143,7 @@ export default function BrowseLayout({ children }) {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
-                                className="fixed inset-0 bg-orange-500/30 z-30"
+                                className="fixed inset-0 bg-teal-500/30 z-30"
                                 onClick={() => setFloatingMenuOpen(false)}
                             >
                                 {/* Menu items in compact layout for mobile */}
@@ -163,8 +164,8 @@ export default function BrowseLayout({ children }) {
                                             }}
                                             className={`flex flex-col items-center justify-center w-20 h-20 rounded-xl shadow-md cursor-pointer
                                                 ${pathname === '/browse' || pathname.includes('/browse/pets')
-                                                    ? 'bg-orange-500 text-white'
-                                                    : 'bg-white text-orange-600'
+                                                    ? 'bg-teal-500 text-white'
+                                                    : 'bg-white text-teal-600'
                                                 }`}
                                         >
                                             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -184,8 +185,8 @@ export default function BrowseLayout({ children }) {
                                             }}
                                             className={`flex flex-col items-center justify-center w-20 h-20 rounded-xl shadow-md cursor-pointer
                                                 ${pathname.includes('/browse/shelters')
-                                                    ? 'bg-orange-500 text-white'
-                                                    : 'bg-white text-orange-600'
+                                                    ? 'bg-teal-500 text-white'
+                                                    : 'bg-white text-teal-600'
                                                 }`}
                                         >
                                             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

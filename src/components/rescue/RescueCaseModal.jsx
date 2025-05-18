@@ -51,7 +51,7 @@ export default function RescueCaseModal({ isOpen, onClose, onSave, rescueCase, t
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
-        
+
         // Clear error when user starts typing
         if (errors[name]) {
             setErrors(prev => ({ ...prev, [name]: '' }));
@@ -63,7 +63,7 @@ export default function RescueCaseModal({ isOpen, onClose, onSave, rescueCase, t
         if (e.target.files) {
             const files = Array.from(e.target.files);
             setNewImages(prev => [...prev, ...files]);
-            
+
             // Create preview URLs for the new images
             const newPreviewUrls = files.map(file => URL.createObjectURL(file));
             setImagePreviewUrls(prev => [...prev, ...newPreviewUrls]);
@@ -81,7 +81,7 @@ export default function RescueCaseModal({ isOpen, onClose, onSave, rescueCase, t
     const handleRemoveNewImage = (index) => {
         // Revoke the object URL to avoid memory leaks
         URL.revokeObjectURL(imagePreviewUrls[index]);
-        
+
         setNewImages(prev => prev.filter((_, i) => i !== index));
         setImagePreviewUrls(prev => prev.filter((_, i) => i !== index));
     };
@@ -89,32 +89,32 @@ export default function RescueCaseModal({ isOpen, onClose, onSave, rescueCase, t
     // Validate form
     const validateForm = () => {
         const newErrors = {};
-        
+
         if (!formData.title.trim()) {
             newErrors.title = 'Title is required';
         }
-        
+
         if (!formData.description.trim()) {
             newErrors.description = 'Description is required';
         }
-        
+
         if (!formData.location.trim()) {
             newErrors.location = 'Location is required';
         }
-        
+
         if (!formData.animalType) {
             newErrors.animalType = 'Animal type is required';
         }
-        
+
         if (!formData.rescueDate) {
             newErrors.rescueDate = 'Rescue date is required';
         }
-        
+
         // If status is completed, outcome should be provided
         if (formData.status === 'completed' && !formData.outcome.trim()) {
             newErrors.outcome = 'Please provide an outcome for completed rescue cases';
         }
-        
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -122,17 +122,17 @@ export default function RescueCaseModal({ isOpen, onClose, onSave, rescueCase, t
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!validateForm()) {
             return;
         }
-        
+
         setIsSubmitting(true);
-        
+
         try {
             // Create form data object for API submission
             const formDataForApi = new FormData();
-            
+
             // Add form fields
             formDataForApi.append('title', formData.title);
             formDataForApi.append('description', formData.description);
@@ -140,32 +140,32 @@ export default function RescueCaseModal({ isOpen, onClose, onSave, rescueCase, t
             formDataForApi.append('animalType', formData.animalType);
             formDataForApi.append('status', formData.status);
             formDataForApi.append('rescueDate', formData.rescueDate);
-            
+
             if (formData.medicalDetails) {
                 formDataForApi.append('medicalDetails', formData.medicalDetails);
             }
-            
+
             if (formData.outcome) {
                 formDataForApi.append('outcome', formData.outcome);
             }
-            
+
             // For edit mode, add the case ID
             if (rescueCase) {
                 formDataForApi.append('id', rescueCase._id);
             }
-            
+
             // Add new images
             if (newImages.length > 0) {
                 newImages.forEach(image => {
                     formDataForApi.append('newImages', image);
                 });
             }
-            
+
             // Add removed images
             if (removedImages.length > 0) {
                 formDataForApi.append('removedImages', JSON.stringify(removedImages));
             }
-            
+
             // Call the onSave function from parent
             await onSave(rescueCase ? {
                 id: rescueCase._id,
@@ -173,7 +173,7 @@ export default function RescueCaseModal({ isOpen, onClose, onSave, rescueCase, t
                 newImages: newImages.length > 0 ? formDataForApi : [],
                 removedImages
             } : formData);
-            
+
             // Close the modal
             onClose();
         } catch (error) {
@@ -188,7 +188,7 @@ export default function RescueCaseModal({ isOpen, onClose, onSave, rescueCase, t
     const handleClose = () => {
         // Clean up image preview URLs to prevent memory leaks
         imagePreviewUrls.forEach(url => URL.revokeObjectURL(url));
-        
+
         // Reset form state
         setFormData({
             title: '',
@@ -205,7 +205,7 @@ export default function RescueCaseModal({ isOpen, onClose, onSave, rescueCase, t
         setRemovedImages([]);
         setImagePreviewUrls([]);
         setErrors({});
-        
+
         // Call parent onClose
         onClose();
     };
@@ -454,7 +454,7 @@ export default function RescueCaseModal({ isOpen, onClose, onSave, rescueCase, t
                                                     className="object-cover"
                                                 />
                                             </div>
-                                            <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-md">
+                                            <div className="absolute top-2 left-2 bg-teal-500 text-white text-xs px-2 py-1 rounded-md">
                                                 New
                                             </div>
                                             <button
@@ -485,9 +485,8 @@ export default function RescueCaseModal({ isOpen, onClose, onSave, rescueCase, t
                             </button>
                             <button
                                 type="submit"
-                                className={`px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 flex items-center ${
-                                    isSubmitting ? 'opacity-75 cursor-not-allowed' : ''
-                                }`}
+                                className={`px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 flex items-center ${isSubmitting ? 'opacity-75 cursor-not-allowed' : ''
+                                    }`}
                                 disabled={isSubmitting}
                             >
                                 {isSubmitting && (

@@ -37,7 +37,7 @@ export default function PetsList({ pets, onEdit, onDelete, onViewDetails, isOrga
             case 'rehabilitating':
                 return <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-0.5 rounded">Rehabilitating</span>;
             case 'adopted':
-                return <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded">Adopted</span>;
+                return <span className="bg-teal-100 text-teal-800 text-xs font-medium px-2 py-0.5 rounded">Adopted</span>;
             default:
                 return null;
         }
@@ -112,7 +112,7 @@ export default function PetsList({ pets, onEdit, onDelete, onViewDetails, isOrga
                                         e.stopPropagation();
                                         onEdit(pet);
                                     }}
-                                    className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700"
+                                    className="px-3 py-1 text-xs bg-teal-600 text-white rounded hover:bg-teal-700"
                                 >
                                     Edit
                                 </button>
@@ -132,7 +132,7 @@ export default function PetsList({ pets, onEdit, onDelete, onViewDetails, isOrga
                                     e.stopPropagation();
                                     onViewDetails(pet);
                                 }}
-                                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                                className="text-teal-600 hover:text-teal-800 text-sm font-medium"
                             >
                                 View Details
                             </button>

@@ -75,7 +75,7 @@ export default function PaymentVerificationForm({ payment, onSuccess }) {
                             href={payment.proofOfTransaction}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-600 hover:underline text-sm"
+                            className="text-teal-600 hover:underline text-sm"
                         >
                             View full image
                         </a>
@@ -97,7 +97,7 @@ export default function PaymentVerificationForm({ payment, onSuccess }) {
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     rows="3"
-                    className="shadow-sm focus:ring-blue-500 focus:border-blue-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md p-2"
+                    className="shadow-sm focus:ring-teal-500 focus:border-teal-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md p-2"
                     placeholder="Add verification notes or feedback for the adopter"
                 ></textarea>
             </div>

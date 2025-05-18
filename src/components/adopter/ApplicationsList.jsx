@@ -37,7 +37,7 @@ export default function ApplicationsList() {
             case 'pending':
                 return <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">Pending</span>;
             case 'reviewing':
-                return <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Reviewing</span>;
+                return <span className="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-0.5 rounded">Reviewing</span>;
             case 'approved':
                 return <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Approved</span>;
             case 'rejected':
@@ -53,7 +53,7 @@ export default function ApplicationsList() {
         return (
             <div className="flex justify-center items-center h-40">
                 <div className="flex flex-col items-center">
-                    <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+                    <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-teal-500"></div>
                     <p className="mt-3 text-sm text-gray-500">Loading applications...</p>
                 </div>
             </div>
@@ -78,7 +78,7 @@ export default function ApplicationsList() {
                 </div>
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No Applications</h3>
                 <p className="text-gray-500 mb-6 px-4">You haven't submitted any adoption applications yet.</p>
-                <Link href="/browse/pets" className="text-white bg-blue-600 hover:bg-blue-700 px-5 py-2.5 rounded-lg inline-flex items-center">
+                <Link href="/browse/pets" className="text-white bg-teal-600 hover:bg-teal-700 px-5 py-2.5 rounded-lg inline-flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                         <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
                         <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
@@ -148,7 +148,7 @@ export default function ApplicationsList() {
 
                                         {/* View details button - Better touch target */}
                                         <div className="order-1 sm:order-2 mt-1 sm:mt-0">
-                                            <span className="text-xs text-blue-600 font-medium flex items-center justify-end sm:justify-start">
+                                            <span className="text-xs text-teal-600 font-medium flex items-center justify-end sm:justify-start">
                                                 <span className="hidden sm:inline mr-1">Application #</span>
                                                 <span className="truncate max-w-[100px]">{app.applicationId}</span>
                                                 <svg className="w-4 h-4 ml-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

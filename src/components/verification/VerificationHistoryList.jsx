@@ -38,7 +38,7 @@ export default function VerificationHistoryList({ history }) {
                                     </div>
                                     <div className="mt-2 flex items-center text-sm text-gray-500">
                                         {item.resubmission ? (
-                                            <span className="inline-flex items-center mr-2 px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                                            <span className="inline-flex items-center mr-2 px-2 py-0.5 rounded text-xs font-medium bg-teal-100 text-teal-800">
                                                 Organization Resubmission
                                             </span>
                                         ) : (

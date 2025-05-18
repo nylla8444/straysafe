@@ -83,7 +83,7 @@ export default function OrganizationPaymentsPage() {
             {/* Page header with back button */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
-                    <Link href="/organization" className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-2">
+                    <Link href="/organization" className="inline-flex items-center text-teal-600 hover:text-teal-800 mb-2">
                         <svg className="w-5 h-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
                         </svg>
@@ -129,7 +129,7 @@ export default function OrganizationPaymentsPage() {
                             type="text"
                             id="search"
                             placeholder="Search by ID, adopter name, or pet name..."
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -141,7 +141,7 @@ export default function OrganizationPaymentsPage() {
                             Filter by status
                         </label>
                         <select
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
                             value={filter}
                             onChange={(e) => setFilter(e.target.value)}
                         >
@@ -158,7 +158,7 @@ export default function OrganizationPaymentsPage() {
             {/* Payments display */}
             {loading ? (
                 <div className="flex flex-col items-center justify-center py-12 bg-white rounded-lg shadow-sm">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500 mb-4"></div>
                     <p className="text-gray-500">Loading payments...</p>
                 </div>
             ) : error ? (
@@ -336,7 +336,7 @@ export default function OrganizationPaymentsPage() {
                                 </div>
 
                                 {/* Action hint */}
-                                <div className="flex justify-end items-center mt-3 text-xs text-blue-600 pl-2">
+                                <div className="flex justify-end items-center mt-3 text-xs text-teal-600 pl-2">
                                     <span>View details</span>
                                     <svg className="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
@@ -358,7 +358,7 @@ export default function OrganizationPaymentsPage() {
                                 setFilter('all');
                                 setSearchTerm('');
                             }}
-                            className="text-blue-600 hover:text-blue-800 flex items-center"
+                            className="text-teal-600 hover:text-teal-800 flex items-center"
                         >
                             <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />

@@ -32,7 +32,7 @@ export default function PetDetailModal({ pet, onClose, onEdit }) {
             case 'rehabilitating':
                 return <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-1 rounded">Rehabilitating</span>;
             case 'adopted':
-                return <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded">Adopted</span>;
+                return <span className="bg-teal-100 text-teal-800 text-xs font-medium px-2 py-1 rounded">Adopted</span>;
             default:
                 return null;
         }
@@ -94,7 +94,7 @@ export default function PetDetailModal({ pet, onClose, onEdit }) {
                                         <button
                                             key={index}
                                             onClick={() => setActiveImageIndex(index)}
-                                            className={`relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0 ${index === activeImageIndex ? 'ring-2 ring-blue-500' : ''
+                                            className={`relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0 ${index === activeImageIndex ? 'ring-2 ring-teal-500' : ''
                                                 }`}
                                         >
                                             <Image
@@ -158,7 +158,7 @@ export default function PetDetailModal({ pet, onClose, onEdit }) {
                 <div className="border-t p-4 flex justify-end">
                     <button
                         onClick={handleEdit} // Use the combined function
-                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                        className="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700"
                     >
                         Edit Pet
                     </button>

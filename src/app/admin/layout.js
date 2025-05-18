@@ -33,8 +33,8 @@ export default function AdminLayout({ children }) {
     if (loading) {
         return (
             <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50">
-                <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                <p className="text-blue-600 font-medium mt-4">Verifying admin session...</p>
+                <div className="w-16 h-16 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
+                <p className="text-teal-600 font-medium mt-4">Verifying admin session...</p>
                 <p className="text-gray-500 text-sm mt-2">This may take a moment</p>
             </div>
         );

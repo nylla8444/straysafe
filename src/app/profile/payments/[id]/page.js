@@ -66,7 +66,7 @@ export default function PaymentDetailPage() {
         return (
             <div className="max-w-5xl mx-auto p-4 min-h-[60vh] flex items-center justify-center">
                 <div className="flex flex-col items-center">
-                    <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+                    <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-teal-500"></div>
                     <p className="mt-3 text-sm text-gray-500">Loading payment details...</p>
                 </div>
             </div>
@@ -79,7 +79,7 @@ export default function PaymentDetailPage() {
                 <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
                     <p className="text-red-700">{error || 'Payment not found.'}</p>
                 </div>
-                <Link href="/profile" className="text-blue-600 hover:underline inline-flex items-center">
+                <Link href="/profile" className="text-teal-600 hover:text-teal-800 inline-flex items-center">
                     <svg className="w-5 h-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
                     </svg>
@@ -93,7 +93,7 @@ export default function PaymentDetailPage() {
         <div className="max-w-5xl mx-auto px-4 py-6 sm:px-6">
             {/* Back button */}
             <div className="mb-6 flex items-center">
-                <Link href="/profile" className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium">
+                <Link href="/profile" className="inline-flex items-center text-teal-600 hover:text-teal-800 font-medium">
                     <svg className="w-5 h-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
                     </svg>
@@ -271,7 +271,7 @@ export default function PaymentDetailPage() {
                                     <div className="mt-4 p-3 bg-white rounded-md border border-gray-200 w-full max-w-md">
                                         <p className="text-sm">
                                             <span className="font-medium">Transaction ID:</span>
-                                            <span className="ml-2 text-blue-600 break-all">{payment.transactionId}</span>
+                                            <span className="ml-2 text-teal-600 break-all">{payment.transactionId}</span>
                                         </p>
                                     </div>
                                 )}

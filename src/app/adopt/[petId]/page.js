@@ -277,7 +277,7 @@ export default function AdoptionApplicationPage() {
         return (
             <div className="max-w-5xl mx-auto p-4 sm:p-6 min-h-screen flex items-center justify-center">
                 <div className="flex flex-col items-center">
-                    <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+                    <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-teal-500"></div>
                     <p className="mt-3 text-sm text-gray-500">Loading application form...</p>
                 </div>
             </div>
@@ -290,7 +290,7 @@ export default function AdoptionApplicationPage() {
                 <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
                     <p className="text-red-700">{error || 'Pet not found.'}</p>
                 </div>
-                <Link href="/browse/pets" className="inline-flex items-center text-blue-600 hover:underline py-2">
+                <Link href="/browse/pets" className="inline-flex items-center text-teal-600 hover:underline py-2">
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
                     </svg>
@@ -303,7 +303,7 @@ export default function AdoptionApplicationPage() {
     return (
         <div className="max-w-6xl mx-auto p-4 sm:p-6">
             <div className="mb-6">
-                <Link href={`/browse/pets/${pet._id}`} className="inline-flex items-center text-blue-600 hover:text-blue-800 py-2">
+                <Link href={`/browse/pets/${pet._id}`} className="inline-flex items-center text-teal-600 hover:text-teal-800 py-2">
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
                     </svg>
@@ -628,8 +628,8 @@ export default function AdoptionApplicationPage() {
                                     type="submit"
                                     disabled={loading || hasValidationErrors() || !isFormComplete() || hasExistingApplication}
                                     className={`w-full py-3 sm:py-4 px-4 font-medium rounded-md shadow-sm transition-colors text-base ${loading || hasValidationErrors() || !isFormComplete() || hasExistingApplication
-                                        ? 'bg-blue-400 cursor-not-allowed text-white'
-                                        : 'bg-blue-600 hover:bg-blue-700 text-white'
+                                        ? 'bg-teal-400 cursor-not-allowed text-white'
+                                        : 'bg-teal-600 hover:bg-teal-700 text-white'
                                         }`}
                                 >
                                     {loading ? 'Submitting...' : hasExistingApplication ? 'Already Applied' : 'Submit Application'}

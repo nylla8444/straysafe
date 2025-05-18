@@ -80,7 +80,7 @@ export default function SearchBar({
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="block w-full py-3 sm:py-2 px-3 pl-10 pr-16 sm:pr-36 text-sm border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500 shadow-sm"
+                    className="block w-full py-3 sm:py-2 px-3 pl-10 pr-16 sm:pr-36 text-sm border border-gray-300 rounded-lg bg-white focus:ring-teal-500 focus:border-teal-500 shadow-sm"
                     placeholder={placeholder}
                 />
                 {searchTerm && (

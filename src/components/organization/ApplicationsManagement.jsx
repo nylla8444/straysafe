@@ -153,7 +153,7 @@ export default function ApplicationsManagement() {
             case 'pending':
                 return <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">Pending</span>;
             case 'reviewing':
-                return <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Reviewing</span>;
+                return <span className="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-0.5 rounded">Reviewing</span>;
             case 'approved':
                 return <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Approved</span>;
             case 'rejected':
@@ -191,7 +191,7 @@ export default function ApplicationsManagement() {
                     {/* Mobile: Filter dropdown */}
                     <div className="w-full sm:hidden">
                         <select
-                            className="w-full bg-white border rounded py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full bg-white border rounded py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
                             value={filter}
                             onChange={(e) => setFilter(e.target.value)}
                         >
@@ -218,7 +218,7 @@ export default function ApplicationsManagement() {
                             Pending
                         </button>
                         <button
-                            className={`px-3 py-1 rounded-full text-sm ${filter === 'reviewing' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+                            className={`px-3 py-1 rounded-full text-sm ${filter === 'reviewing' ? 'bg-teal-600 text-white' : 'bg-gray-200'}`}
                             onClick={() => setFilter('reviewing')}
                         >
                             Reviewing
@@ -257,7 +257,7 @@ export default function ApplicationsManagement() {
                 <div className="md:hidden p-3 border-b">
                     <button
                         onClick={() => setShowMobileDetails(false)}
-                        className="flex items-center text-blue-600"
+                        className="flex items-center text-teal-600"
                     >
                         <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
@@ -280,7 +280,7 @@ export default function ApplicationsManagement() {
                             {filteredApplications.map((app) => (
                                 <li
                                     key={app._id}
-                                    className={`p-3 cursor-pointer ${selectedApp?._id === app._id ? 'bg-blue-50' : 'hover:bg-gray-50'}`}
+                                    className={`p-3 cursor-pointer ${selectedApp?._id === app._id ? 'bg-teal-50' : 'hover:bg-gray-50'}`}
                                     onClick={() => setSelectedApp(app)}
                                 >
                                     <div className="flex items-center">
@@ -435,7 +435,7 @@ export default function ApplicationsManagement() {
                                     </div>
 
                                     <button
-                                        className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-blue-300"
+                                        className="w-full sm:w-auto px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 disabled:bg-teal-300"
                                         disabled={!updateStatus}
                                         onClick={handleStatusUpdate}
                                     >
@@ -500,7 +500,7 @@ export default function ApplicationsManagement() {
                                             </div>
                                             <Link
                                                 href={`/organization/payments/${selectedApp.paymentId}`}
-                                                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-center sm:text-left w-full sm:w-auto"
+                                                className="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 text-center sm:text-left w-full sm:w-auto"
                                             >
                                                 View Payment Details
                                             </Link>

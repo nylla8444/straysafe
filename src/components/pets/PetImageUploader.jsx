@@ -85,7 +85,7 @@ export default function PetImageUploader({ images, onChange, maxImages = 5 }) {
         <div className="space-y-4">
             <div
                 className={`border-2 border-dashed p-6 rounded-md text-center ${error ? "border-red-500 bg-red-50" :
-                    dragActive ? "border-blue-500 bg-blue-50" :
+                    dragActive ? "border-teal-500 bg-teal-50" :
                         "border-gray-300"
                     }`}
                 onDragEnter={handleDrag}

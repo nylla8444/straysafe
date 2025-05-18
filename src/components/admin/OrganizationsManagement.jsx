@@ -242,7 +242,7 @@ export default function OrganizationsManagement({ onUpdateStats }) {
                 <div className="grid grid-cols-2 gap-1 sm:flex sm:space-x-2 w-full sm:w-auto">
                     <button
                         onClick={() => setFilter('pending')}
-                        className={`px-3 sm:px-4 py-2 rounded text-sm sm:text-base ${filter === 'pending' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+                        className={`px-3 sm:px-4 py-2 rounded text-sm sm:text-base ${filter === 'pending' ? 'bg-teal-600 text-white' : 'bg-gray-200'}`}
                     >
                         Pending
                     </button>
@@ -274,7 +274,7 @@ export default function OrganizationsManagement({ onUpdateStats }) {
             )}
 
             {statusMessage && (
-                <div className={`${statusMessage.type === 'success' ? 'bg-green-100 border-green-400 text-green-700' : 'bg-blue-100 border-blue-400 text-blue-700'} px-4 py-3 rounded mb-4 flex justify-between items-center text-sm sm:text-base`}>
+                <div className={`${statusMessage.type === 'success' ? 'bg-green-100 border-green-400 text-green-700' : 'bg-teal-100 border-teal-400 text-teal-700'} px-4 py-3 rounded mb-4 flex justify-between items-center text-sm sm:text-base`}>
                     <div>{statusMessage.text}</div>
                     <button onClick={() => setStatusMessage(null)} className="text-xs sm:text-sm font-semibold">
                         Dismiss
@@ -287,7 +287,7 @@ export default function OrganizationsManagement({ onUpdateStats }) {
                 {selectedOrg && (
                     <button
                         onClick={() => setSelectedOrg(null)}
-                        className="flex items-center text-blue-600 mb-2"
+                        className="flex items-center text-teal-600 mb-2"
                     >
                         <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
@@ -299,7 +299,7 @@ export default function OrganizationsManagement({ onUpdateStats }) {
 
             {loading ? (
                 <div className="text-center py-6 sm:py-8">
-                    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-700 mx-auto"></div>
+                    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-teal-700 mx-auto"></div>
                     <p className="mt-2 text-sm sm:text-base">Loading organizations...</p>
                 </div>
             ) : organizations.length === 0 ? (
@@ -318,7 +318,7 @@ export default function OrganizationsManagement({ onUpdateStats }) {
                             {organizations.map(org => (
                                 <li
                                     key={org._id}
-                                    className={`py-3 sm:py-4 cursor-pointer hover:bg-gray-50 ${selectedOrg?._id === org._id ? 'bg-blue-50' : ''}`}
+                                    className={`py-3 sm:py-4 cursor-pointer hover:bg-gray-50 ${selectedOrg?._id === org._id ? 'bg-teal-50' : ''}`}
                                     onClick={() => setSelectedOrg(org)}
                                 >
                                     <div className="flex items-center">
@@ -359,7 +359,7 @@ export default function OrganizationsManagement({ onUpdateStats }) {
                                     <p>
                                         <span className="font-medium">Status:</span>{' '}
                                         {selectedOrg.verificationStatus === 'verified' && <span className="text-green-500">Verified</span>}
-                                        {selectedOrg.verificationStatus === 'pending' && <span className="text-blue-500">Pending</span>}
+                                        {selectedOrg.verificationStatus === 'pending' && <span className="text-teal-500">Pending</span>}
                                         {selectedOrg.verificationStatus === 'followup' && <span className="text-yellow-500">Follow Up Required</span>}
                                         {selectedOrg.verificationStatus === 'rejected' && <span className="text-red-500">Rejected</span>}
                                     </p>
@@ -379,7 +379,7 @@ export default function OrganizationsManagement({ onUpdateStats }) {
                                                 href={selectedOrg.verificationDocument}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="text-blue-600 hover:underline text-sm sm:text-base"
+                                                className="text-teal-600 hover:underline text-sm sm:text-base"
                                             >
                                                 View Document
                                             </a>
@@ -509,7 +509,7 @@ export default function OrganizationsManagement({ onUpdateStats }) {
                         <div className="p-3 sm:p-6">
                             {loadingHistory ? (
                                 <div className="text-center py-6 sm:py-8">
-                                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-300 border-t-blue-600"></div>
+                                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-300 border-t-teal-600"></div>
                                     <p className="mt-2 text-gray-600 text-sm sm:text-base">Loading history...</p>
                                 </div>
                             ) : (
