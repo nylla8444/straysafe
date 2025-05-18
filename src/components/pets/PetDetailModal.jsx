@@ -39,7 +39,7 @@ export default function PetDetailModal({ pet, onClose, onEdit }) {
     };
 
     return (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 z-60 flex items-center justify-center p-4">
             <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
                 <div className="flex justify-between items-center p-4 border-b">
                     <h2 className="text-2xl font-semibold">{pet.name}</h2>

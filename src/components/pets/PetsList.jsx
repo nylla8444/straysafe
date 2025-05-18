@@ -59,7 +59,7 @@ export default function PetsList({ pets, onEdit, onDelete, onViewDetails, isOrga
                                 src={pet.img_arr[0]}
                                 alt={pet.name}
                                 fill
-                                style={{ objectFit: 'cover' }}
+                                style={{ objectFit: 'cover', objectPosition: 'center' }}
                             />
                             <div className="absolute top-2 right-2">
                                 {getStatusBadge(pet.status)}
@@ -68,7 +68,7 @@ export default function PetsList({ pets, onEdit, onDelete, onViewDetails, isOrga
 
                         <div className="p-4">
                             <div className="flex justify-between items-start">
-                                <h3 className="text-lg font-bold">{pet.name}</h3>
+                                <h3 className="text-lg font-bold truncate max-w-[25ch]">{pet.name}</h3>
                                 <p className="text-green-600 font-medium">
                                     {pet.adoptionFee > 0 ? `₱${pet.adoptionFee}` : 'Free'}
                                 </p>
@@ -82,7 +82,7 @@ export default function PetsList({ pets, onEdit, onDelete, onViewDetails, isOrga
 
                             {pet.tags && pet.tags.length > 0 && (
                                 <div className="flex flex-wrap gap-1 mt-2">
-                                    {pet.tags.slice(0, 3).map(tag => (
+                                    {pet.tags.slice(0, 2).map(tag => (
                                         <span
                                             key={tag}
                                             className="bg-gray-100 text-gray-800 text-xs px-2 py-0.5 rounded"
@@ -90,9 +90,9 @@ export default function PetsList({ pets, onEdit, onDelete, onViewDetails, isOrga
                                             {tag.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
                                         </span>
                                     ))}
-                                    {pet.tags.length > 3 && (
+                                    {pet.tags.length > 2 && (
                                         <span className="bg-gray-100 text-gray-800 text-xs px-2 py-0.5 rounded">
-                                            +{pet.tags.length - 3} more
+                                            +{pet.tags.length - 2} more
                                         </span>
                                     )}
                                 </div>

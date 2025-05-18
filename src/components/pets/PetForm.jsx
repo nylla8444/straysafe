@@ -27,13 +27,37 @@ export default function PetForm({ pet, onSubmit, onCancel }) {
         'good-with-cats', 'good-with-dogs'
     ];
 
+    // Constants for field limits
+    const NAME_MAX_LENGTH = 26;
+    const BREED_MAX_LENGTH = 26;
+    const MAX_ADOPTION_FEE = 99999.99; // 5 digits before decimal point
+
     const handleChange = (e) => {
         const { name, value } = e.target;
+
+        // Special handling for limited text fields
+        if (name === 'name' && value.length > NAME_MAX_LENGTH) {
+            return; // Prevent updating if exceeds limit
+        }
+
+        if (name === 'breed' && value.length > BREED_MAX_LENGTH) {
+            return; // Prevent updating if exceeds limit
+        }
+
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
     const handleNumberChange = (e) => {
         const { name, value } = e.target;
+
+        // For adoption fee, limit to 5 digits before decimal
+        if (name === 'adoptionFee') {
+            const numValue = parseFloat(value);
+            if (numValue > MAX_ADOPTION_FEE) {
+                return; // Don't update if over the limit
+            }
+        }
+
         setFormData(prev => ({ ...prev, [name]: Number(value) }));
     };
 
@@ -59,6 +83,23 @@ export default function PetForm({ pet, onSubmit, onCancel }) {
         // Validate form
         if (!formData.name || !formData.breed || !formData.info || formData.img_arr.length < 1) {
             setError('Please fill in all required fields and add at least one image');
+            return;
+        }
+
+        // Validate field lengths
+        if (formData.name.length > NAME_MAX_LENGTH) {
+            setError(`Pet name must be ${NAME_MAX_LENGTH} characters or less`);
+            return;
+        }
+
+        if (formData.breed.length > BREED_MAX_LENGTH) {
+            setError(`Pet breed must be ${BREED_MAX_LENGTH} characters or less`);
+            return;
+        }
+
+        // Validate adoption fee
+        if (formData.adoptionFee > MAX_ADOPTION_FEE) {
+            setError('Adoption fee exceeds the maximum allowed amount');
             return;
         }
 
@@ -124,13 +165,19 @@ export default function PetForm({ pet, onSubmit, onCancel }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Pet Name*</label>
+                        <label className="block text-sm font-medium text-gray-700">
+                            Pet Name* <span className="text-xs text-gray-500">({formData.name.length}/{NAME_MAX_LENGTH})</span>
+                        </label>
                         <input
                             type="text"
                             name="name"
                             value={formData.name}
                             onChange={handleChange}
-                            className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm"
+                            className={`mt-1 block w-full rounded-md border ${formData.name.length >= NAME_MAX_LENGTH
+                                ? 'border-orange-300 bg-orange-50'
+                                : 'border-gray-300'
+                                } p-2 shadow-sm`}
+                            maxLength={NAME_MAX_LENGTH}
                             required
                         />
                     </div>
@@ -153,13 +200,19 @@ export default function PetForm({ pet, onSubmit, onCancel }) {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Breed*</label>
+                        <label className="block text-sm font-medium text-gray-700">
+                            Breed* <span className="text-xs text-gray-500">({formData.breed.length}/{BREED_MAX_LENGTH})</span>
+                        </label>
                         <input
                             type="text"
                             name="breed"
                             value={formData.breed}
                             onChange={handleChange}
-                            className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm"
+                            className={`mt-1 block w-full rounded-md border ${formData.breed.length >= BREED_MAX_LENGTH
+                                ? 'border-orange-300 bg-orange-50'
+                                : 'border-gray-300'
+                                } p-2 shadow-sm`}
+                            maxLength={BREED_MAX_LENGTH}
                             required
                         />
                     </div>
@@ -202,13 +255,16 @@ export default function PetForm({ pet, onSubmit, onCancel }) {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Adoption Fee ($)</label>
+                        <label className="block text-sm font-medium text-gray-700">
+                            Adoption Fee ($) <span className="text-xs text-gray-500">(Max: 99,999.99)</span>
+                        </label>
                         <input
                             type="number"
                             name="adoptionFee"
                             value={formData.adoptionFee}
                             onChange={handleNumberChange}
                             min="0"
+                            max="99999.99"
                             step="0.01"
                             className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm"
                         />
