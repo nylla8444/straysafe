@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../../context/AuthContext';
+import { useFavorites } from '../../../context/FavoritesContext'; // Add this import
 import Image from 'next/image';
 import EditProfileModal from '../../components/adopter/EditProfileModal';
 import axios from 'axios';
@@ -11,7 +12,7 @@ import AdopterApplicationsList from '../../components/adopter/ApplicationsList';
 import PaymentsSection from '../../components/payments/PaymentsSection';
 import { motion } from 'framer-motion';
 
-// Add these helper functions at the top of your component
+// Keep the helper functions
 const safeGetFirstChar = (str) => {
     if (!str) return '?';
     return str.charAt(0).toUpperCase();
@@ -23,6 +24,8 @@ const safeGetName = (obj, fallback = 'Unknown') => {
 
 export default function ProfilePage() {
     const { user, loading, isAuthenticated, isAdopter, refreshUser } = useAuth();
+    const { favorites, isLoading: loadingFavorites, error: favoritesError, toggleFavorite } = useFavorites(); // Use the favorites context
+
     const router = useRouter();
     const [fullName, setFullName] = useState('');
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -31,12 +34,14 @@ export default function ProfilePage() {
     const [loadingApplications, setLoadingApplications] = useState(true);
     const [applicationsError, setApplicationsError] = useState('');
 
-    const [favorites, setFavorites] = useState([]);
-    const [loadingFavorites, setLoadingFavorites] = useState(false);
-    const [favoritesError, setFavoritesError] = useState('');
+    // No longer need these states as they come from context
+    // const [favorites, setFavorites] = useState([]);
+    // const [loadingFavorites, setLoadingFavorites] = useState(false);
+    // const [favoritesError, setFavoritesError] = useState('');
 
     const [activeTab, setActiveTab] = useState('applications');
 
+    // Keep the existing auth-related useEffect
     useEffect(() => {
         console.log("Profile page auth status:", { loading, isAuthenticated, user });
 
@@ -63,9 +68,9 @@ export default function ProfilePage() {
         if (user?.firstName && user?.lastName) {
             setFullName(`${user.firstName} ${user.lastName}`);
         }
+    }, [loading, isAuthenticated, user, router, refreshUser]);
 
-    }, [loading, isAuthenticated, user, router]);
-
+    // Keep the applications fetch useEffect
     useEffect(() => {
         const fetchApplications = async () => {
             if (!isAuthenticated || !user || !isAdopter()) return;
@@ -91,6 +96,10 @@ export default function ProfilePage() {
         }
     }, [user, isAuthenticated, isAdopter]);
 
+    // Replace the favorites fetch useEffect with this simplified version that uses
+    // the refreshFavorites function from context
+    // Remove this entire useEffect block:
+    /*
     useEffect(() => {
         const fetchFavorites = async () => {
             if (!isAuthenticated || !user || !isAdopter()) return;
@@ -120,7 +129,9 @@ export default function ProfilePage() {
             fetchFavorites();
         }
     }, [user, isAuthenticated, isAdopter, activeTab]);
+    */
 
+    // Keep these handlers
     const handleOpenEditModal = () => {
         setIsEditModalOpen(true);
     };
@@ -135,26 +146,28 @@ export default function ProfilePage() {
         setIsEditModalOpen(false);
     };
 
+    // Update the handleRemoveFavorite function
     const handleRemoveFavorite = async (petId) => {
         try {
-            const response = await axios.post('/api/favorites', {
-                petId,
-                action: 'remove'
-            });
+            console.log("Removing pet from favorites:", petId);
+            // Optional: add loading state if you have it
+            const result = await toggleFavorite(petId);
 
-            if (response.data.success) {
-                // Remove the pet from the favorites array
-                setFavorites(prevFavorites => prevFavorites.filter(pet => pet._id !== petId));
-
-                // Show a toast or notification (you could add a toast component here)
-                alert(`Pet removed from favorites`);
+            if (result.success) {
+                // No need for alert - let the UI update naturally
+                console.log("Successfully removed pet from favorites");
+            } else {
+                alert(result.message || 'Failed to remove pet from favorites');
             }
         } catch (error) {
             console.error('Error removing favorite:', error);
             alert('Failed to remove pet from favorites');
+        } finally {
+            // Optional: clear loading state if you added it
         }
     };
 
+    // Keep the rest of your component unchanged
     if (loading) {
         return <div className="text-center p-12">
             <div className="animate-pulse">Loading your profile...</div>

@@ -1,8 +1,10 @@
 import { Readex_Pro, Fredoka } from "next/font/google";
 import { AuthProvider } from '../../context/AuthContext';
 import { AdminAuthProvider } from '../../context/AdminAuthContext';
+import { FavoritesProvider } from '../../context/FavoritesContext';
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import Navbar from '../components/Navbar';
+import FavoritesDebug from '../../components/debug/FavoritesDebug'; // Add this import
 import "./globals.css";
 
 
@@ -30,10 +32,13 @@ export default function RootLayout({ children }) {
       >
         <AuthProvider>
           <AdminAuthProvider>
-            <Navbar />
-            <div className="h-24 "></div>
-            {children}
-            <SpeedInsights />
+            <FavoritesProvider>
+              <Navbar />
+              <div className="h-24 "></div>
+              {children}
+              {process.env.NODE_ENV !== 'production' && <FavoritesDebug />}
+              <SpeedInsights />
+            </FavoritesProvider>
           </AdminAuthProvider>
         </AuthProvider>
       </body>

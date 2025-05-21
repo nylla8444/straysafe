@@ -73,6 +73,9 @@ export async function POST(request) {
             await connectionToDB();
             const { petId, action } = await request.json();
 
+            // Debug log
+            console.log(`API: ${action} pet ${petId} from favorites for user ${decoded.userId}`);
+
             if (!petId || !['add', 'remove'].includes(action)) {
                 return NextResponse.json({
                     success: false,
@@ -100,20 +103,73 @@ export async function POST(request) {
             }
 
             // Add or remove pet based on action
-            if (action === 'add' && !favorites.pets.includes(petId)) {
-                favorites.pets.push(petId);
+            if (action === 'add') {
+                // Use MongoDB's $addToSet operator to avoid duplicates and ensure atomic operation
+                try {
+                    await Favorites.updateOne(
+                        { userId: decoded.userId },
+                        { $addToSet: { pets: petId } }
+                    );
+
+                    // Refresh our local reference after the update
+                    favorites = await Favorites.findOne({ userId: decoded.userId });
+
+                    console.log(`API: After add - ${favorites.pets.length} pets in favorites`);
+                } catch (addError) {
+                    console.error('Error using $addToSet operation:', addError);
+                    // Fallback to the original approach if $addToSet fails
+                    const alreadyFavorited = favorites.pets.some(id =>
+                        id.toString() === petId.toString()
+                    );
+
+                    if (!alreadyFavorited) {
+                        favorites.pets.push(petId);
+                        await favorites.save();
+                    }
+                }
             } else if (action === 'remove') {
-                favorites.pets = favorites.pets.filter(id =>
-                    id.toString() !== petId.toString()
-                );
+                // Log the before state for debugging
+                console.log(`API: Before removal - ${favorites.pets.length} pets in favorites`);
+
+                // REPLACE the filter approach with MongoDB's $pull operator
+                // This is more reliable for array operations in MongoDB
+                try {
+                    // Use updateOne with $pull instead of modifying the array directly
+                    await Favorites.updateOne(
+                        { userId: decoded.userId },
+                        { $pull: { pets: petId } }
+                    );
+
+                    // Refresh our local reference after the update
+                    favorites = await Favorites.findOne({ userId: decoded.userId });
+
+                    console.log(`API: After removal - ${favorites.pets.length} pets in favorites`);
+                } catch (pullError) {
+                    console.error('Error using $pull operation:', pullError);
+                    // Fallback to the original approach if $pull fails
+                    const petIdStr = petId.toString();
+                    favorites.pets = favorites.pets.filter(id => id.toString() !== petIdStr);
+                    await favorites.save();
+                }
             }
 
-            await favorites.save();
+            // Get the updated list with populated data
+            const updatedFavorites = await Favorites.findOne({ userId: decoded.userId })
+                .populate({
+                    path: 'pets',
+                    select: 'name breed specie img_arr status gender age adoptionFee tags',
+                    populate: {
+                        path: 'organization',
+                        select: 'organizationName profileImage'
+                    }
+                })
+                .lean();
 
             return NextResponse.json({
                 success: true,
                 message: action === 'add' ? 'Pet added to favorites' : 'Pet removed from favorites',
-                isFavorited: action === 'add'
+                action: action,
+                favorites: updatedFavorites?.pets || []
             });
         } catch (error) {
             console.error('Error managing favorites:', error);
