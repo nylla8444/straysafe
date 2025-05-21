@@ -1,13 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useFavorites } from '../../../context/FavoritesContext';
 
 export default function PetCard({ pet, onFavorite, userRole = 'guest' }) {
-
-    const [isFavorited, setIsFavorited] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const { isFavorited, toggleFavorite } = useFavorites();
+
     // Add state for toast notification
     const [toast, setToast] = useState({
         visible: false,
@@ -17,14 +17,6 @@ export default function PetCard({ pet, onFavorite, userRole = 'guest' }) {
 
     // Only adopters can use favorites feature
     const canUseFavorites = userRole === 'adopter';
-
-    // Check if pet is already in favorites when component loads
-    useEffect(() => {
-        // Only check favorite status if user is an adopter
-        if (canUseFavorites && pet?._id) {
-            checkFavoriteStatus();
-        }
-    }, [canUseFavorites, pet?._id]);
 
     // Auto-hide toast after delay
     useEffect(() => {
@@ -36,24 +28,6 @@ export default function PetCard({ pet, onFavorite, userRole = 'guest' }) {
             return () => clearTimeout(timer);
         }
     }, [toast.visible]);
-
-    const checkFavoriteStatus = async () => {
-        try {
-            // Use the OPTIONS method as defined in the API
-            const response = await axios({
-                method: 'OPTIONS',
-                url: `/api/favorites`,
-                params: { petId: pet._id }
-            });
-
-            if (response.data.success) {
-                setIsFavorited(response.data.isFavorited);
-            }
-        } catch (error) {
-            console.error('Error checking favorite status:', error);
-            // Fail silently - just show as not favorited
-        }
-    };
 
     // Helper function for organization display names
     const getDisplayName = (name, threshold = 30) => {
@@ -68,7 +42,7 @@ export default function PetCard({ pet, onFavorite, userRole = 'guest' }) {
             .toUpperCase();
     };
 
-    // Handle favorite toggle with API call
+    // Handle favorite toggle with context
     const handleFavoriteClick = async (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -77,49 +51,32 @@ export default function PetCard({ pet, onFavorite, userRole = 'guest' }) {
 
         try {
             setIsLoading(true);
-            const newFavoritedState = !isFavorited;
-            const action = newFavoritedState ? 'add' : 'remove';
+            const result = await toggleFavorite(pet._id);
 
-            // Call the API to update favorites
-            const response = await axios.post('/api/favorites', {
-                petId: pet._id,
-                action: action
-            });
-
-            if (response.data.success) {
-                setIsFavorited(newFavoritedState);
-
+            if (result.success) {
                 // Show toast notification based on the action
                 setToast({
                     visible: true,
-                    type: action,
-                    message: newFavoritedState
+                    type: result.action,
+                    message: result.action === 'add'
                         ? `${pet.name} has been added to your favorites!`
                         : `${pet.name} has been removed from your favorites`
                 });
 
                 // Call the parent component's handler if provided
                 if (onFavorite) {
-                    onFavorite(pet, newFavoritedState);
+                    onFavorite(pet, result.action === 'add');
                 }
             }
         } catch (error) {
             console.error('Error toggling favorite:', error);
 
             // Show user-friendly error message as toast
-            if (error.response?.status === 403) {
-                setToast({
-                    visible: true,
-                    type: 'error',
-                    message: 'You need to be logged in as an adopter to favorite pets'
-                });
-            } else {
-                setToast({
-                    visible: true,
-                    type: 'error',
-                    message: 'There was a problem updating your favorites'
-                });
-            }
+            setToast({
+                visible: true,
+                type: 'error',
+                message: 'There was a problem updating your favorites'
+            });
         } finally {
             setIsLoading(false);
         }
@@ -213,12 +170,12 @@ export default function PetCard({ pet, onFavorite, userRole = 'guest' }) {
                             className={`relative z-10 flex-shrink-0 p-1.5 rounded-full transition-colors duration-200 
                             ${isLoading
                                     ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                    : isFavorited
+                                    : isFavorited(pet._id)
                                         ? 'text-rose-500 bg-rose-50'
                                         : 'text-gray-400 hover:text-orange-500 hover:bg-amber-50'}`}
                             onClick={handleFavoriteClick}
                             disabled={isLoading}
-                            aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
+                            aria-label={isFavorited(pet._id) ? "Remove from favorites" : "Add to favorites"}
                         >
                             {isLoading ? (
                                 <div className="h-5 w-5 border-2 border-gray-300 border-t-orange-600 rounded-full animate-spin"></div>
@@ -227,8 +184,8 @@ export default function PetCard({ pet, onFavorite, userRole = 'guest' }) {
                                     xmlns="http://www.w3.org/2000/svg"
                                     className="h-5 w-5"
                                     viewBox="0 0 24 24"
-                                    stroke={isFavorited ? "none" : "currentColor"}
-                                    fill={isFavorited ? "currentColor" : "none"}
+                                    stroke={isFavorited(pet._id) ? "none" : "currentColor"}
+                                    fill={isFavorited(pet._id) ? "currentColor" : "none"}
                                 >
                                     <path
                                         strokeLinecap="round"
