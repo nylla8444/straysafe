@@ -47,7 +47,7 @@ export default function AboutPage() {
                         transition={{ duration: 0.7 }}
                     >
                         <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
-                            About <span className="text-orange-500">StraySpot</span>
+                            About <span className="text-orange-500">Stray</span><span className='text-teal-500'>Spot</span>
                         </h1>
                         <p className="text-xl text-gray-600 mb-8">
                             Ensuring safety and care for rescued animals through technology
@@ -82,7 +82,7 @@ export default function AboutPage() {
             </section>
 
             {/* Mission Section */}
-            <section className="py-16 bg-white">
+            <section className="py-10 sm:py-12 md:py-16 bg-white">
                 <div className="container mx-auto w-full max-w-7xl px-4">
                     <div className="flex flex-col md:flex-row gap-12 items-center">
                         <motion.div
@@ -92,7 +92,7 @@ export default function AboutPage() {
                             viewport={{ once: true }}
                             transition={{ duration: 0.7 }}
                         >
-                            <h2 className="text-3xl font-bold text-gray-800 mb-6">Our Mission</h2>
+                            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-6">Our Mission</h2>
                             <p className="text-lg text-gray-600 mb-6">
                                 StraySpot is a web-based application designed to support the efficient management and adoption of stray animals. We connect adoption centers with potential pet adopters through streamlined services.
                             </p>
@@ -105,22 +105,23 @@ export default function AboutPage() {
                             </div>
                         </motion.div>
                         <motion.div
-                            className="md:w-1/2"
+                            className="w-full md:w-1/2"
                             initial={{ opacity: 0, x: 50 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.7 }}
                         >
-                            <div className="relative h-80 rounded-xl overflow-hidden shadow-xl">
+                            <div className="relative w-full aspect-square sm:aspect-video md:aspect-auto md:h-80 rounded-xl overflow-hidden shadow-xl">
                                 <Image
                                     src="/mission-image.jpg"
                                     alt="Rescued pets at shelter"
                                     fill
                                     className="object-cover"
+                                    priority
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
-                                    <div className="p-6 text-white">
-                                        <p className="text-xl font-semibold">Every pet deserves a loving home</p>
+                                    <div className="p-4 sm:p-6 text-white">
+                                        <p className="text-lg sm:text-xl font-semibold">Every pet deserves a loving home</p>
                                     </div>
                                 </div>
                             </div>
@@ -139,7 +140,7 @@ export default function AboutPage() {
                         viewport={{ once: true }}
                         transition={{ duration: 0.7 }}
                     >
-                        <h2 className="text-3xl font-bold text-gray-800 mb-6">Why We Exist</h2>
+                        <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-6">Why We Exist</h2>
                         <p className="text-lg text-gray-600">
                             StraySpot was developed in response to the growing call for digital transformation in animal welfare, addressing inefficiencies faced by shelters that still rely on manual systems.
                         </p>
@@ -184,7 +185,7 @@ export default function AboutPage() {
             </section>
 
             {/* Features Section with Enhanced Animations */}
-            <section className="py-16 bg-white">
+            <section className="py-10 sm:py-12 md:py-16 bg-white">
                 <div className="container mx-auto w-full max-w-7xl px-4">
                     <motion.div
                         className="text-center max-w-3xl mx-auto mb-12"
@@ -193,13 +194,13 @@ export default function AboutPage() {
                         viewport={{ once: true }}
                         transition={{ duration: 0.5 }}
                     >
-                        <h2 className="text-3xl font-bold text-gray-800 mb-6">Key Features</h2>
+                        <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-6">Key Features</h2>
                         <p className="text-lg text-gray-600">
                             StraySpot provides a comprehensive suite of tools for animal shelters and potential adopters.
                         </p>
                     </motion.div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                         {[
                             {
                                 title: "Multi-User Profiles",
@@ -268,7 +269,7 @@ export default function AboutPage() {
                         ].map((feature, i) => (
                             <motion.div
                                 key={i}
-                                className="rounded-lg p-6 border border-gray-100 shadow-sm hover:shadow-xl transition-all relative overflow-hidden group"
+                                className="rounded-lg p-4 sm:p-6 border border-gray-100 shadow-sm hover:shadow-xl transition-all relative overflow-hidden group"
                                 initial={{ opacity: 0, y: 20 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
@@ -278,6 +279,7 @@ export default function AboutPage() {
                                     scale: 1.02,
                                     transition: { type: "spring", stiffness: 500, damping: 15 }
                                 }}
+                                whileTap={{ scale: 0.98 }} // Add this for touch feedback
                             >
                                 {/* Decorative background element */}
                                 <div
@@ -379,13 +381,13 @@ export default function AboutPage() {
                         >
                             <Link
                                 href="/register"
-                                className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3 rounded-lg transition-colors duration-200"
+                                className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 sm:px-8 py-4 sm:py-3 rounded-lg transition-colors duration-200 text-center"
                             >
                                 Create Account
                             </Link>
                             <Link
                                 href="/browse/pets"
-                                className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold px-8 py-3 rounded-lg transition-colors duration-200"
+                                className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold px-6 sm:px-8 py-4 sm:py-3 rounded-lg transition-colors duration-200 text-center"
                             >
                                 Browse Adoptable Pets
                             </Link>
