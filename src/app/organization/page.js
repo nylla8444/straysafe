@@ -39,7 +39,7 @@ export default function OrganizationPage() {
             <div className="flex items-center justify-center min-h-[60vh]">
                 <div className="flex flex-col items-center space-y-4">
                     <div className="w-10 h-10 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
-                    <p className="text-gray-600">Loading your organization dashboard...</p>
+                    <p className="text-gray-600">Loading your dashboard...</p>
                 </div>
             </div>
         );
@@ -67,23 +67,23 @@ export default function OrganizationPage() {
     };
 
     return (
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-6 mb-10 sm:mb-0">
             {/* Header - Responsive for mobile */}
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
-                <h1 className="text-2xl sm:text-3xl font-bold">Organization Dashboard</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 border-b-2 border-amber-400 pb-2 inline-block">Dashboard</h1>
                 <button
                     onClick={handleOpenModal}
                     className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition w-full sm:w-auto text-center"
                 >
-                    Manage Organization
+                    Manage Account
                 </button>
             </div>
 
             {/* Profile Card - Improved mobile layout */}
-            <div className="bg-white shadow rounded-lg p-4 sm:p-6 mb-6 sm:mb-8">
+            <div className="bg-white/50 shadow-md rounded-lg p-4 sm:p-6 mb-6 sm:mb-8 border-t-2 border-amber-300">
                 <div className="flex flex-col items-center sm:items-start sm:flex-row gap-5 sm:gap-6">
                     {/* Profile Image - Centered on mobile, left-aligned on desktop */}
-                    <div className="relative w-28 h-28 sm:w-32 sm:h-32 bg-gray-200 rounded-full overflow-hidden flex-shrink-0">
+                    <div className="relative w-28 h-28 sm:w-32 sm:h-32 bg-orange-200 rounded-full overflow-hidden flex-shrink-0">
                         {user.profileImage ? (
                             <Image
                                 src={`${user.profileImage}?t=${Date.now()}`}
@@ -92,7 +92,7 @@ export default function OrganizationPage() {
                                 style={{ objectFit: 'cover' }}
                             />
                         ) : (
-                            <div className="w-full h-full flex items-center justify-center text-gray-500 text-xl">
+                            <div className="w-full h-full flex items-center justify-center text-orange-500 text-2xl">
                                 {user.organizationName?.charAt(0).toUpperCase() || 'O'}
                             </div>
                         )}
@@ -104,7 +104,7 @@ export default function OrganizationPage() {
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
                             <div>
-                                <h3 className="font-semibold mb-2 text-gray-800">Organization Details</h3>
+                                <h3 className="font-semibold mb-2 text-gray-800">Details</h3>
                                 <p className="mb-1.5"><span className="text-gray-600">Location:</span> {user.location}</p>
                                 <p className="mb-1.5"><span className="text-gray-600">Verification Status:</span>
                                     {(() => {
@@ -130,7 +130,7 @@ export default function OrganizationPage() {
                             </div>
 
                             <div className="mt-4 sm:mt-0">
-                                <h3 className="font-semibold mb-2 text-gray-800">Your Contact Information</h3>
+                                <h3 className="font-semibold mb-2 text-gray-800">Contact Information</h3>
                                 <p className="mb-1.5"><span className="text-gray-600">Email:</span> {user.email}</p>
                                 <p className="mb-1.5"><span className="text-gray-600">Phone:</span> {user.contactNumber}</p>
                             </div>
@@ -157,7 +157,7 @@ export default function OrganizationPage() {
                     <>
                         <Link
                             href="/organization/pets"
-                            className="flex items-center p-4 bg-white rounded-lg shadow hover:bg-gray-50 transition-colors"
+                            className="flex items-center p-4 bg-white/50 rounded-lg shadow hover:bg-gray-50 transition-colors"
                         >
                             <div className="p-2 bg-green-100 rounded-lg">
                                 <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -175,7 +175,7 @@ export default function OrganizationPage() {
 
                         <Link
                             href="/organization/applications"
-                            className="flex items-center p-4 bg-white rounded-lg shadow hover:bg-gray-50 transition-colors"
+                            className="flex items-center p-4 bg-white/50 rounded-lg shadow hover:bg-gray-50 transition-colors"
                         >
                             <div className="p-2 bg-teal-100 rounded-lg">
                                 <svg className="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -194,7 +194,7 @@ export default function OrganizationPage() {
                         {/* New Payment Management Card */}
                         <Link
                             href="/organization/payments"
-                            className="flex items-center p-4 bg-white rounded-lg shadow hover:bg-gray-50 transition-colors"
+                            className="flex items-center p-4 bg-white/50 rounded-lg shadow hover:bg-gray-50 transition-colors"
                         >
                             <div className="p-2 bg-purple-100 rounded-lg">
                                 <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -213,7 +213,7 @@ export default function OrganizationPage() {
                         {/* New Donation Settings Card */}
                         <Link
                             href="/organization/donations"
-                            className="flex items-center p-4 bg-white rounded-lg shadow hover:bg-gray-50 transition-colors"
+                            className="flex items-center p-4 bg-white/50 rounded-lg shadow hover:bg-gray-50 transition-colors"
                         >
                             <div className="p-2 bg-purple-100 rounded-lg">
                                 <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -233,7 +233,7 @@ export default function OrganizationPage() {
                         {/* New Inventory Management Card */}
                         <Link
                             href="/organization/inventory"
-                            className="flex items-center p-4 bg-white rounded-lg shadow hover:bg-gray-50 transition-colors"
+                            className="flex items-center p-4 bg-white/50 rounded-lg shadow hover:bg-gray-50 transition-colors"
                         >
                             <div className="p-2 bg-amber-100 rounded-lg">
                                 <svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -252,7 +252,7 @@ export default function OrganizationPage() {
                         {/* New Rescue Cases Card */}
                         <Link
                             href="/organization/rescue-cases"
-                            className="flex items-center p-4 bg-white rounded-lg shadow hover:bg-gray-50 transition-colors"
+                            className="flex items-center p-4 bg-white/50 rounded-lg shadow hover:bg-gray-50 transition-colors"
                         >
                             <div className="p-2 bg-red-100 rounded-lg">
                                 <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -270,7 +270,7 @@ export default function OrganizationPage() {
                     </>
                 ) : (
                     <>
-                        <div className="flex items-center p-4 bg-white rounded-lg shadow opacity-75 border-l-4 border-amber-500">
+                        <div className="flex items-center p-4 bg-white/50 rounded-lg shadow opacity-75 border-l-4 border-amber-500">
                             <div className="p-2 bg-gray-100 rounded-lg">
                                 <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -283,7 +283,7 @@ export default function OrganizationPage() {
                         </div>
 
                         {/* Add disabled payment card for unverified organizations */}
-                        <div className="flex items-center p-4 bg-white rounded-lg shadow opacity-75 border-l-4 border-amber-500">
+                        <div className="flex items-center p-4 bg-white/50 rounded-lg shadow opacity-75 border-l-4 border-amber-500">
                             <div className="p-2 bg-gray-100 rounded-lg">
                                 <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z" />
@@ -296,7 +296,7 @@ export default function OrganizationPage() {
                         </div>
 
                         {/* Add disabled inventory card for unverified organizations */}
-                        <div className="flex items-center p-4 bg-white rounded-lg shadow opacity-75 border-l-4 border-amber-500">
+                        <div className="flex items-center p-4 bg-white/50 rounded-lg shadow opacity-75 border-l-4 border-amber-500">
                             <div className="p-2 bg-gray-100 rounded-lg">
                                 <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0v10l-8 4m-8-4V7m16 10l-8-4m-8 4l8-4M4 7l8 4" />

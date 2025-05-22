@@ -11,10 +11,13 @@ export default function RegisterTypePage() {
                 {/* Logo and branding */}
                 <div className="text-center mb-8">
                     <div className="mb-4 flex justify-center">
-                        {/* TODO: Replace with your actual logo */}
-                        <div className="w-16 h-16 bg-teal-500 rounded-full flex items-center justify-center">
-                            <span className="text-white text-2xl font-bold">SS</span>
-                        </div>
+                        <Image
+                            src="/logo.svg"
+                            alt="StraySpot Logo"
+                            width={100}
+                            height={100}
+                            className="h-16 w-16 rounded-full"
+                        />
                     </div>
                     <h1 className="text-3xl font-bold text-gray-800">Join StraySpot</h1>
                     <p className="mt-2 text-gray-600">Choose how you want to make a difference</p>

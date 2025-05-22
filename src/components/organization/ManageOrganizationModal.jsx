@@ -291,7 +291,7 @@ export default function ManageOrganizationModal({ organization, isOpen, onClose,
             <div ref={modalRef} className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
                 <div className="p-6">
                     <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-xl font-semibold">Manage Organization</h2>
+                        <h2 className="text-xl font-semibold">Manage Account</h2>
                         <button
                             onClick={handleClose} // Use the new wrapper
                             className="text-gray-500 hover:text-gray-700"
@@ -357,10 +357,10 @@ export default function ManageOrganizationModal({ organization, isOpen, onClose,
 
                         <div className="mb-4">
                             <label className="block mb-2 font-medium">
-                                Organization Name
+                                Organization/Shelter Name
                                 {organization?.isVerified && (
                                     <span className="ml-2 text-xs text-teal-600 font-normal">
-                                        (Verified organizations cannot change their name)
+                                        (Verified accounts cannot change their name)
                                     </span>
                                 )}
                             </label>
