@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "../../../context/AuthContext";
 import Link from "next/link";
 import Image from "next/image";
+import axios from "axios";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -16,6 +17,9 @@ export default function LoginPage() {
         email: '',
         password: ''
     });
+    const [isResendingVerification, setIsResendingVerification] = useState(false);
+    const [resendMessage, setResendMessage] = useState("");
+    const [success, setSuccess] = useState("");
     const { user, loading, isAuthenticated, login, isOrganization, isAdopter } = useAuth();
     const router = useRouter();
 
@@ -75,6 +79,29 @@ export default function LoginPage() {
         localStorage.removeItem('user');
         sessionStorage.removeItem('user');
     }, []);
+
+
+    useEffect(() => {
+        // Check URL for various parameters
+        const searchParams = new URLSearchParams(window.location.search);
+
+        // Check for verification success
+        const verified = searchParams.get('verified') === 'true';
+        if (verified) {
+            setSuccess('Your email has been successfully verified. You can now log in.');
+        }
+
+        // Check for registration success
+        if (searchParams.get('verify') === 'true') {
+            setSuccess('Registration successful! Please check your email to verify your account.');
+        }
+
+        // Check for password reset success
+        if (searchParams.get('passwordReset') === 'true') {
+            setSuccess('Your password has been successfully reset. You can now log in with your new password.');
+        }
+    }, []);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -144,6 +171,18 @@ export default function LoginPage() {
             : `${baseClasses} border-green-500 focus:ring-green-500 focus:border-green-500`;
     };
 
+    const handleResendVerification = async () => {
+        try {
+            setIsResendingVerification(true);
+            await axios.post('/api/resend-verification', { email });
+            setResendMessage('Verification email sent. Please check your inbox.');
+        } catch (err) {
+            console.error('Error resending verification:', err);
+        } finally {
+            setIsResendingVerification(false);
+        }
+    };
+
     return (
         // -mt-24 because of h-24 amber-50 in layout.js
         <div className="-mt-24 min-h-screen bg-gradient-to-b from-teal-50 to-gray-100 flex flex-col items-center justify-center px-4 py-12">
@@ -188,6 +227,21 @@ export default function LoginPage() {
                                             </svg>
                                         </button>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {success && (
+                        <div className="bg-green-50 border-l-4 border-green-500 p-4">
+                            <div className="flex items-center">
+                                <div className="flex-shrink-0">
+                                    <svg className="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div className="ml-3">
+                                    <p className="text-sm text-green-700">{success}</p>
                                 </div>
                             </div>
                         </div>
@@ -259,6 +313,19 @@ export default function LoginPage() {
                                 <p className="mt-1 text-sm text-red-600">{validationErrors.password}</p>
                             )}
                         </div>
+
+                        {/* Resend verification link button */}
+                        {error === 'Please verify your email before logging in. Check your inbox for a verification link.' && (
+                            <div className="mt-2">
+                                <button
+                                    type="button"
+                                    onClick={handleResendVerification}
+                                    className="text-sm text-teal-600 hover:text-teal-500"
+                                >
+                                    Resend verification email
+                                </button>
+                            </div>
+                        )}
 
                         <div>
                             <button
