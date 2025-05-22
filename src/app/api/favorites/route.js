@@ -2,7 +2,27 @@ import { NextResponse } from 'next/server';
 import connectionToDB from '../../../../lib/mongoose';
 import Favorites from '../../../../models/Favorites';
 import Pet from '../../../../models/Pet';
+import User from '../../../../models/User'; // Import User model
 import { withAuth } from '../../../../middleware/authMiddleware';
+
+// Ensure all models are registered before executing queries
+function ensureModels() {
+    // This makes sure the models are compiled
+    if (mongoose.modelNames().indexOf('User') === -1) {
+        console.log('User model was not registered. Forcing registration.');
+        mongoose.model('User', User.schema);
+    }
+
+    if (mongoose.modelNames().indexOf('Pet') === -1) {
+        console.log('Pet model was not registered. Forcing registration.');
+        mongoose.model('Pet', Pet.schema);
+    }
+
+    if (mongoose.modelNames().indexOf('Favorites') === -1) {
+        console.log('Favorites model was not registered. Forcing registration.');
+        mongoose.model('Favorites', Favorites.schema);
+    }
+}
 
 // Get user's favorites
 export async function GET(request) {
@@ -16,6 +36,7 @@ export async function GET(request) {
             }
 
             await connectionToDB();
+            ensureModels(); // Add this line
 
             // Find user's favorites document
             let userFavorites = await Favorites.findOne({ userId: decoded.userId });
@@ -71,6 +92,7 @@ export async function POST(request) {
             }
 
             await connectionToDB();
+            ensureModels(); // Add this line
             const { petId, action } = await request.json();
 
             // Debug log
@@ -193,6 +215,7 @@ export async function OPTIONS(request) {
             }
 
             await connectionToDB();
+            ensureModels(); // Add this line
             const url = new URL(request.url);
             const petId = url.searchParams.get('petId');
 
