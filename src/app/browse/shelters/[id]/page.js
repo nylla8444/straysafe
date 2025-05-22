@@ -359,7 +359,7 @@ export default function ShelterDetailPage({ params }) {
 
                 <div className="mb-4 md:mb-6 lg:mb-8 flex flex-col sm:flex-row gap-4 ">
                     <SearchBar
-                        placeholder="Search shelter pets..."
+                        placeholder="Search shelter pets by name, breed, or tags..."
                         onSearch={setSearchTerm}
                         className="max-w-2xl w-full"
                     />
@@ -524,7 +524,7 @@ export default function ShelterDetailPage({ params }) {
 
             {isDonationModalOpen && (
                 <motion.div
-                    className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4"
+                    className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-60 p-4"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}

@@ -143,7 +143,7 @@ export default function AdminDashboardPage() {
     };
 
     return (
-        <div className="flex flex-col md:flex-row min-h-screen bg-amber-50">
+        <div className="flex flex-col md:flex-row min-h-screen bg-amber-50 -mt-24">
             {/* Mobile Header - Only visible on small screens */}
             {/* Simple mobile header - Only shows app name */}
             <div className="md:hidden bg-gradient-to-r from-teal-800 to-teal-900 text-white p-4 flex justify-center shadow-lg">

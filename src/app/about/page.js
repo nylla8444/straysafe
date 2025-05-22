@@ -3,7 +3,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Shield, BarChart, Users, MessageCircle, Clock } from 'lucide-react';
+import {
+    ArrowRight, Shield, BarChart, Users, MessageCircle, Clock,
+    PawPrint, Search, Heart, ClipboardCheck, CreditCard, Building, Ambulance
+} from 'lucide-react';
 import Footer from '../../components/Footer';
 
 export default function AboutPage() {
@@ -180,7 +183,7 @@ export default function AboutPage() {
                 </div>
             </section>
 
-            {/* Features Section */}
+            {/* Features Section with Enhanced Animations */}
             <section className="py-16 bg-white">
                 <div className="container mx-auto w-full max-w-7xl px-4">
                     <motion.div
@@ -188,9 +191,8 @@ export default function AboutPage() {
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.7 }}
+                        transition={{ duration: 0.5 }}
                     >
-                        {/* TODO: rewrite some features - coz some doesnt exist*/}
                         <h2 className="text-3xl font-bold text-gray-800 mb-6">Key Features</h2>
                         <p className="text-lg text-gray-600">
                             StraySpot provides a comprehensive suite of tools for animal shelters and potential adopters.
@@ -200,68 +202,106 @@ export default function AboutPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {[
                             {
-                                title: "Animal Registration",
-                                description: "Easily register rescued animals with detailed profiles and photos",
-                                color: "bg-orange-100 text-orange-600",
+                                title: "Multi-User Profiles",
+                                description: "Customizable profiles for both adopters and animal welfare organizations",
+                                color: "bg-amber-100 text-amber-600",
+                                hoverColor: "bg-amber-200",
+                                icon: <Users className="h-6 w-6" />,
                                 delay: 0.1
                             },
                             {
-                                title: "Adoption Management",
-                                description: "Streamlined adoption process from application to approval",
-                                color: "bg-blue-100 text-blue-600",
+                                title: "Pet Management",
+                                description: "Create detailed pet profiles with multiple images, tags, and characteristics",
+                                color: "bg-orange-100 text-orange-600",
+                                hoverColor: "bg-orange-200",
+                                icon: <PawPrint className="h-6 w-6" />,
                                 delay: 0.2
                             },
                             {
-                                title: "Real-time Tracking",
-                                description: "Monitor animal statuses and adoption progress",
-                                color: "bg-green-100 text-green-600",
+                                title: "Advanced Search",
+                                description: "Find pets using filters for species, breed, gender, age, and adoption fee",
+                                color: "bg-blue-100 text-blue-600",
+                                hoverColor: "bg-blue-200",
+                                icon: <Search className="h-6 w-6" />,
                                 delay: 0.3
                             },
                             {
-                                title: "Shelter Networking",
-                                description: "Connect with other shelters to coordinate rescue efforts",
-                                color: "bg-purple-100 text-purple-600",
+                                title: "Favorites System",
+                                description: "Save and manage your favorite pets across browsing sessions",
+                                color: "bg-rose-100 text-rose-600",
+                                hoverColor: "bg-rose-200",
+                                icon: <Heart className="h-6 w-6" />,
                                 delay: 0.4
                             },
                             {
-                                title: "Resource Management",
-                                description: "Track donations and supplies",
-                                color: "bg-pink-100 text-pink-600",
+                                title: "Adoption Process",
+                                description: "Streamlined adoption applications with reference collection and status tracking",
+                                color: "bg-purple-100 text-purple-600",
+                                hoverColor: "bg-purple-200",
+                                icon: <ClipboardCheck className="h-6 w-6" />,
                                 delay: 0.5
                             },
                             {
-                                title: "Community Engagement",
-                                description: "Tools for fostering community support and volunteers",
-                                color: "bg-teal-100 text-teal-600",
+                                title: "Payment Processing",
+                                description: "Secure handling of adoption fees with verification system",
+                                color: "bg-emerald-100 text-emerald-600",
+                                hoverColor: "bg-emerald-200",
+                                icon: <CreditCard className="h-6 w-6" />,
                                 delay: 0.6
                             },
                             {
-                                title: "Health Monitoring",
-                                description: "Track vaccinations, medications, and vet appointments",
-                                color: "bg-red-100 text-red-600",
+                                title: "Organization Tools",
+                                description: "Dashboard for shelters to manage pets, applications and rescue operations",
+                                color: "bg-teal-100 text-teal-600",
+                                hoverColor: "bg-teal-200",
+                                icon: <Building className="h-6 w-6" />,
                                 delay: 0.7
                             },
                             {
-                                title: "Success Stories",
-                                description: "Showcase adoption success stories to inspire others",
-                                color: "bg-amber-100 text-amber-600",
+                                title: "Rescue Tracking",
+                                description: "Monitor ongoing and completed animal rescue operations with statistics",
+                                color: "bg-red-100 text-red-600",
+                                hoverColor: "bg-red-200",
+                                icon: <Ambulance className="h-6 w-6" />,
                                 delay: 0.8
                             }
                         ].map((feature, i) => (
                             <motion.div
                                 key={i}
-                                className="rounded-lg p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
+                                className="rounded-lg p-6 border border-gray-100 shadow-sm hover:shadow-xl transition-all relative overflow-hidden group"
                                 initial={{ opacity: 0, y: 20 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
-                                transition={{ duration: 0.5, delay: feature.delay }}
-                                whileHover={{ y: -5 }}
+                                transition={{ duration: 0.3, delay: 0.05 * i }}
+                                whileHover={{
+                                    y: -5,
+                                    scale: 1.02,
+                                    transition: { type: "spring", stiffness: 500, damping: 15 }
+                                }}
                             >
-                                <div className={`w-12 h-12 rounded-full ${feature.color} flex items-center justify-center mb-4`}>
-                                    <Clock className="h-6 w-6" />
-                                </div>
-                                <h3 className="text-xl font-semibold mb-2 text-gray-800">{feature.title}</h3>
-                                <p className="text-gray-600">{feature.description}</p>
+                                {/* Decorative background element */}
+                                <div
+                                    className={`absolute -right-4 -bottom-4 w-24 h-24 rounded-full opacity-20 transition-all duration-300 ease-in-out group-hover:scale-150 ${feature.color}`}
+                                ></div>
+
+                                {/* Feature icon with animation */}
+                                <motion.div
+                                    className={`relative w-14 h-14 rounded-full ${feature.color} flex items-center justify-center mb-4 z-10 transition-all duration-300 group-hover:${feature.hoverColor}`}
+                                    whileHover={{ rotate: [0, -5, 5, 0], transition: { duration: 0.3 } }}
+                                >
+                                    {feature.icon || <Clock className="h-7 w-7" />}
+                                </motion.div>
+
+                                {/* Feature content */}
+                                <h3 className="text-xl font-semibold mb-2 text-gray-800 relative z-10">{feature.title}</h3>
+                                <p className="text-gray-600 relative z-10">{feature.description}</p>
+
+                                {/* Animated border effect on hover */}
+                                <motion.div
+                                    className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-amber-400 to-orange-500"
+                                    initial={{ width: "0%" }}
+                                    whileHover={{ width: "100%", transition: { duration: 0.2 } }}
+                                />
                             </motion.div>
                         ))}
                     </div>

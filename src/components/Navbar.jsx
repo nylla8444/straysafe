@@ -19,6 +19,8 @@ export default function Navbar() {
     const menuRef = useRef(null);
     const pathname = usePathname();
 
+
+
     // Set client-ready state after initial render to avoid hydration errors
     useEffect(() => {
         setClientReady(true);
@@ -30,6 +32,7 @@ export default function Navbar() {
             loading
         });
     }, [isAuthenticated, user, loading]);
+
 
     // Add this effect to detect and fix navigation issues
     useEffect(() => {
@@ -125,6 +128,11 @@ export default function Navbar() {
         visible: { opacity: 1 }
     };
 
+    // Early return if on admin dashboard pages
+    if (pathname?.startsWith('/admin')) {
+        return null; // Don't render the navbar at all
+    }
+
     return (
         <nav className="fixed top-4 left-0 right-0 mx-auto w-[95%] max-w-7xl bg-white/70 backdrop-blur-md text-gray-800 py-4 px-6 rounded-xl shadow-lg border border-white/30 z-60">
             {/* Suspension banner - updated for glassmorphism */}
@@ -197,8 +205,8 @@ export default function Navbar() {
                     {!clientReady ? (
                         // During SSR and initial hydration, show login/register by default
                         <>
-                            <Link href="/login" className="bg-orange-500 text-white hover:bg-orange-600 px-4 py-2 rounded-lg font-medium transition-colors">Login</Link>
-                            <Link href="/register" className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">Register</Link>
+                            <Link href="/login" className="bg-teal-500 text-white hover:bg-teal-600 px-4 py-2 rounded-lg font-medium transition-colors">Login</Link>
+                            <Link href="/register" className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">Register</Link>
                         </>
                     ) : (
                         // After hydration, show appropriate content based on auth state
@@ -229,7 +237,7 @@ export default function Navbar() {
                                             className="text-gray-800 hover:text-orange-500 transition-colors"
                                             onClick={() => console.log("Organization link clicked by user:", user)}
                                         >
-                                            Organization Dashboard
+                                            Dashboard
                                         </Link>
                                     )}
                                 </>
@@ -244,8 +252,8 @@ export default function Navbar() {
                                 </button>
                             ) : (
                                 <>
-                                    <Link href="/login" className="bg-orange-500 text-white hover:bg-orange-600 px-4 py-2 rounded-lg font-medium transition-colors">Login</Link>
-                                    <Link href="/register" className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">Register</Link>
+                                    <Link href="/login" className="bg-teal-500 text-white hover:bg-teal-600 px-4 py-2 rounded-lg font-medium transition-colors">Login</Link>
+                                    <Link href="/register" className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">Register</Link>
                                 </>
                             )}
                         </>
@@ -337,7 +345,7 @@ export default function Navbar() {
                                                         href="/organization"
                                                         className="text-gray-800 hover:text-orange-500 text-lg transition-colors"
                                                     >
-                                                        Organization Dashboard
+                                                        Dashboard
                                                     </Link>
                                                 )}
                                             </>

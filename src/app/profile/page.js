@@ -12,7 +12,7 @@ import AdopterApplicationsList from '../../components/adopter/ApplicationsList';
 import PaymentsSection from '../../components/payments/PaymentsSection';
 import { motion } from 'framer-motion';
 
-// Keep the helper functions
+// Helper functions
 const safeGetFirstChar = (str) => {
     if (!str) return '?';
     return str.charAt(0).toUpperCase();
@@ -34,14 +34,9 @@ export default function ProfilePage() {
     const [loadingApplications, setLoadingApplications] = useState(true);
     const [applicationsError, setApplicationsError] = useState('');
 
-    // No longer need these states as they come from context
-    // const [favorites, setFavorites] = useState([]);
-    // const [loadingFavorites, setLoadingFavorites] = useState(false);
-    // const [favoritesError, setFavoritesError] = useState('');
-
     const [activeTab, setActiveTab] = useState('applications');
 
-    // Keep the existing auth-related useEffect
+    // Auth-related useEffect
     useEffect(() => {
         console.log("Profile page auth status:", { loading, isAuthenticated, user });
 
@@ -70,7 +65,7 @@ export default function ProfilePage() {
         }
     }, [loading, isAuthenticated, user, router, refreshUser]);
 
-    // Keep the applications fetch useEffect
+    // Applications fetch useEffect
     useEffect(() => {
         const fetchApplications = async () => {
             if (!isAuthenticated || !user || !isAdopter()) return;
@@ -96,42 +91,8 @@ export default function ProfilePage() {
         }
     }, [user, isAuthenticated, isAdopter]);
 
-    // Replace the favorites fetch useEffect with this simplified version that uses
-    // the refreshFavorites function from context
-    // Remove this entire useEffect block:
-    /*
-    useEffect(() => {
-        const fetchFavorites = async () => {
-            if (!isAuthenticated || !user || !isAdopter()) return;
-            if (activeTab !== 'favorites') return;
 
-            try {
-                setLoadingFavorites(true);
-                setFavoritesError('');
-
-                const response = await axios.get('/api/favorites');
-
-                if (response.data.success) {
-                    console.log("Favorites fetched:", response.data.favorites);
-                    setFavorites(response.data.favorites || []);
-                } else {
-                    setFavoritesError('Could not load your favorite pets');
-                }
-            } catch (error) {
-                console.error('Error fetching favorites:', error);
-                setFavoritesError('Failed to fetch favorites. Please try again later.');
-            } finally {
-                setLoadingFavorites(false);
-            }
-        };
-
-        if (user && isAuthenticated && activeTab === 'favorites') {
-            fetchFavorites();
-        }
-    }, [user, isAuthenticated, isAdopter, activeTab]);
-    */
-
-    // Keep these handlers
+    // More handlers
     const handleOpenEditModal = () => {
         setIsEditModalOpen(true);
     };
@@ -146,7 +107,7 @@ export default function ProfilePage() {
         setIsEditModalOpen(false);
     };
 
-    // Update the handleRemoveFavorite function
+    // HandleRemoveFavorite function
     const handleRemoveFavorite = async (petId) => {
         try {
             console.log("Removing pet from favorites:", petId);
@@ -167,7 +128,7 @@ export default function ProfilePage() {
         }
     };
 
-    // Keep the rest of your component unchanged
+
     if (loading) {
         return <div className="text-center p-12">
             <div className="animate-pulse">Loading your profile...</div>
@@ -180,7 +141,7 @@ export default function ProfilePage() {
 
     return (
         <div className="max-w-4xl mx-auto p-6">
-            <h1 className="text-3xl font-bold mb-6">Your Profile</h1>
+            <h1 className="mb-6 text-2xl sm:text-3xl font-bold text-gray-800 border-b-2 border-amber-400 pb-2 inline-block">Your Profile</h1>
 
             {user?.status === 'suspended' && (
                 <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
@@ -214,7 +175,7 @@ export default function ProfilePage() {
                 </div>
             )}
 
-            <div className="bg-white shadow rounded-lg p-6">
+            <div className="bg-white/50 border-t-2 border-amber-400 shadow rounded-lg p-6">
                 <div className="flex items-center space-x-6 mb-6">
                     <div className="relative bg-gray-200 rounded-full w-24 h-24 overflow-hidden">
                         {user.profileImage ? (
@@ -297,7 +258,7 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Content based on active tab */}
-                <div className="bg-white shadow rounded-lg sm:p-3 md:p-4 lg:p-6">
+                <div className="bg-white/50 shadow rounded-lg sm:p-3 md:p-4 lg:p-6">
                     {activeTab === 'applications' ? (
                         loadingApplications ? (
                             <div className="flex justify-center py-4">

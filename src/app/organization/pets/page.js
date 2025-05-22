@@ -228,7 +228,7 @@ export default function ManagePetsPage() {
                 </div>
             ) : (
                 <>
-                    <div className="bg-white shadow-md rounded-lg p-4 mb-6">
+                    <div className="bg-white/50 shadow-md rounded-lg p-4 mb-6 border-t-2 border-amber-400">
                         {/* Mobile: Filter dropdown with proper overlay positioning */}
                         <div className="block sm:hidden mb-2 relative">
                             <div

@@ -227,19 +227,21 @@ function SheltersPageContent() {
                                                     <div className="relative group/tooltip">
                                                         <h3 className="font-bold text-lg text-gray-800">
                                                             {(() => {
+
                                                                 // Get a plain text version first
                                                                 const plainText = shelter.organizationName
                                                                     .normalize("NFKD")  // Decompose characters to standard form
                                                                     .replace(/[^\x00-\x7F]/g, "") // Remove any remaining non-ASCII chars
                                                                     || shelter.organizationName;  // Fallback to original if completely stripped
 
-                                                                return plainText.length > 30
+                                                                // testing: Ginno's Drug Cartel (19, including space)
+                                                                return plainText.length > 18
                                                                     ? plainText.split(/\s+/).map(word => word[0] || '').join('').toUpperCase()
                                                                     : plainText;
                                                             })()}
                                                         </h3>
 
-                                                        {shelter.organizationName.length > 30 && (
+                                                        {shelter.organizationName.length > 18 && (
                                                             <div className="absolute opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-300 
                                                             left-0 top-full mt-1 z-50 bg-gray-900/90 backdrop-blur-sm text-white text-sm rounded-md
                                                             px-2.5 py-1.5 shadow-lg pointer-events-none w-52 whitespace-normal max-w-md">
@@ -268,11 +270,11 @@ function SheltersPageContent() {
                                         {/* Additional organization info */}
                                         <div className="mt-4 pt-4 border-t border-gray-100">
                                             <div className="flex items-center justify-between text-sm">
-                                                <div className="flex items-center text-gray-600">
+                                                <div className="flex items-center text-gray-600 flex-wrap">
                                                     <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                                                     </svg>
-                                                    {shelter.establishedYear ? `Est. ${shelter.establishedYear}` : 'Animal Shelter'}
+                                                    Shelter | Organization
                                                 </div>
                                                 <span className="text-teal-600 font-medium hover:text-teal-800 hover:underline">
                                                     <Link href={`/browse/shelters/${shelter._id}`}>
