@@ -19,6 +19,14 @@ export default function Navbar() {
     const menuRef = useRef(null);
     const pathname = usePathname();
 
+    // Helper function to check if a link is active
+    const isActive = (path) => {
+        if (path === '/') {
+            return pathname === '/';
+        }
+        return pathname.startsWith(path);
+    };
+
 
 
     // Set client-ready state after initial render to avoid hydration errors
@@ -129,7 +137,7 @@ export default function Navbar() {
     };
 
     // Early return if on admin dashboard pages
-    const hiddenNavbarPaths = ['/admin', '/verify-email', '/forgot-password', '/reset-password'];
+    const hiddenNavbarPaths = ['/admin', '/verify-email', '/forgot-password', '/reset-password', '/login/admin'];
     if (pathname && hiddenNavbarPaths.some(path => pathname.startsWith(path))) {
         return null; // Don't render the navbar at all
     }
@@ -198,65 +206,117 @@ export default function Navbar() {
 
                 {/* Desktop menu items */}
                 <div className="hidden md:flex items-center space-x-6">
-                    <Link href="/" className="text-gray-800 hover:text-orange-500 transition-colors">Home</Link>
-                    <Link href="/about" className="text-gray-800 hover:text-orange-500 transition-colors">About</Link>
-                    <Link href="/browse" className="text-gray-800 hover:text-orange-500 transition-colors">Browse</Link>
+                    <Link href="/" className={`relative pb-1 transition-colors ${isActive('/') ? 'text-orange-500 font-medium' : 'text-gray-800 hover:text-orange-500'}`}>
+                        Home
+                        {isActive('/') && (
+                            <motion.div
+                                layoutId="desktopActiveIndicator"
+                                className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-amber-400"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ duration: 0.3 }}
+                            />
+                        )}
+                    </Link>
 
-                    {/* Always render the links/buttons, but use client-side logic for visibility */}
-                    {!clientReady ? (
-                        // During SSR and initial hydration, show login/register by default
+                    <Link href="/about" className={`relative pb-1 transition-colors ${isActive('/about') ? 'text-orange-500 font-medium' : 'text-gray-800 hover:text-orange-500'}`}>
+                        About
+                        {isActive('/about') && (
+                            <motion.div
+                                layoutId="desktopActiveIndicator"
+                                className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-amber-400"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ duration: 0.3 }}
+                            />
+                        )}
+                    </Link>
+
+                    <Link href="/browse" className={`relative pb-1 transition-colors ${isActive('/browse') ? 'text-orange-500 font-medium' : 'text-gray-800 hover:text-orange-500'}`}>
+                        Browse
+                        {isActive('/browse') && (
+                            <motion.div
+                                layoutId="desktopActiveIndicator"
+                                className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-amber-400"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ duration: 0.3 }}
+                            />
+                        )}
+                    </Link>
+
+                    {/* Admin Dashboard Link */}
+                    {isAdminAuthenticated && (
+                        <Link href="/admin/dashboard" className={`relative pb-1 transition-colors ${isActive('/admin') ? 'text-orange-500 font-medium' : 'text-gray-800 hover:text-orange-500'}`}>
+                            Admin Dashboard
+                            {isActive('/admin') && (
+                                <motion.div
+                                    layoutId="desktopActiveIndicator"
+                                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-amber-400"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ duration: 0.3 }}
+                                />
+                            )}
+                        </Link>
+                    )}
+
+                    {/* Profile/Organization Links */}
+                    {isAuthenticated && !isAdminAuthenticated && (
+                        <>
+                            {user?.userType === 'adopter' && (
+                                <Link
+                                    href="/profile"
+                                    className={`relative pb-1 transition-colors flex items-center ${isActive('/profile') ? 'text-orange-500 font-medium' : 'text-gray-800 hover:text-orange-500'}`}
+                                >
+                                    <div className="flex items-center">
+                                        <span>My Profile</span>
+                                        {user.status === 'suspended' && (
+                                            <span className="ml-1 bg-red-500 rounded-full w-2 h-2"></span>
+                                        )}
+                                    </div>
+                                    {isActive('/profile') && (
+                                        <motion.div
+                                            layoutId="desktopActiveIndicator"
+                                            className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-amber-400"
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            transition={{ duration: 0.3 }}
+                                        />
+                                    )}
+                                </Link>
+                            )}
+                            {user?.userType === 'organization' && (
+                                <Link
+                                    href="/organization"
+                                    className={`relative pb-1 transition-colors ${isActive('/organization') ? 'text-orange-500 font-medium' : 'text-gray-800 hover:text-orange-500'}`}
+                                >
+                                    Dashboard
+                                    {isActive('/organization') && (
+                                        <motion.div
+                                            layoutId="desktopActiveIndicator"
+                                            className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-amber-400"
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            transition={{ duration: 0.3 }}
+                                        />
+                                    )}
+                                </Link>
+                            )}
+                        </>
+                    )}
+
+                    {isAuthenticated || isAdminAuthenticated ? (
+                        <button
+                            onClick={isAdminAuthenticated ? handleAdminLogout : handleLogout}
+                            className="bg-orange-500/90 hover:bg-orange-600/90 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                        >
+                            {isAdminAuthenticated ? 'Admin Logout' : 'Logout'}
+                        </button>
+                    ) : (
                         <>
                             <Link href="/login" className="bg-teal-500 text-white hover:bg-teal-600 px-4 py-2 rounded-lg font-medium transition-colors">Login</Link>
                             <Link href="/register" className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">Register</Link>
-                        </>
-                    ) : (
-                        // After hydration, show appropriate content based on auth state
-                        <>
-                            {isAdminAuthenticated && (
-                                <Link href="/admin/dashboard" className="text-gray-800 hover:text-orange-500 transition-colors">Admin Dashboard</Link>
-                            )}
-
-                            {isAuthenticated && !isAdminAuthenticated && (
-                                <>
-                                    {user?.userType === 'adopter' && (
-                                        <Link
-                                            href="/profile"
-                                            className="text-gray-800 hover:text-orange-500 transition-colors flex items-center"
-                                            onClick={() => console.log("Profile link clicked by user:", user)}
-                                        >
-                                            <div className="flex items-center">
-                                                <span>My Profile</span>
-                                                {user.status === 'suspended' && (
-                                                    <span className="ml-1 bg-red-500 rounded-full w-2 h-2"></span>
-                                                )}
-                                            </div>
-                                        </Link>
-                                    )}
-                                    {user?.userType === 'organization' && (
-                                        <Link
-                                            href="/organization"
-                                            className="text-gray-800 hover:text-orange-500 transition-colors"
-                                            onClick={() => console.log("Organization link clicked by user:", user)}
-                                        >
-                                            Dashboard
-                                        </Link>
-                                    )}
-                                </>
-                            )}
-
-                            {isAuthenticated || isAdminAuthenticated ? (
-                                <button
-                                    onClick={isAdminAuthenticated ? handleAdminLogout : handleLogout}
-                                    className="bg-orange-500/90 hover:bg-orange-600/90 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-                                >
-                                    {isAdminAuthenticated ? 'Admin Logout' : 'Logout'}
-                                </button>
-                            ) : (
-                                <>
-                                    <Link href="/login" className="bg-teal-500 text-white hover:bg-teal-600 px-4 py-2 rounded-lg font-medium transition-colors">Login</Link>
-                                    <Link href="/register" className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">Register</Link>
-                                </>
-                            )}
                         </>
                     )}
                 </div>
@@ -308,65 +368,133 @@ export default function Navbar() {
                                 </div>
                             </div>
 
-                            {/* Mobile menu links */}
+                            {/* Mobile menu links - Updated with active indicators */}
                             <div className="flex flex-col space-y-6">
-                                <Link href="/" className="text-gray-800 hover:text-orange-500 text-lg transition-colors">Home</Link>
-                                <Link href="/about" className="text-gray-800 hover:text-orange-500 text-lg transition-colors">About</Link>
-                                <Link href="/browse" className="text-gray-800 hover:text-orange-500 text-lg transition-colors">Browse</Link>
+                                <Link
+                                    href="/"
+                                    className={`relative transition-colors group ${isActive('/')
+                                            ? 'text-orange-500 font-medium pl-3 border-l-2 border-orange-500'
+                                            : 'text-gray-800 hover:text-orange-500 pl-3'
+                                        } text-lg`}
+                                >
+                                    Home
+                                    {isActive('/') && (
+                                        <motion.div
+                                            className="absolute left-0 top-0 bottom-0 w-full bg-orange-100 rounded-r-md -z-10"
+                                            layoutId="mobileActiveIndicator"
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 0.3 }}
+                                        />
+                                    )}
+                                </Link>
 
-                                {/* Conditional auth links similar to desktop but adapted for mobile */}
-                                {!clientReady ? (
-                                    <>
-                                        <Link href="/login" className="bg-orange-500 text-white hover:bg-orange-600 px-4 py-3 rounded-lg font-medium transition-colors text-center mt-4">Login</Link>
-                                        <Link href="/register" className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-3 rounded-lg font-medium transition-colors text-center">Register</Link>
-                                    </>
-                                ) : (
-                                    <>
-                                        {isAdminAuthenticated && (
-                                            <Link href="/admin/dashboard" className="text-gray-800 hover:text-orange-500 text-lg transition-colors">Admin Dashboard</Link>
+                                <Link
+                                    href="/about"
+                                    className={`relative transition-colors group ${isActive('/about')
+                                            ? 'text-orange-500 font-medium pl-3 border-l-2 border-orange-500'
+                                            : 'text-gray-800 hover:text-orange-500 pl-3'
+                                        } text-lg`}
+                                >
+                                    About
+                                    {isActive('/about') && (
+                                        <motion.div
+                                            className="absolute left-0 top-0 bottom-0 w-full bg-orange-100 rounded-r-md -z-10"
+                                            layoutId="mobileActiveIndicator"
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 0.3 }}
+                                        />
+                                    )}
+                                </Link>
+
+                                <Link
+                                    href="/browse"
+                                    className={`relative transition-colors group ${isActive('/browse')
+                                            ? 'text-orange-500 font-medium pl-3 border-l-2 border-orange-500'
+                                            : 'text-gray-800 hover:text-orange-500 pl-3'
+                                        } text-lg`}
+                                >
+                                    Browse
+                                    {isActive('/browse') && (
+                                        <motion.div
+                                            className="absolute left-0 top-0 bottom-0 w-full bg-orange-100 rounded-r-md -z-10"
+                                            layoutId="mobileActiveIndicator"
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 0.3 }}
+                                        />
+                                    )}
+                                </Link>
+
+                                {/* Admin Dashboard Link */}
+                                {isAdminAuthenticated && (
+                                    <Link
+                                        href="/admin/dashboard"
+                                        className={`relative transition-colors group ${isActive('/admin')
+                                                ? 'text-orange-500 font-medium pl-3 border-l-2 border-orange-500'
+                                                : 'text-gray-800 hover:text-orange-500 pl-3'
+                                            } text-lg`}
+                                    >
+                                        Admin Dashboard
+                                        {isActive('/admin') && (
+                                            <motion.div
+                                                className="absolute left-0 top-0 bottom-0 w-full bg-orange-100 rounded-r-md -z-10"
+                                                layoutId="mobileActiveIndicator"
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 0.3 }}
+                                            />
                                         )}
+                                    </Link>
+                                )}
 
-                                        {isAuthenticated && !isAdminAuthenticated && (
-                                            <>
-                                                {user?.userType === 'adopter' && (
-                                                    <Link
-                                                        href="/profile"
-                                                        className="text-gray-800 hover:text-orange-500 text-lg transition-colors flex items-center"
-                                                    >
-                                                        <div className="flex items-center">
-                                                            <span>My Profile</span>
-                                                            {user.status === 'suspended' && (
-                                                                <span className="ml-1 bg-red-500 rounded-full w-2 h-2"></span>
-                                                            )}
-                                                        </div>
-                                                    </Link>
-                                                )}
-                                                {user?.userType === 'organization' && (
-                                                    <Link
-                                                        href="/organization"
-                                                        className="text-gray-800 hover:text-orange-500 text-lg transition-colors"
-                                                    >
-                                                        Dashboard
-                                                    </Link>
-                                                )}
-                                            </>
-                                        )}
-
-                                        {isAuthenticated || isAdminAuthenticated ? (
-                                            <button
-                                                onClick={isAdminAuthenticated ? handleAdminLogout : handleLogout}
-                                                className="bg-orange-500/90 hover:bg-orange-600/90 text-white px-4 py-3 mt-4 rounded-lg font-medium transition-colors text-center"
+                                {/* Profile/Organization Links */}
+                                {isAuthenticated && !isAdminAuthenticated && (
+                                    <>
+                                        {user?.userType === 'adopter' && (
+                                            <Link
+                                                href="/profile"
+                                                className={`relative transition-colors flex items-center ${isActive('/profile')
+                                                        ? 'text-orange-500 font-medium pl-3 border-l-2 border-orange-500'
+                                                        : 'text-gray-800 hover:text-orange-500 pl-3'
+                                                    } text-lg`}
                                             >
-                                                {isAdminAuthenticated ? 'Admin Logout' : 'Logout'}
-                                            </button>
-                                        ) : (
-                                            <>
-                                                <Link href="/login" className="bg-orange-500 text-white hover:bg-orange-600 px-4 py-3 rounded-lg font-medium transition-colors text-center mt-4">Login</Link>
-                                                <Link href="/register" className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-3 rounded-lg font-medium transition-colors text-center">Register</Link>
-                                            </>
+                                                <div className="flex items-center">
+                                                    <span>My Profile</span>
+                                                    {user.status === 'suspended' && (
+                                                        <span className="ml-1 bg-red-500 rounded-full w-2 h-2"></span>
+                                                    )}
+                                                </div>
+                                                {isActive('/profile') && (
+                                                    <motion.div
+                                                        className="absolute left-0 top-0 bottom-0 w-full bg-orange-100 rounded-r-md -z-10"
+                                                        layoutId="mobileActiveIndicator"
+                                                        initial={{ opacity: 0 }}
+                                                        animate={{ opacity: 0.3 }}
+                                                    />
+                                                )}
+                                            </Link>
+                                        )}
+                                        {user?.userType === 'organization' && (
+                                            <Link
+                                                href="/organization"
+                                                className={`relative transition-colors ${isActive('/organization')
+                                                        ? 'text-orange-500 font-medium pl-3 border-l-2 border-orange-500'
+                                                        : 'text-gray-800 hover:text-orange-500 pl-3'
+                                                    } text-lg`}
+                                            >
+                                                Dashboard
+                                                {isActive('/organization') && (
+                                                    <motion.div
+                                                        className="absolute left-0 top-0 bottom-0 w-full bg-orange-100 rounded-r-md -z-10"
+                                                        layoutId="mobileActiveIndicator"
+                                                        initial={{ opacity: 0 }}
+                                                        animate={{ opacity: 0.3 }}
+                                                    />
+                                                )}
+                                            </Link>
                                         )}
                                     </>
                                 )}
+
+                                {/* Keep existing decorative elements */}
                             </div>
 
                             {/* Decorative paw prints */}
