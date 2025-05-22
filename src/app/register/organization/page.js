@@ -288,7 +288,7 @@ export default function OrganizationRegistrationPage() {
             });
 
             if (response.data.success) {
-                router.push('/login?registered=true');
+                router.push('/login?verify=true');
             }
         } catch (error) {
             setError(error.response?.data?.error || 'Registration failed. Please try again.');

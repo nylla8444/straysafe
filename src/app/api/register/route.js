@@ -2,6 +2,47 @@ import { NextResponse } from 'next/server';
 import User from '../../../../models/User';
 import connectionToDB from '../../../../lib/mongoose';
 import { uploadToStorage } from '../../../../lib/storage';
+import { generateVerificationToken } from '../../../../lib/emailVerification';
+import nodemailer from 'nodemailer';
+
+async function sendVerificationEmail(user) {
+  // Create token
+  const token = generateVerificationToken(user);
+
+  // Create verification URL
+  const verificationUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/verify-email?token=${token}`;
+
+  // Set up transporter
+  const transporter = nodemailer.createTransport({
+    host: process.env.EMAIL_HOST,
+    port: parseInt(process.env.EMAIL_PORT),
+    secure: false,
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
+
+  // Send email
+  await transporter.sendMail({
+    from: '"StraySpot 🐾" <mail.strayspot@gmail.com>',
+    to: user.email,
+    subject: "Verify Your StraySpot Account",
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px;">
+        <h2>Welcome to StraySpot!</h2>
+        <p>Thank you for creating an account. Please verify your email address by clicking the button below:</p>
+        <div style="text-align: center; margin: 20px 0;">
+          <a href="${verificationUrl}" style="background-color: #0D9488; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
+            Verify Email Address
+          </a>
+        </div>
+        <p>This link will expire in 24 hours. If you didn't create an account, you can safely ignore this email.</p>
+        <p>Thank you,<br />The StraySpot Team</p>
+      </div>
+    `
+  });
+}
 
 export async function POST(request) {
   try {
@@ -115,12 +156,20 @@ export async function POST(request) {
     }
 
     // Create and save new user
-    const newUser = new User(userData);
+    const newUser = new User({
+      ...userData,
+      isEmailVerified: false,  // Explicitly set this
+      emailVerifiedAt: null    // Explicitly set this
+    });
     await newUser.save();
+
+    // Send verification email
+    await sendVerificationEmail(newUser);
 
     return NextResponse.json({
       success: true,
-      message: 'Registration successful'
+      message: 'Registration successful. Please check your email to verify your account.',
+      redirect: '/login?verify=true' // Add this to indicate where frontend should redirect
     });
 
   } catch (error) {

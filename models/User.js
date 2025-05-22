@@ -89,6 +89,16 @@ const userSchema = new mongoose.Schema({
         default: false // Will be set to true when verificationStatus is 'verified'
     },
 
+    // New fields for email verification
+    isEmailVerified: {
+        type: Boolean,
+        default: false
+    },
+    emailVerifiedAt: {
+        type: Date,
+        default: null
+    },
+
 
     // Common fields
     createdAt: {

@@ -7,13 +7,12 @@ import { NextResponse } from "next/server";
 export async function POST(request) {
   try {
     console.log("Login request received");
-    await connectionToDB();
-    console.log("connected to db");
-
-    const { email, password } = await request.json();
+    const body = await request.json();
+    const { email, password } = body;
 
     // Find the user
-    const user = await User.findOne({ email });
+    await connectionToDB();
+    const user = await User.findOne({ email: email.toLowerCase() });
 
     if (!user) {
       return NextResponse.json(
@@ -29,6 +28,28 @@ export async function POST(request) {
       return NextResponse.json(
         { error: 'Invalid email or password' },
         { status: 401 }
+      );
+    }
+
+    // After validating password but before setting cookies, check email verification
+    // Log the current verification status for debugging
+    console.log("User verification status:", {
+      email: user.email,
+      isEmailVerified: user.isEmailVerified
+    });
+
+    // Check if email is verified - with added logging
+    console.log("Email verification check:", {
+      email: user.email,
+      isEmailVerified: user.isEmailVerified,
+      userFields: Object.keys(user._doc || user)
+    });
+
+    // Check if email is verified
+    if (user.isEmailVerified === undefined || user.isEmailVerified === false) {
+      return NextResponse.json(
+        { error: 'Please verify your email before logging in. Check your inbox for a verification link.' },
+        { status: 403 }
       );
     }
 
