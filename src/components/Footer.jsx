@@ -179,13 +179,13 @@ export default function Footer() {
                         <h3 className="text-lg font-semibold mb-4 text-gray-800 border-b border-amber-200 pb-2">Contact</h3>
                         <ul className="space-y-3">
                             <li>
-                                <a href="mailto:hello@strayspot.com" className="text-gray-600 hover:text-orange-500 transition-colors">
-                                    hello@strayspot.com
+                                <a href="mailto:mail.strayspot@gmail.com" className="text-gray-600 hover:text-orange-500 transition-colors">
+                                    mail.strayspot@gmail.com
                                 </a>
                             </li>
                             <li>
-                                <a href="tel:+1234567890" className="text-gray-600 hover:text-orange-500 transition-colors">
-                                    (123) 456-7890
+                                <a href="tel:+639086617484" className="text-gray-600 hover:text-orange-500 transition-colors">
+                                    09086617484
                                 </a>
                             </li>
                             <li className="pt-4">
