@@ -129,7 +129,8 @@ export default function Navbar() {
     };
 
     // Early return if on admin dashboard pages
-    if (pathname?.startsWith('/admin')) {
+    const hiddenNavbarPaths = ['/admin', '/verify-email', '/forgot-password', '/reset-password'];
+    if (pathname && hiddenNavbarPaths.some(path => pathname.startsWith(path))) {
         return null; // Don't render the navbar at all
     }
 
