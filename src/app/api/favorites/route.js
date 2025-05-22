@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
+import mongoose from 'mongoose';
 import connectionToDB from '../../../../lib/mongoose';
 import Favorites from '../../../../models/Favorites';
 import Pet from '../../../../models/Pet';
-import User from '../../../../models/User'; // Import User model
+import User from '../../../../models/User';
 import { withAuth } from '../../../../middleware/authMiddleware';
 
 // Ensure all models are registered before executing queries
