@@ -55,7 +55,7 @@ function PetsPageContent() {
         }
     });
 
-    // Add URL tracking ref to prevent infinite loops
+    // URL tracking ref to prevent infinite loops
     const prevUrlRef = useRef('');
 
     // Fetch pets when necessary filters or pagination changes

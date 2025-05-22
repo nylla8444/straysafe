@@ -17,7 +17,7 @@ export default function AdminLoginPage() {
     const { admin, loading: authLoading, isAuthenticated, adminLogin } = useAdminAuth();
     const router = useRouter();
 
-    // Add this useEffect to clear any stale session data
+    // useEffect to clear any stale session data
     useEffect(() => {
         // Clear any stale admin data in session storage when visiting login page
         sessionStorage.removeItem('adminData');

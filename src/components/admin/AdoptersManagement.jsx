@@ -14,7 +14,6 @@ export default function AdoptersManagement({ onUpdateStats }) {
     const [historyAdopterId, setHistoryAdopterId] = useState(null);
     const [loadingHistory, setLoadingHistory] = useState(false);
     const [statusChangeMessage, setStatusChangeMessage] = useState(null);
-    // Add this to existing state variables
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const [adoptersToDelete, setAdopterToDelete] = useState(null);
     const [deleteReason, setDeleteReason] = useState('');
@@ -66,7 +65,7 @@ export default function AdoptersManagement({ onUpdateStats }) {
         }
     };
 
-    // Add a helper function to update the selected adopter status
+    // Helper function to update the selected adopter status
     const updateSelectedAdopterStatus = (adopterId, newStatus) => {
         // Update the selectedAdopter in state to reflect the new status immediately
         if (selectedAdopter && selectedAdopter._id === adopterId) {
@@ -185,7 +184,7 @@ export default function AdoptersManagement({ onUpdateStats }) {
         }
     };
 
-    // Add this for switching tabs manually
+    // For switching tabs manually
     const handleTabChange = (newFilter) => {
         // Clear any status change messages when switching tabs
         setStatusChangeMessage(null);

@@ -130,7 +130,7 @@ export const AdminAuthProvider = ({ children }) => {
 
     const adminLogout = async () => {
         try {
-            // Add a flag to prevent refresh attempts during logout
+            // Flag to prevent refresh attempts during logout
             sessionStorage.setItem('adminLoggingOut', 'true');
 
             // Make the API request first, while we still have the token

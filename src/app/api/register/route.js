@@ -169,7 +169,7 @@ export async function POST(request) {
     return NextResponse.json({
       success: true,
       message: 'Registration successful. Please check your email to verify your account.',
-      redirect: '/login?verify=true' // Add this to indicate where frontend should redirect
+      redirect: '/login?verify=true' // Added this to indicate where frontend should redirect
     });
 
   } catch (error) {

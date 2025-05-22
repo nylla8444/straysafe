@@ -17,7 +17,7 @@ export default function AdopterRegistrationPage() {
         confirmPassword: ''
     });
 
-    // Add validation states
+    // Validation states
     const [validationErrors, setValidationErrors] = useState({
         firstName: '',
         lastName: '',
@@ -218,7 +218,7 @@ export default function AdopterRegistrationPage() {
             if (response.data.success) {
                 router.push('/login?verify=true');
             }
-            
+
         } catch (error) {
             setError(error.response?.data?.error || 'Registration failed. Please try again.');
         } finally {

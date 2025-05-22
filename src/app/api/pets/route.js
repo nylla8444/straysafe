@@ -18,7 +18,7 @@ export async function GET(request) {
             const searchTerm = searchParams.get('search')?.trim();
             const gender = searchParams.get('gender');
 
-            // Add pagination parameters
+            // Pagination parameters
             const page = parseInt(searchParams.get('page') || '1');
             const limit = parseInt(searchParams.get('limit') || '20');
             const skip = (page - 1) * limit;
@@ -49,7 +49,7 @@ export async function GET(request) {
                     .sort({ createdAt: -1 })
                     .skip(skip)
                     .limit(limit)
-                    .lean(), // Add lean() for read-only operations
+                    .lean(), // lean() for read-only operations
                 Pet.countDocuments(filters)
             ]);
 
@@ -97,7 +97,7 @@ export async function POST(request) {
 
             const petData = await request.json();
 
-            // Add organization ID to the pet data
+            // organization ID to the pet data
             petData.organization = organization._id;
 
             // Validate minimum images

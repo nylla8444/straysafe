@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion'; // Optional: Add framer-motion for smoother animations
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function FilterPanel({
     filters,

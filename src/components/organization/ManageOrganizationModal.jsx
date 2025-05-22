@@ -18,7 +18,7 @@ export default function ManageOrganizationModal({ organization, isOpen, onClose,
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
-    // Add validation state
+    // Validation state
     const [validationErrors, setValidationErrors] = useState({
         organizationName: '',
         contactNumber: '',
@@ -30,7 +30,7 @@ export default function ManageOrganizationModal({ organization, isOpen, onClose,
     const fileInputRef = useRef(null);
     const modalRef = useRef();
 
-    // Add a reset function to restore original data
+    // Reset function to restore original data
     const resetFormData = () => {
         if (organization) {
             // Split location into city and province if it contains a comma

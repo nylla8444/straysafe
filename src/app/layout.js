@@ -5,7 +5,7 @@ import { FavoritesProvider } from '../../context/FavoritesContext';
 import { ToastProvider } from '../components/ui/ToastManager';
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import Navbar from '../components/Navbar';
-import FavoritesDebug from '../../components/debug/FavoritesDebug'; // Add this import
+import FavoritesDebug from '../../components/debug/FavoritesDebug';
 import "./globals.css";
 
 

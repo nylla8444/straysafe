@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 
 export default function BrowsePage() {
     const router = useRouter();
-    const pathname = usePathname(); // Add this line to get the current path
+    const pathname = usePathname(); // Get the current path
 
     useEffect(() => {
         router.replace('/browse/pets');

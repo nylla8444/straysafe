@@ -282,7 +282,7 @@ export default function OrganizationPage() {
                             </div>
                         </div>
 
-                        {/* Add disabled payment card for unverified organizations */}
+                        {/* Disabled payment card for unverified organizations */}
                         <div className="flex items-center p-4 bg-white/50 rounded-lg shadow opacity-75 border-l-4 border-amber-500">
                             <div className="p-2 bg-gray-100 rounded-lg">
                                 <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -295,7 +295,7 @@ export default function OrganizationPage() {
                             </div>
                         </div>
 
-                        {/* Add disabled inventory card for unverified organizations */}
+                        {/* Disabled inventory card for unverified organizations */}
                         <div className="flex items-center p-4 bg-white/50 rounded-lg shadow opacity-75 border-l-4 border-amber-500">
                             <div className="p-2 bg-gray-100 rounded-lg">
                                 <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

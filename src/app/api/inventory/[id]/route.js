@@ -71,7 +71,7 @@ export async function PUT(request, { params }) {
                 calculatedStatus = 'in_stock';
             }
 
-            // Add the calculated status to data
+            // Calculated status to data
             const updatedData = {
                 ...data,
                 status: calculatedStatus,

@@ -69,8 +69,7 @@ const CashDonationSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-// Remove the pre-save hook since it's redundant with the default function
-// The default function runs before validation, while pre-save runs after validation
+
 
 // Add indexes for faster queries
 CashDonationSchema.index({ organization: 1 });

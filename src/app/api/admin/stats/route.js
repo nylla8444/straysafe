@@ -41,7 +41,7 @@ export async function GET(request) {
                 })
             ]);
 
-            // Add cache control headers to ensure fresh data
+            // Cache control headers to ensure fresh data
             const headers = new Headers();
             headers.append('Cache-Control', 'no-cache, no-store, must-revalidate');
             headers.append('Pragma', 'no-cache');

@@ -41,7 +41,7 @@ FavoritesSchema.pre('find', function () {
     });
 });
 
-// Also add this pre hook for findOne to ensure consistent behavior
+// Hook for findOne to ensure consistent behavior
 FavoritesSchema.pre('findOne', function () {
     this.populate({
         path: 'pets',

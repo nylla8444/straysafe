@@ -149,7 +149,7 @@ input[type="password"] {
 }
 
 
-/* Add this to your globals.css file for glassmorphism support */
+/* Glassmorphism support */
 @supports (backdrop-filter: blur(12px)) {
   .backdrop-blur-md {
     backdrop-filter: blur(12px);

@@ -226,7 +226,7 @@ export default function RescueStatsDashboard({ cases }) {
             other: 'Other'
         };
 
-        // Add shortened labels for mobile
+        // Shortened labels for mobile
         if (isMobile) {
             const shortLabels = {
                 dog: 'Dog',
@@ -248,7 +248,7 @@ export default function RescueStatsDashboard({ cases }) {
         return '60%';
     };
 
-    // Add this function to dynamically calculate chart height
+    // Function to dynamically calculate chart height
     const getChartHeight = () => {
         if (window.innerWidth < 400) return 250;
         if (window.innerWidth < 768) return 280;

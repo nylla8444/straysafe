@@ -6,7 +6,7 @@ import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '../../../../../context/AuthContext'; // Add this import
+import { useAuth } from '../../../../../context/AuthContext';
 
 export default function PetDetailPage({ params }) {
     // Properly handle the Promise-based params
@@ -23,7 +23,7 @@ export default function PetDetailPage({ params }) {
     const [hasExistingApplication, setHasExistingApplication] = useState(false);
     const [applicationStatus, setApplicationStatus] = useState('');
 
-    // Add this useEffect for scroll detection
+    // For scroll detection
     useEffect(() => {
         const handleScroll = () => {
             if (window.scrollY > 300) {
@@ -37,7 +37,7 @@ export default function PetDetailPage({ params }) {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // Add this function to scroll to top
+    // Scroll to top
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -581,7 +581,7 @@ export default function PetDetailPage({ params }) {
 
             </div>
 
-            {/* Add the Floating Back to Top Button right before the Mobile Bottom Navigation */}
+            {/* Floating Back to Top Button */}
             <AnimatePresence>
                 {showScrollButton && (
                     <motion.button

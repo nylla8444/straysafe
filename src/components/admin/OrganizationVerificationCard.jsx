@@ -1,8 +1,6 @@
-// Add this to your existing OrganizationVerificationCard component where you show organization details
-
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import VerificationHistoryList from '../verification/VerificationHistoryList'; // Import the component we created
+import VerificationHistoryList from '../verification/VerificationHistoryList';
 
 // Inside your component:
 const [showHistory, setShowHistory] = useState(false);
@@ -23,7 +21,6 @@ const fetchVerificationHistory = async (orgId) => {
     }
 };
 
-// Add this button near the verification actions:
 <button
     onClick={() => {
         setShowHistory(!showHistory);

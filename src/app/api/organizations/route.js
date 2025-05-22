@@ -7,23 +7,23 @@ export async function GET(request) {
     return withCache(request, async (req) => {
         try {
             await connectionToDB();
-            
+
             const { searchParams } = new URL(request.url);
             const searchTerm = searchParams.get('search')?.trim();
-            
-            // Add pagination parameters
+
+            // Pagination parameters
             const page = parseInt(searchParams.get('page') || '1');
             const limit = parseInt(searchParams.get('limit') || '20');
             const skip = (page - 1) * limit;
-            
+
             // Build filters object for MongoDB query
             const filters = {
                 userType: 'organization',
                 isVerified: true,
                 verificationStatus: 'verified'
             };
-            
-            // Add search functionality
+
+            // Search functionality
             if (searchTerm) {
                 filters.$or = [
                     { organizationName: { $regex: searchTerm, $options: 'i' } },
@@ -40,7 +40,7 @@ export async function GET(request) {
                     filters,
                     {
                         _id: 1,
-                        organizationName: 1, 
+                        organizationName: 1,
                         email: 1,
                         contactNumber: 1,
                         city: 1,
@@ -51,11 +51,11 @@ export async function GET(request) {
                         isVerified: 1
                     }
                 )
-                .sort({ organizationName: 1 })
-                .skip(skip)
-                .limit(limit)
-                .lean(),
-                
+                    .sort({ organizationName: 1 })
+                    .skip(skip)
+                    .limit(limit)
+                    .lean(),
+
                 User.countDocuments(filters)
             ]);
 
@@ -76,8 +76,8 @@ export async function GET(request) {
                 error: 'Failed to fetch organizations'
             }, { status: 500 });
         }
-    }, { 
+    }, {
         duration: 5 * 60 * 1000, // 5 minutes cache
-        varyByQuery: ['search', 'page', 'limit'] 
+        varyByQuery: ['search', 'page', 'limit']
     });
 }

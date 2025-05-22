@@ -279,7 +279,7 @@ export default function AboutPage() {
                                     scale: 1.02,
                                     transition: { type: "spring", stiffness: 500, damping: 15 }
                                 }}
-                                whileTap={{ scale: 0.98 }} // Add this for touch feedback
+                                whileTap={{ scale: 0.98 }} // For touch feedback
                             >
                                 {/* Decorative background element */}
                                 <div

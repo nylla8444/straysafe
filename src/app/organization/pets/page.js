@@ -42,7 +42,7 @@ export default function ManagePetsPage() {
                 return;
             }
 
-            // Add this check to redirect unverified organizations
+            // Added this check to redirect unverified organizations
             if (user && !user.isVerified) {
                 router.push('/organization?error=verification_required');
                 return;

@@ -42,7 +42,7 @@ export default function Navbar() {
     }, [isAuthenticated, user, loading]);
 
 
-    // Add this effect to detect and fix navigation issues
+    // useEffect to detect and fix navigation issues
     useEffect(() => {
         if (clientReady && !loading && isAuthenticated && user) {
             console.log(`Navbar mounted - Current path: ${pathname}, User type: ${user?.userType}`);
@@ -57,7 +57,7 @@ export default function Navbar() {
         }
     }, [clientReady, loading, isAuthenticated, user, pathname, router]);
 
-    // Add refresh on mount
+    // refresh on mount
     useEffect(() => {
         if (clientReady && isAuthenticated) {
             // Refresh user data when component mounts to ensure it's in sync with JWT
@@ -373,8 +373,8 @@ export default function Navbar() {
                                 <Link
                                     href="/"
                                     className={`relative transition-colors group ${isActive('/')
-                                            ? 'text-orange-500 font-medium pl-3 border-l-2 border-orange-500'
-                                            : 'text-gray-800 hover:text-orange-500 pl-3'
+                                        ? 'text-orange-500 font-medium pl-3 border-l-2 border-orange-500'
+                                        : 'text-gray-800 hover:text-orange-500 pl-3'
                                         } text-lg`}
                                 >
                                     Home
@@ -391,8 +391,8 @@ export default function Navbar() {
                                 <Link
                                     href="/about"
                                     className={`relative transition-colors group ${isActive('/about')
-                                            ? 'text-orange-500 font-medium pl-3 border-l-2 border-orange-500'
-                                            : 'text-gray-800 hover:text-orange-500 pl-3'
+                                        ? 'text-orange-500 font-medium pl-3 border-l-2 border-orange-500'
+                                        : 'text-gray-800 hover:text-orange-500 pl-3'
                                         } text-lg`}
                                 >
                                     About
@@ -409,8 +409,8 @@ export default function Navbar() {
                                 <Link
                                     href="/browse"
                                     className={`relative transition-colors group ${isActive('/browse')
-                                            ? 'text-orange-500 font-medium pl-3 border-l-2 border-orange-500'
-                                            : 'text-gray-800 hover:text-orange-500 pl-3'
+                                        ? 'text-orange-500 font-medium pl-3 border-l-2 border-orange-500'
+                                        : 'text-gray-800 hover:text-orange-500 pl-3'
                                         } text-lg`}
                                 >
                                     Browse
@@ -429,8 +429,8 @@ export default function Navbar() {
                                     <Link
                                         href="/admin/dashboard"
                                         className={`relative transition-colors group ${isActive('/admin')
-                                                ? 'text-orange-500 font-medium pl-3 border-l-2 border-orange-500'
-                                                : 'text-gray-800 hover:text-orange-500 pl-3'
+                                            ? 'text-orange-500 font-medium pl-3 border-l-2 border-orange-500'
+                                            : 'text-gray-800 hover:text-orange-500 pl-3'
                                             } text-lg`}
                                     >
                                         Admin Dashboard
@@ -452,8 +452,8 @@ export default function Navbar() {
                                             <Link
                                                 href="/profile"
                                                 className={`relative transition-colors flex items-center ${isActive('/profile')
-                                                        ? 'text-orange-500 font-medium pl-3 border-l-2 border-orange-500'
-                                                        : 'text-gray-800 hover:text-orange-500 pl-3'
+                                                    ? 'text-orange-500 font-medium pl-3 border-l-2 border-orange-500'
+                                                    : 'text-gray-800 hover:text-orange-500 pl-3'
                                                     } text-lg`}
                                             >
                                                 <div className="flex items-center">
@@ -476,8 +476,8 @@ export default function Navbar() {
                                             <Link
                                                 href="/organization"
                                                 className={`relative transition-colors ${isActive('/organization')
-                                                        ? 'text-orange-500 font-medium pl-3 border-l-2 border-orange-500'
-                                                        : 'text-gray-800 hover:text-orange-500 pl-3'
+                                                    ? 'text-orange-500 font-medium pl-3 border-l-2 border-orange-500'
+                                                    : 'text-gray-800 hover:text-orange-500 pl-3'
                                                     } text-lg`}
                                             >
                                                 Dashboard

@@ -25,7 +25,7 @@ export default function AdminDashboardPage() {
     const router = useRouter();
     const [redirectTriggered, setRedirectTriggered] = useState(false);
     const [error, setError] = useState('');
-    // Add state for mobile sidebar
+    // For mobile sidebar
     const [sidebarOpen, setSidebarOpen] = useState(false);
     // State for floating menu
     const [floatingMenuOpen, setFloatingMenuOpen] = useState(false);
@@ -80,7 +80,7 @@ export default function AdminDashboardPage() {
             setIsLoading(true);
             setError(''); // Clear any previous errors
 
-            // Add cache busting when we want to force a fresh fetch
+            // Cache busting when we want to force a fresh fetch
             const url = forceFresh
                 ? `/api/admin/stats?timestamp=${Date.now()}`
                 : '/api/admin/stats';
@@ -99,7 +99,7 @@ export default function AdminDashboardPage() {
         }
     };
 
-    // Add a manual refresh button to the dashboard
+    // Manual refresh button to the dashboard
     const ManualRefreshButton = () => (
         <button
             onClick={() => refreshStats(true)}
@@ -145,7 +145,6 @@ export default function AdminDashboardPage() {
     return (
         <div className="flex flex-col md:flex-row min-h-screen bg-amber-50 -mt-24">
             {/* Mobile Header - Only visible on small screens */}
-            {/* Simple mobile header - Only shows app name */}
             <div className="md:hidden bg-gradient-to-r from-teal-800 to-teal-900 text-white p-4 flex justify-center shadow-lg">
                 <div className="flex items-center space-x-2">
                     <div className="h-8 w-8 bg-white rounded-lg flex items-center justify-center">
@@ -562,7 +561,6 @@ export default function AdminDashboardPage() {
 
             {/* Floating Circle Navigation Menu */}
             <div className="md:hidden">
-                {/* Floating menu items - Visible only when menu is open */}
                 <AnimatePresence>
                     {floatingMenuOpen && (
                         <motion.div
@@ -631,21 +629,6 @@ export default function AdminDashboardPage() {
                                         </svg>
                                     </motion.button>
 
-                                    {/* Refresh button */}
-                                    {/* <motion.button
-                                        initial={{ scale: 0 }}
-                                        animate={{ scale: 1 }}
-                                        transition={{ delay: 0.4 }}
-                                        onClick={() => {
-                                            refreshStats(true);
-                                            setFloatingMenuOpen(false);
-                                        }}
-                                        className="flex items-center justify-center w-16 h-16 rounded-full shadow-md bg-white text-teal-600"
-                                    >
-                                        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                                        </svg>
-                                    </motion.button> */}
 
                                     {/* Settings button */}
                                     <motion.button

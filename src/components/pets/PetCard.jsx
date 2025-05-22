@@ -1,8 +1,9 @@
+"use client";
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import { useToast } from '../ui/ToastManager'; // Add this import
-import { motion } from 'framer-motion';
+import { useToast } from '../ui/ToastManager';
 import { useFavorites } from '../../../context/FavoritesContext';
 
 export default function PetCard({ pet, onFavorite, userRole = 'guest' }) {

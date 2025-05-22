@@ -284,7 +284,7 @@ export default function InventoryManagementPage() {
                     </Link>
                     <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">Inventory Management</h1>
 
-                    {/* Add refresh button - Enlarged touch target for mobile */}
+                    {/* Refresh button - Enlarged touch target for mobile */}
                     <button
                         onClick={handleRefresh}
                         disabled={isRefreshing}
@@ -308,7 +308,7 @@ export default function InventoryManagementPage() {
                     </button>
                 </div>
 
-                {/* Add Item Button - Only visible when on Inventory tab */}
+                {/* Item Button - Only visible when on Inventory tab */}
                 {activeTab === 'inventory' && (
                     <button
                         onClick={() => setIsAddModalOpen(true)}
@@ -682,7 +682,7 @@ export default function InventoryManagementPage() {
                         </div>
                     )}
 
-                    {/* Add Item Modal */}
+                    {/* Item Modal */}
                     {isAddModalOpen && (
                         <InventoryModal
                             isOpen={isAddModalOpen}

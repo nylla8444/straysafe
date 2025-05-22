@@ -161,7 +161,7 @@ export default function RescueCaseModal({ isOpen, onClose, onSave, rescueCase, t
                 });
             }
 
-            // Add removed images
+            // Removed images
             if (removedImages.length > 0) {
                 formDataForApi.append('removedImages', JSON.stringify(removedImages));
             }

@@ -37,7 +37,7 @@ export async function GET(request) {
             }
 
             await connectionToDB();
-            ensureModels(); // Add this line
+            ensureModels();
 
             // Find user's favorites document
             let userFavorites = await Favorites.findOne({ userId: decoded.userId });
@@ -93,7 +93,7 @@ export async function POST(request) {
             }
 
             await connectionToDB();
-            ensureModels(); // Add this line
+            ensureModels();
             const { petId, action } = await request.json();
 
             // Debug log
@@ -216,7 +216,7 @@ export async function OPTIONS(request) {
             }
 
             await connectionToDB();
-            ensureModels(); // Add this line
+            ensureModels();
             const url = new URL(request.url);
             const petId = url.searchParams.get('petId');
 

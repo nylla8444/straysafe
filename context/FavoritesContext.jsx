@@ -140,7 +140,7 @@ export const FavoritesProvider = ({ children }) => {
         }
     }, [isAuthenticated, isAdopter, isFavorited, pathname, fetchFavorites]);
 
-    // Add a force refresh function that can be called directly
+    // Force refresh function that can be called directly
     const forceRefresh = useCallback(() => {
         console.log('Forcing favorites refresh');
         return fetchFavorites(true);

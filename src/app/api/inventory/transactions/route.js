@@ -17,12 +17,12 @@ export async function GET(request) {
             // Build query
             const query = { organization: decoded.userId };
 
-            // Add item filter if provided
+            // Item filter if provided
             if (itemId) {
                 query.item = itemId;
             }
 
-            // Add date range filter if provided
+            // Date range filter if provided
             if (startDate || endDate) {
                 query.createdAt = {};
                 if (startDate) {

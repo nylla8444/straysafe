@@ -8,7 +8,7 @@ export default function EditProfileModal({ user, isOpen, onClose, onUpdate }) {
         lastName: '',
         contactNumber: '',
         city: '',         // Changed from location to city
-        province: '',     // Added new province field
+        province: '',
         profileImage: '',
     });
     const [previewUrl, setPreviewUrl] = useState('');
@@ -19,7 +19,7 @@ export default function EditProfileModal({ user, isOpen, onClose, onUpdate }) {
         lastName: '',
         contactNumber: '',
         city: '',         // Changed from location to city
-        province: ''      // Added new province field
+        province: ''
     });
     const fileInputRef = useRef(null);
 
