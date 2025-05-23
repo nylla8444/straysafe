@@ -494,7 +494,37 @@ export default function Navbar() {
                                     </>
                                 )}
 
-                                {/* Keep existing decorative elements */}
+                                {/* Authentication buttons for mobile menu */}
+                                <div className="pt-4 mt-4 border-t border-gray-200">
+                                    {isAuthenticated || isAdminAuthenticated ? (
+                                        <button
+                                            onClick={isAdminAuthenticated ? handleAdminLogout : handleLogout}
+                                            className="w-full bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                            </svg>
+                                            {isAdminAuthenticated ? 'Admin Logout' : 'Logout'}
+                                        </button>
+                                    ) : (
+                                        <div className="flex flex-col space-y-3">
+                                            <Link
+                                                href="/login"
+                                                className="w-full bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg font-medium transition-colors text-center"
+                                                onClick={() => setMenuOpen(false)}
+                                            >
+                                                Login
+                                            </Link>
+                                            <Link
+                                                href="/register"
+                                                className="w-full bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium transition-colors text-center"
+                                                onClick={() => setMenuOpen(false)}
+                                            >
+                                                Register
+                                            </Link>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
                             {/* Decorative paw prints */}
